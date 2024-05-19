@@ -9,6 +9,7 @@ python = ">=3.10.0,<3.11"
 replit = "^3.2.4"
 Flask = "^2.2.0"
 spotipy = "^2.23.0"
+config = "^0.5.1"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

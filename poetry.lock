@@ -201,6 +201,17 @@ files = [
 ]
 
 [[package]]
+name = "config"
+version = "0.5.1"
+description = "A hierarchical, easy-to-use, powerful configuration module for Python"
+optional = false
+python-versions = "*"
+files = [
+    {file = "config-0.5.1-py2.py3-none-any.whl", hash = "sha256:79ffa009ff2663cc8ca29e56bcec031c044609d4bafaa4f884132a413101ce84"},
+    {file = "config-0.5.1.zip", hash = "sha256:2dd4a03aa383d30711d5a3325a1858de225328d61950a85be5b74c100f63016d"},
+]
+
+[[package]]
 name = "flask"
 version = "2.2.2"
 description = "A simple framework for building complex web applications."
@@ -655,4 +666,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10.0,<3.11"
-content-hash = "848ff464bf9b92bba2f01c23af806ae1232b50ec4cf4171417a9e86564ede0ea"
+content-hash = "0af0e99712681dcb688ab28759df86412a496bb67ba0319fa9ede7ff190ca086"

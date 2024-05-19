@@ -3,11 +3,21 @@ from flask import Flask
 from config import *
 import spotipy
 import uuid
+import os
 
-Oauth = spotipy.SpotifyOAuth(client_id=CLIENT_ID,
-                             client_secret=CLIENT_SECRET,
-                             redirect_uri=REDIRECT_URL,
-                             scope=scopes)
+scopes = [
+    'user-modify-playback-state', 
+    'user-read-currently-playing',
+    'user-read-playback-state'
+]
+
+CLIENT_SECRET = os.environ['SPOTIPY_CLIENT_SECRET']
+CLIENT_ID = os.environ["SPOTIPY_CLIENT_ID"]
+REDIRECT_URI = os.environ["SPOTIPY_REDIRECT_URI"]
+
+Oauth = spotipy.SpotifyOAuth(scope=scopes)
+
+
 
 app = Flask(__name__)
 app.config['SESSION_COOKIE_NAME'] = 'Syncify Cookies'
