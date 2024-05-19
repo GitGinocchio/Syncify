@@ -1,4 +1,5 @@
 # **Syncify**
+![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 **Syncify** è un'applicazione innovativa che ti permette di ascoltare musica in modo **sincronizzato** con i tuoi amici utilizzando le API di **Spotify**. Puoi **creare** sessioni di ascolto condivise e **unirti** a quelle create da altri, offrendo un'esperienza musicale collaborativa e interattiva. L'applicazione offre un'interfaccia intuitiva per gestire e controllare la riproduzione musicale, garantendo una sincronizzazione precisa per un'esperienza di ascolto davvero condivisa. Syncify è completamente basato sul **web**, quindi **non** dovrai **installare** nulla! Basta accedere al sito web, creare una sessione o unirsi a una esistente, e iniziare a condividere la musica!
 
 - **Nessun download**: Syncify è un'**applicazione web**, quindi non è necessario scaricare o installare nulla sul tuo dispositivo.
@@ -38,10 +39,10 @@
    - **Crea una nuova sessione**: Clicca su "Create a Session" e segui le istruzioni per avviare una nuova sessione di ascolto. 
      (Puoi invitare i tuoi amici condividendo il codice della sessione)
    - **Unisciti a una sessione esistente**: Inserisci il codice della sessione a cui desideri unirti e clicca su "Unisciti".
-![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 ------
 
 ## Funzionamento
+
 1. **Accesso**:
    - Dopo aver cliccato il bottone "Accedi" il sito ti reindirizzerà ad una pagina esterna (messa a disposizione dall'api di Spotify), con la quale potrai accedere con il tuo account. Questa pagina ha il compito di **autenticarti**, garantendo che non stia accedendo qualcun'altro al posto tuo.
    - Se il login viene eseguito con successo, verrai reindirizzato sulla pagina del tuo account e nel mentre invierai anche un **token temporaneo** (che verrà rinnovato se ce ne sarà il bisogno) al server di Syncify che verrà utilizzato successivamente per **autorizzare** l'applicazione ad eseguire alcune operazioni come la sincronizzazione delle canzoni.
