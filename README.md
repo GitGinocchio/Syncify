@@ -1,5 +1,4 @@
 # **Syncify**
-![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 **Syncify** è un'applicazione innovativa che ti permette di ascoltare musica in modo **sincronizzato** con i tuoi amici utilizzando le API di **Spotify**. Puoi **creare** sessioni di ascolto condivise e **unirti** a quelle create da altri, offrendo un'esperienza musicale collaborativa e interattiva. L'applicazione offre un'interfaccia intuitiva per gestire e controllare la riproduzione musicale, garantendo una sincronizzazione precisa per un'esperienza di ascolto davvero condivisa. Syncify è completamente basato sul **web**, quindi **non** dovrai **installare** nulla! Basta accedere al sito web, creare una sessione o unirsi a una esistente, e iniziare a condividere la musica!
 
 - **Nessun download**: Syncify è un'**applicazione web**, quindi non è necessario scaricare o installare nulla sul tuo dispositivo.
@@ -12,7 +11,7 @@
 
 - **Condividi la tua musica**: Mostra i tuoi **gusti musicali** e scopri quelli degli altri, rendendo ogni sessione un'opportunità per esplorare nuovi brani.
 ------
-
+![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 ## Indice
 
 1. [Introduzione](#Introduzione)
