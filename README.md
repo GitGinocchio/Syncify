@@ -9,8 +9,7 @@
 
 - **Crea e unisciti a sessioni**: Avvia le tue sessioni di ascolto o partecipa a quelle dei tuoi amici per **scoprire** nuove canzoni e artisti. 
 
-- **Condividi la tua musica**: Mostra i tuoi **gusti musicali** e scopri quelli degli altri, rendendo ogni sessione un'opportunità per esplorare nuovi brani. 
-![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
+- **Condividi la tua musica**: Mostra i tuoi **gusti musicali** e scopri quelli degli altri, rendendo ogni sessione un'opportunità per esplorare nuovi brani.
 ------
 
 ## Indice
@@ -39,7 +38,7 @@
    - **Crea una nuova sessione**: Clicca su "Create a Session" e segui le istruzioni per avviare una nuova sessione di ascolto. 
      (Puoi invitare i tuoi amici condividendo il codice della sessione)
    - **Unisciti a una sessione esistente**: Inserisci il codice della sessione a cui desideri unirti e clicca su "Unisciti".
-
+![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 ------
 
 ## Funzionamento
