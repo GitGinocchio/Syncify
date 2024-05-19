@@ -1,0 +1,82 @@
+<mxfile host="app.diagrams.net" modified="2024-04-26T02:14:47.223Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="SzZkwjSxExABZA14tBkp" version="24.3.0" type="device">
+  <diagram name="Pagina-1" id="QXDy18DeWDvmhHoRemsc">
+    <mxGraphModel dx="1393" dy="786" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wp6YWQEw-12JKmLEDwra-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-3" target="wp6YWQEw-12JKmLEDwra-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-3" value="Login" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="170" width="120" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="470" as="targetPoint" />
+            <mxPoint x="414" y="355" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="414" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-4" target="wp6YWQEw-12JKmLEDwra-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-4" value="Redirect Spotify Api" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="354" y="295" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-9" target="wp6YWQEw-12JKmLEDwra-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-9" value="Entra in una stanza" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="470" as="targetPoint" />
+            <mxPoint x="410" y="440" as="sourcePoint" />
+            <Array as="points">
+              <mxPoint x="430" y="440" />
+              <mxPoint x="430" y="440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-10" target="wp6YWQEw-12JKmLEDwra-20">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-10" value="Crea una stanza" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-16" value="Post Login" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="354" y="410" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-18" target="wp6YWQEw-12JKmLEDwra-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="610" />
+              <mxPoint x="414" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-18" value="Inserire codice della stanza" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="wp6YWQEw-12JKmLEDwra-20" target="wp6YWQEw-12JKmLEDwra-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="414" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-20" value="Creazione della stanza" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="520" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wp6YWQEw-12JKmLEDwra-22" value="Redirect alla stanza" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="354" y="670" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

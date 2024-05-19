@@ -1,0 +1,124 @@
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: center;
+}
+.container, .motto {
+  font-size: 40px;
+  padding-bottom: 24px;
+  text-align: center;
+}
+
+.container p {
+  font-size: 20px;
+  padding-bottom: 24px;
+  text-align: center;
+}
+.container, .button {
+  font-size: 18px;
+}
+
+/* Inserire questi in un unico container con le stesse proprietà
+.container1, p{
+  text-align:left;
+  font-size:20px
+}
+.container1, .bottone {
+  flex: 1;
+  padding: 20px;
+}
+.container1,.container2 {
+  flex-basis: 50%;
+.container1 {
+  padding-right: 20px;
+  align-content: center;
+}
+.container2 {
+  padding-left: 20px;
+  max-width: 400px;
+  align-content: center;
+}
+
+}
+*/
+
+h3, ol{
+  padding: 4px;
+  font-size:20px
+}
+
+footer p {
+  background-color: #181818; /* Grigio scuro per il footer */
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 15px
+}
+
+
+/* Per tablet */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 0px 12px 24px;
+  }
+  .header h1 {
+    font-size: 24px;
+  }
+  .account img {
+    width: 48px;
+    height: 48px;
+  }
+  .section {
+    flex-direction: column;
+    padding: 10px;
+  }
+  .container1, .container2 {
+    flex-basis: auto;
+    max-width: none;
+    padding: 10px 0;
+  }
+}
+
+/* Per telefono */
+@media (max-width: 480px) {
+  .header {
+    padding: 8px 0px 8px 16px;
+  }
+  .header h1 {
+    font-size: 20px;
+  }
+  .account img {
+    width: 32px;
+    height: 32px;
+  }
+  .section {
+    flex-direction: column;
+    padding: 5px;
+  }
+  .container1 {
+    flex-basis: 70%; /* Container1 occupa una buona parte dello schermo */
+    max-width: none;
+    padding: 5px 0;
+  }
+  .container2 {
+    flex-basis: 30%; /* Container2 occupa il resto dello schermo */
+    max-width: none;
+    padding: 5px 0;
+    text-align: center;
+    margin-left: 10px; /* Aggiunge un margine sinistro */
+  }
+  .container2 ol {
+    list-style-type: decimal; /* Cambia il tipo di elenco in numeri */
+    padding-left: 20px; /* Aggiungi padding per far spazio ai numeri */
+    text-align: center;
+  }
+  .bottone a {
+    padding: 8px 16px;
+  }
+  footer p {
+    font-size: 13px;
+  }
+}

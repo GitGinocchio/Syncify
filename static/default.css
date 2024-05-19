@@ -1,0 +1,114 @@
+/* Ridimensionamento della view */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
+/* Body */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Imposta l'altezza del body a 100% della viewport */
+  font-family: Arial, sans-serif, Lato;
+  background-color: #121212; /* Grigio chiaro */
+  color: white;
+}
+
+
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 0px 18px 50px;
+  background-color: black;
+}
+
+header h1 {
+  margin-bottom: 0;
+  font-size: 30px;
+  color: #1ed760;
+}
+
+/* Button */
+.button {
+  display: inline-block;
+  background-color: #1ed760;
+  color: black;
+  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-decoration: none; /* Rimuovi il sottolineato */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center; /* Centra il testo */
+  margin: 0px 30px; /* Centra il link */
+}
+
+.button:hover {
+  background-color: #45a049;
+}
+
+.button:clicked {
+  background-color: #169c46;
+}
+
+.button a {
+  color: black;
+  text-decoration: none;
+}
+
+/* Sezione dell'header con l'immagine e il nome dell'account */
+.account{
+  padding-right: 30px;
+}
+
+.account a {
+  text-decoration: none;
+}
+
+.account-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: #1ed760;
+  display: inline-flex;
+  position: relative; /* Posizione relativa alla posizione attuale */
+  bottom: 26px;       /* 26 pixel verso l'alto dalla posizione attuale (68(altezza div)/2 - 16(altezza scritta) / 2) */
+}
+
+/* Sezione dell'header con l'immagine e il nome del brand */
+.brand {
+  display: inline-flex;
+}
+
+.brand img {
+  width: 48px;
+  height: 48px;
+}
+
+.brand h1 {
+  align-content: center;
+  /*padding-top: 9px;*/
+}
+
+/* Footer */
+footer p {
+  background-color: #3333; /* Grigio scuro per il footer */
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 15px
+}

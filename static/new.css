@@ -1,0 +1,71 @@
+body{
+  font-family: Arial, sans-serif, Lato;
+}
+
+section {
+  margin-top: 50px;
+  flex-grow: 1;
+}
+
+form {
+  background-color: #121212;
+  padding: 20px;
+  border-radius: 7px; /* Riquadro con bordo arrotondato */
+  border: 3px solid #333; /* Bordo nero */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px; /* Larghezza massima del form */
+  margin: 0 auto; /* Centro del form nella pagina */
+  margin-top: 100px; /* Spazio sopra il form */
+}
+
+label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.queue-settings {
+  display: flex; /* Utilizziamo flexbox per allineare gli elementi */
+  align-items: center; /* Allinea gli elementi verticalmente al centro */
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.queue-settings label {
+  margin-left: 10px; /* Aggiungiamo un margine destro per separare il testo dal checkbox */
+}
+.queue-settings input[type="checkbox"] {
+  margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Allinea il contenuto al centro lungo l'asse principale (orizzontale) */
+}
+
+button[type="submit"] {
+  background-color: #1db954;
+  color: black;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 12px; /* Aggiungiamo un margine superiore per separare il bottone dagli altri elementi */
+}
+
+button[type="submit"]:hover {
+  background-color: #169c3e;
+}
+
