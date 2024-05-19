@@ -10,7 +10,7 @@
 - **Crea e unisciti a sessioni**: Avvia le tue sessioni di ascolto o partecipa a quelle dei tuoi amici per **scoprire** nuove canzoni e artisti. 
 
 - **Condividi la tua musica**: Mostra i tuoi **gusti musicali** e scopri quelli degli altri, rendendo ogni sessione un'opportunità per esplorare nuovi brani. 
-
+![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 ------
 
 ## Indice
@@ -43,7 +43,6 @@
 ------
 
 ## Funzionamento
-![image](https://github.com/GitGinocchio/Syncify/assets/106624847/cad7da49-2222-4212-aed2-962759ef81ab)
 1. **Accesso**:
    - Dopo aver cliccato il bottone "Accedi" il sito ti reindirizzerà ad una pagina esterna (messa a disposizione dall'api di Spotify), con la quale potrai accedere con il tuo account. Questa pagina ha il compito di **autenticarti**, garantendo che non stia accedendo qualcun'altro al posto tuo.
    - Se il login viene eseguito con successo, verrai reindirizzato sulla pagina del tuo account e nel mentre invierai anche un **token temporaneo** (che verrà rinnovato se ce ne sarà il bisogno) al server di Syncify che verrà utilizzato successivamente per **autorizzare** l'applicazione ad eseguire alcune operazioni come la sincronizzazione delle canzoni.
