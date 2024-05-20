@@ -1,6 +1,5 @@
 from flask import make_response, redirect, render_template, request, session
 from flask import Flask
-from config import *
 import spotipy
 import uuid
 import os
