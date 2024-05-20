@@ -30,7 +30,7 @@
 ## Utilizzo
 
 1. **Accedi al sito web**:
-   - Vai al sito web di Syncify: [**www.syncify.com**](http://www.syncify.com).
+   - Vai al sito web di Syncify: [**www.syncify.com**](https://syncify-0b6dc00d11b0.herokuapp.com).
 2. **Effettua il login con Spotify**:
    - Clicca su "Get Started" e autorizza l'applicazione ad accedere al tuo account Spotify. Non è necessaria alcuna registrazione aggiuntiva!
      (**Non** vengono richiesti **dati personali** e tutti i vostri dati sono temporanei!)
