@@ -1,10 +1,10 @@
 section{
-  margin-top: 50px;
+  margin-top: 140px;
   flex-grow: 1;
 }
 
 
-form{
+.join-container{
   background-color: #121212;
   padding: 20px;
   border-radius: 7px; /* Riquadro con bordo arrotondato */
@@ -15,29 +15,12 @@ form{
   margin-top: 100px; /* Spazio sopra il form */
 }
 
-label {
+.join-container, .jroom{
   display: block;
   margin-bottom: 15px;
 }
 
-.queue-settings {
-  display: flex; /* Utilizziamo flexbox per allineare gli elementi */
-  align-items: center; /* Allinea gli elementi verticalmente al centro */
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-
-.queue-settings label {
-  margin-left: 10px; /* Aggiungiamo un margine destro per separare il testo dal checkbox */
-}
-.queue-settings input[type="checkbox"] {
-  margin-bottom: 14px;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="password"],
-select {
+input[type="text"]{
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -45,10 +28,6 @@ select {
   border-radius: 5px;
 }
 
-.button-container {
-  display: flex;
-  justify-content: center; /* Allinea il contenuto al centro lungo l'asse principale (orizzontale) */
-}
 
 button[type="submit"] {
   background-color: #1db954;
@@ -65,4 +44,3 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #169c3e;
 }
-

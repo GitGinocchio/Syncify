@@ -1,0 +1,64 @@
+.music-box {
+  width: 300px;
+  background: #333;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.details {
+  margin-bottom: 20px;
+}
+
+.now-playing {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.track-art {
+  width: 100px;
+  height: 100px;
+  background: #555;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.track-name, .track-artist {
+  margin: 5px 0;
+}
+
+.slider_container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.current-time, .total-duration {
+  font-size: 12px;
+}
+
+.seek_slider, .volume_slider {
+  width: 70%;
+  margin: 0 10px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.buttons i {
+  cursor: pointer;
+  color: #fff;
+}

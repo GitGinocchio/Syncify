@@ -6,9 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Syncify</title>
   <link rel="stylesheet" href="/static/default.css" type="text/css">
-  <link rel="stylesheet" href="/static/join.css" type="text/css">
+  <link rel="stylesheet" href="/static/session.css" type="text/css">
+  <script src="session.js"></script>
 </head>
 <body>
+  
   <header>
     <a href="{{ url_for('root') }}">
       <div class="brand">
@@ -24,15 +26,19 @@
       </a>
     </div>
   </header>
-<section>
-  <div class="join-container">
-    <form action="{{ url_for('join') }}" method="post">
-      <h2 class="jroom">Join Room</h2>
-      <input type="text" name="room" placeholder="Room ID" required>
-      <button type="submit">Join</button>
-    </form>
-  </div>
-</section>
+  
+  <section>
+    <h2>Benvenuto nella stanza ' {{ session_name }} ', {{ username }}!</h2>
+  </section>
+
+  <section>
+    <!--
+    {% for song in songs %}}
+    {% endfor %}
+    -->
+    
+  </section>
+  
   <footer>
     <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
   </footer>

@@ -7,6 +7,7 @@
   <title>Syncify</title>
   <link rel="stylesheet" href="/static/default.css" type="text/css">
   <link rel="stylesheet" href="/static/new.css" type="text/css">
+  <script src="/static/new.js"> </script>
 </head>
 <body>
   <header>
@@ -16,7 +17,6 @@
         <h1>Syncify</h1>
       </div>
     </a>
-
     <div class="account">
       <a href=" {{ userurl }}" target="_blank">
         <p class="username"> {{ username }}</p>
@@ -26,51 +26,32 @@
   </header>
   <section>
     <div class="container">
-      <form action="/session" onsubmit="return togglePasswordInput();">
-        <label for="rname">Room name:</label>
-        <input type="text" id="rname" required>
+      <form action="{{ url_for('new') }}" onsubmit="return togglePasswordInput();" method='post'>
+        <label for="name">Room name:</label>
+        <input type="text" id="name" name="name" required>
         
-        <label for="quantity">Maximum number of members:</label>
-        <input type="number" id="quantity" min="1" max="5" value="5">
+        <label for="userlimit">Maximum number of members:</label>
+        <input type="number" id="userlimit" name="userlimit" min="1" max="5" value="5">
         
         <div class="queue-settings">
-          <input type="checkbox" id="modify_queue">
-          <label for="modify_queue">Queue editable by everyone</label>
+          <input type="checkbox" id="editablequeue" name="editablequeue" value=true>
+          <label for="editablequeue">Queue editable by everyone</label>
         </div>
         
         <label for="visibility">Public or private room</label>
-        <select id="visibility" onchange="togglePasswordInput()">
+        <select id="visibility" name="visibility" onchange="togglePasswordInput()">
           <option value="public" selected>Public</option>
           <option value="private">Private</option>
         </select>
         
-        <label id="passwordLabel" style="display:none;">Password: <input type="password" id="passwordInput" name="password"></label>
-  
-        <script>
-          function togglePasswordInput() {
-            var visibilitySelect = document.getElementById("visibility");
-            var passwordLabel = document.getElementById("passwordLabel");
-            var passwordInput = document.getElementById("passwordInput");
-  
-            if (visibilitySelect.value === "private") {
-              passwordLabel.style.display = "block";
-              passwordInput.required = true;
-              if (passwordInput.value === "") {
-                return false; // Impedisce l'invio del modulo se la password è vuota
-              }
-            } else {
-              passwordLabel.style.display = "none";
-            }
-            return true; // Consente l'invio del modulo se la validazione è superata
-          }
-        </script>
+        <label id="passwordLabel" style="display:none;">Password: <input type="password" id="passwordInput"></label>
+        
         <div class="button-container">
           <button type="submit">Create Room</button>
         </div>
       </form>
     </div>
-  </section>  
-  
+  </section>
   <footer>
     <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
   </footer>
