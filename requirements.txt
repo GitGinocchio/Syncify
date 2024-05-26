@@ -2,3 +2,4 @@ flask
 Flask-Session
 spotipy
 gunicorn
+jwt

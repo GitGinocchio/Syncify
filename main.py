@@ -3,12 +3,10 @@ from flask_session import Session as FlaskSession
 from datetime import timedelta
 from flask import Flask
 from hashlib import sha256
-from classes import *
+from utils import *
 import tempfile
 import spotipy
 import os
-
-
 
 scopes = [
     'user-modify-playback-state', 
@@ -149,8 +147,8 @@ def logout():
 @app.route('/api/spotify/v1/endpoint')
 def callback():
     code = request.args.get("code")
-    token = from_dict(Token, Oauth.get_access_token(code))
-    client = spotipy.Spotify(auth=token.access_token)
+    response = Oauth.get_access_token(code,check_cache=False)
+    client = spotipy.Spotify(auth=(token:=Token(**response)).access_token)
     data = client.current_user()
 
     sha256_hash = sha256()
