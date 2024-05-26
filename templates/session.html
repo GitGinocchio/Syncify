@@ -7,7 +7,6 @@
   <title>Syncify</title>
   <link rel="stylesheet" href="/static/default.css" type="text/css">
   <link rel="stylesheet" href="/static/session.css" type="text/css">
-  <script src="session.js"></script>
 </head>
 <body>
   
@@ -20,24 +19,36 @@
     </a>
 
     <div class="account">
-      <a href="{{ userurl }}" target="_blank">
-        <p class="username"> {{ username }}</p>
-        <img src="{{ userimage }}" alt="account icon" class="account-icon">
+      <a href="{{ user.url }}" target="_blank">
+        <p class="username"> {{ user.name }}</p>
+        <img src="{{ user.image }}" alt="account icon" class="account-icon">
       </a>
     </div>
-  </header>
+  </header> 
   
-  <section>
-    <h2>Benvenuto nella stanza ' {{ session_name }} ', {{ username }}!</h2>
+  <section class="sub-header">
+    <h2>Welcome to the session "{{ session.name }}", <i>{{ user.name }}</i>!</h2>
+    <div class="user-box">
+      <p>Session's member:</p>
+      <ul>
+        {% for user in users %}
+          <li>{{ user.name }}</li>
+        {% endfor %}
+      </ul>
+      
+    </div>
   </section>
-
-  <section>
+  <div class="button-id">
+    <input type="checkbox" id="copy-id">
+    <label for="copy-id">Invite</label>
+  </div>
     <!--
     {% for song in songs %}}
     {% endfor %}
     -->
-    
-  </section>
+  <div class="button-leave">
+    <a class="button" href="/session/{{ session.id }}/leave">Leave</a>
+  </div>
   
   <footer>
     <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>

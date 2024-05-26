@@ -1,10 +1,14 @@
 from flask import make_response, redirect, render_template, request, session, url_for, flash
-from functools import wraps
+from flask_session import Session as FlaskSession
+from datetime import timedelta
 from flask import Flask
-import requests
+from hashlib import sha256
+from classes import *
+import tempfile
 import spotipy
-import uuid
 import os
+
+
 
 scopes = [
     'user-modify-playback-state', 
@@ -17,154 +21,160 @@ CLIENT_ID = os.environ["SPOTIPY_CLIENT_ID"]
 REDIRECT_URI = os.environ["SPOTIPY_REDIRECT_URI"]
 
 Oauth = spotipy.SpotifyOAuth(scope=scopes)
-
-
-
 app = Flask(__name__)
+
 app.config['SESSION_COOKIE_NAME'] = 'Syncify Cookies'
 app.secret_key = os.urandom(32)
 
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp()
+
+FlaskSession(app)
+
+# Contiene le sessioni condivise con gli altri utenti
+shared_sessions = {}
+
 def has_login():
-    tempid = request.cookies.get('tempid')
-    if tempid and tempid in session:
-        return tempid
+    userid = request.cookies.get('userid')
+    if userid and str(userid) in session:
+        return userid
     else:
         return None
 
-def is_token_expired(tempid : int):
-    return Oauth.is_token_expired(session[tempid]['user'])
-
-def require_login(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        tempid = has_login()
-        if not tempid: return redirect('/')
-
-        if is_token_expired(tempid):
-            session[tempid] = Oauth.refresh_access_token(session[tempid]['user']['refresh_token'])
-        client = spotipy.Spotify(auth=session[tempid]['user']['access_token'])
-        
-        return f(client,tempid, *args, **kwargs)
-    return wrapper
+def is_token_expired(userid : int):
+    return Oauth.is_token_expired(session[userid].token.access_token)
 
 #Root per la pagina index del sito
 @app.route('/')
 def root():
-    tempid = has_login()
-    if tempid and tempid in session:
+    userid = has_login()
+    if userid and userid in session:
         return redirect('/user')
     else:
         return render_template('login.html')
 
 #Root per la sezione dell'utente dopo che ha eseguito l'accesso
 @app.route("/user")
-@require_login
-def user(client : spotipy.Spotify, tempid : int):
-    data = client.current_user()
+def user():
+    userid = has_login()
+    if not userid: return redirect('/')
 
-    #flash(f'Benvenuto {data["display_name"]}!')
+    print(session[userid])
 
-    if not len(data['images']) > 0:
-        image = f"https://ui-avatars.com/api/?name={data['display_name']}&length=1&color=1db954&background=3333&bold=true"
-    else:
-        image = data['images'][0]['url']
-    
-    return render_template("user.html",
-                           userimage=image,
-                           username=data['display_name'],
-                           userurl=data['external_urls']['spotify'])
+    return render_template('user.html',user=session[userid])
 
 #Root per la creazione di una sessione di ascolto dopo che l'utente ha eseguito l'accesso
 @app.route("/new",methods=["POST","GET"])
-@require_login
-def new(client : spotipy.Spotify, tempid : int):
+def new():
+    userid = has_login()
+    if not userid: return redirect('/')
+
     if request.method == 'POST':
-        roomname = request.form.get('name')
-        userlimit = request.form.get('userlimit')
-        editablequeue = request.form.get('editablequeue')
-        visibility = request.form.get('visibility')
+        if session[userid].session:
+            if session[userid].session.id in shared_sessions:
+                del shared_sessions[session[userid].session.id]
+            session[userid].session = None
+            
+        roomname = request.form.get('name',"{Name}")
+        userlimit = int(request.form.get('userlimit',5))
+        editablequeue = request.form.get('editablequeue',False)
+        visibility = request.form.get('visibility',"public")
 
-        print(roomname, userlimit, editablequeue, visibility)
+        musicsession = Session()
+        musicsession.name = roomname
+        musicsession.creator = session[userid]
+        musicsession.userlimit = userlimit
+        musicsession.editablequeue = True if editablequeue else False
+        musicsession.visibility = visibility
+        
+        
+        session[userid].session = musicsession
+        if musicsession.visibility == "public":
+            shared_sessions[musicsession.id] = musicsession
 
-        sessionid = uuid.uuid4().hex[:6]
-        session[tempid]['session'] = {
-                                      "id" : sessionid,
-                                      "name":roomname, 
-                                      "userlimit":userlimit, 
-                                      "editablequeue": True if editablequeue else False, 
-                                      "visibility":visibility
-                                     }
-
-        return redirect(f'/session/{sessionid}')
+        return redirect(f'/session/{musicsession.id}')
     else:
-        data = client.current_user()
+        return render_template('new.html',user=session[userid])
 
-        if not len(data['images']) > 0:
-            image = f"https://ui-avatars.com/api/?name={data['display_name']}&length=1&color=1db954&background=3333&bold=true"
-        else:
-            image = data['images'][0]['url']
-
-        return render_template('new.html',
-                               userimage=image,
-                               username=data['display_name'],
-                               userurl=data['external_urls']['spotify'])
-
-@app.route("/join")
-@require_login
-def join(client : spotipy.Spotify, tempid : int):
-    data = client.current_user()
-
-    if not len(data['images']) > 0:
-        image = f"https://ui-avatars.com/api/?name={data['display_name']}&length=1&color=1db954&background=3333&bold=true"
+@app.route("/join",methods=["POST","GET"])
+def join():
+    userid = has_login()
+    if not userid: return redirect('/')
+    if request.method == 'POST':
+        return redirect(f"/session/{request.form.get('session')}")
     else:
-        image = data['images'][0]['url']
-
-    return render_template("join.html",
-                           userimage=image,
-                           username=data['display_name'],
-                           userurl=data['external_urls']['spotify'])
+        return render_template('join.html',user=session[userid],sessions=shared_sessions)
 
 @app.route("/session/<sessionid>")
-@require_login
-def routesession(client : spotipy.Spotify, tempid : int, sessionid : str):
-    data = client.current_user()
+def routesession(sessionid : str):
+    userid = has_login()
+    if not userid: return redirect('/')
+    if not sessionid in shared_sessions:
+        if sessionid == session[userid].session.id:
+            shared_sessions[sessionid] = session[userid].session
+        else: 
+            return redirect('/')
+    
+    return render_template('session.html',user=session[userid], session=shared_sessions[sessionid])
 
-    if not len(data['images']) > 0:
-        image = f"https://ui-avatars.com/api/?name={data['display_name']}&length=1&color=1db954&background=3333&bold=true"
-    else:
-        image = data['images'][0]['url']
+@app.route("/session/<sessionid>/leave")
+def leavesession(sessionid : str):
+    userid = has_login()
+    if not userid: return redirect('/')
 
-    return render_template('session.html',
-                           userimage=image,
-                           username=data['display_name'],
-                           userurl=data['external_urls']['spotify'])
+    if sessionid == session[userid].session.id:
+        del shared_sessions[sessionid]
+        session[userid].session = None
+    return redirect('/')
 
 #Root che reinderizza alla pagina di spotify per l'autentificazione
 @app.route('/login')
 def login(): 
     return redirect(Oauth.get_authorize_url())
-
+#Root che reinderizza alla pagina di spotify per l'accesso
 #(Utilizzo solo in development) Root che gestisce il logout dell'account attualmente registrato
 @app.route('/logout')
 def logout():
     response = make_response(redirect('/'))
-    tempid = has_login()
-    if tempid:
-        response.set_cookie('tempid', '', expires=0)
+    userid = has_login()
+    if userid: response.set_cookie('userid', '', expires=0)
 
-    if tempid in session: del session[tempid]
+    if userid in session: del session[userid]
     return response
 
 #Root a cui viene reinderizzato l'utente se ha completato con successo l'autentificazione con spotify
 @app.route('/api/spotify/v1/endpoint')
 def callback():
     code = request.args.get("code")
-    token_info = Oauth.get_access_token(code)
+    token = from_dict(Token, Oauth.get_access_token(code))
+    client = spotipy.Spotify(auth=token.access_token)
+    data = client.current_user()
 
-    id = uuid.uuid4()
-    session[str(id)] = {"user" : token_info, "session" : None}
+    sha256_hash = sha256()
+    sha256_hash.update(data['id'].encode('utf-8'))
+    userid = sha256_hash.hexdigest()
+
+    if not userid in session:
+        user = User()
+        user.id = userid
+        user.token = token
+        user.name = data['display_name']
+        user.url = data['external_urls']['spotify']
+        
+        if not len(data['images']) > 0:
+            user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=1db954&background=3333&bold=true"
+        else:
+            user.image = data['images'][0]['url']
+        
+        session[user.id] = user
+
+    print(session[userid])
+    
     response = make_response(redirect('/user'))
-    response.set_cookie('tempid', str(id), max_age=86400, secure=True)  #24 ore
+    response.set_cookie('userid', userid, max_age=86400, secure=True)  #24 ore
 
     return response
 

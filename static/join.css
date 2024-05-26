@@ -1,33 +1,88 @@
-section{
-  margin-top: 140px;
+section {
+  margin-top: 150px;
   flex-grow: 1;
 }
 
-
-.join-container{
+.join-private-session {
   background-color: #121212;
   padding: 20px;
-  border-radius: 7px; /* Riquadro con bordo arrotondato */
-  border: 3px solid #333; /* Bordo nero */
+  border-radius: 7px;
+  border: 3px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 400px; /* Larghezza massima del form */
-  margin: 0 auto; /* Centro del form nella pagina */
-  margin-top: 100px; /* Spazio sopra il form */
-}
-
-.join-container, .jroom{
+  max-width: 400px;
+  margin: 0 auto;
   display: block;
-  margin-bottom: 15px;
+  margin-bottom: 25px;
+}
+.priv-session-title{
+  margin-bottom: 20px;
 }
 
-input[type="text"]{
+.pubblic-sessions {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #1b1e1f;
+  border-radius: 10px;
+  background-color: #1b1e1f;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap; /* Aggiunto per far avvolgere le card */
+  justify-content: center;
+  gap: 20px;
+}
+
+
+.pubblic-sessions h2 {
+  width: 100%;
+  text-align: center;
+  color: #b4b1a8;
+}
+
+.session {
+  border: 1px solid #1b1e1f;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: #111212;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  flex: 1 0 250px;
+  max-width: 300px;
+}
+
+.session p {
+  margin: 5px 0;
+  color: #b4b1a8;
+}
+
+.session a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #007BFF;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.session a:hover {
+  background-color: #0056b3;
+}
+
+.pubblic-sessions p {
+  text-align: center;
+  color: #888;
+  font-size: 1.2em;
+  margin-top: 20px;
+}
+
+input[type="text"] {
   width: 100%;
   padding: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 7px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 
 button[type="submit"] {
   background-color: #1db954;
@@ -38,7 +93,7 @@ button[type="submit"] {
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
-  margin-top: 12px; /* Aggiungiamo un margine superiore per separare il bottone dagli altri elementi */
+  margin-top: 12px;
 }
 
 button[type="submit"]:hover {

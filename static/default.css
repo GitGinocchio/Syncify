@@ -11,7 +11,7 @@ body {
   flex-direction: column;
   height: 100vh; /* Imposta l'altezza del body a 100% della viewport */
   font-family: Arial, sans-serif, Lato;
-  background-color: #121212; /* Grigio chiaro */
+  background-color: #0e0e0e; /* Grigio */
   color: white;
 }
 

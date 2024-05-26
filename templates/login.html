@@ -16,7 +16,7 @@
       </a>
 
       <div class="account">
-        <a href="/login"><img src="/static/images/account.png" alt="account icon" class="account-icon"></a>
+        <a href="{{ url_for('login') }}"><img src="/static/images/account.png" alt="account icon" class="account-icon"></a>
       </div>
     </header>
 
@@ -24,7 +24,7 @@
       <h1 class="motto">Sync Your Music Seamlessly</h1>
       <p>Welcome to Syncify.<br>This site will allow you to listen to music with your friends simultaneously.<br>First log in with your Spotify account!</p>
       <div class="button">
-        <a href="/login">Get Started</a>
+        <a href="{{ url_for('login') }}">Get Started</a>
       </div>
     </div>
     
