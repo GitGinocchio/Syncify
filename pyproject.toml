@@ -13,6 +13,7 @@ config = "^0.5.1"
 requests = "^2.32.2"
 flask-session = "^0.8.0"
 redis = "^5.0.4"
+jwcrypto = "^1.5.6"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md

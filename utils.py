@@ -43,28 +43,3 @@ class User:
 	session: Session = None
 	id: str = None
 
-key = jwk.JWK(k=os.environ['JWT_SECRET_KEY'],kty='oct')
-
-def createtoken(payload : dict | str, exp : timedelta):
-	expdate = (datetime.now(timezone.utc) + exp).timestamp()
-	if isinstance(payload,dict): payload['exp'] = expdate
-	else: payload = {'str': payload, 'exp' : expdate}
-	token = jwt.JWT(header={"alg": "HS256"},claims=payload)
-	token.make_signed_token(key)
-	return token.serialize()
-
-def verifytoken(token : str):
-	try:
-		payload = jwt.JWT(key=key,jwt=token)
-		claims = dict(json.loads(payload.claims))
-		exp = claims['exp']
-		if exp and datetime.now(timezone.utc).timestamp() > exp:
-			raise jwt.JWTExpired("Token has expired")
-		claims.pop('exp')
-
-		claim = claims.get('str')
-		if claim: return claim
-		return claims
-	except (jwt.JWTExpired,jwt.JWTInvalidClaimValue):
-		return None
-

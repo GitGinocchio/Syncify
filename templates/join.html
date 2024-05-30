@@ -35,23 +35,16 @@
   <div class="pubblic-sessions">
       <h2>Public Sessions</h2>
       {% if sessions %}
-        {% set session_count = 0 %}
         {% for key, session in sessions.items() %}
-          {% if session.creator.id != user.id %}
-            <div class="session">
-              <p>{{ session.name }}</p>
-              <p>Max members: {{ session.userlimit }}</p>
-              <p>Editable queue: {{ session.editablequeue }}</p>
-              <p>Created by: {{ session.creator.name }}</p>
-              <p>Created at: {{ session.createdate }}</p>
-              <a href="/session/{{ session.id }}">Join</a>
-            </div>
-            {% set session_count = session_count + 1 %}
-          {% endif %}
+          <div class="session">
+            <p>{{ session.name }}</p>
+            <p>Max members: {{ session.userlimit }}</p>
+            <p>Editable queue: {{ session.editablequeue }}</p>
+            <p>Created by: {{ session.creator.name }}</p>
+            <p>Created at: {{ session.createdate }}</p>
+            <a href="/session/{{ session.id }}">Join</a>
+          </div>
         {% endfor %}
-        {% if session_count == 0 %}
-          <p>There are no existing public sessions!</p>
-        {% endif %}
       {% else %}
         <p>There are no existing public sessions!</p>
       {% endif %}

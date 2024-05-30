@@ -3,6 +3,7 @@ from flask_session import Session as FlaskSession
 from datetime import timedelta
 from flask import Flask
 from hashlib import sha256
+from functools import wraps
 from utils import *
 import tempfile
 import spotipy
@@ -28,53 +29,52 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp()
+#app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp()
 
 FlaskSession(app)
 
 # Contiene le sessioni condivise con gli altri utenti
-shared_sessions = {}
+shared = {'rooms' : {}}
 
-def has_login():
+def haslogin():
     userid = request.cookies.get('userid')
-    if userid and str(userid) in session:
-        return userid
+    if userid:
+        return userid == session.get('userid')
     else:
-        return None
+        return False
 
-def is_token_expired(userid : int):
-    return Oauth.is_token_expired(session[userid].token.access_token)
+def requirelogin(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not (haslogin()): return redirect('/')
+        return f(*args, **kwargs)
+    return wrapper
+
+def is_token_expired():
+    return Oauth.is_token_expired(session['user'].token.access_token)
 
 #Root per la pagina index del sito
 @app.route('/')
 def root():
-    userid = has_login()
-    if userid and userid in session:
+    if haslogin():
         return redirect('/user')
     else:
         return render_template('login.html')
 
 #Root per la sezione dell'utente dopo che ha eseguito l'accesso
 @app.route("/user")
+@requirelogin
 def user():
-    userid = has_login()
-    if not userid: return redirect('/')
-
-    print(session[userid])
-
-    return render_template('user.html',user=session[userid])
+    return render_template('user.html',user=session['user'])
 
 #Root per la creazione di una sessione di ascolto dopo che l'utente ha eseguito l'accesso
 @app.route("/new",methods=["POST","GET"])
+@requirelogin
 def new():
-    userid = has_login()
-    if not userid: return redirect('/')
-
     if request.method == 'POST':
-        if session[userid].session:
-            if session[userid].session.id in shared_sessions:
-                del shared_sessions[session[userid].session.id]
-            session[userid].session = None
+        if session['user'].session and session['user'].session.id in shared['rooms']:
+            del shared['rooms'][session['user'].session.id] 
+        session['user'].session = None
             
         roomname = request.form.get('name',"{Name}")
         userlimit = int(request.form.get('userlimit',5))
@@ -83,49 +83,47 @@ def new():
 
         musicsession = Session()
         musicsession.name = roomname
-        musicsession.creator = session[userid]
+        musicsession.creator = session['user']
         musicsession.userlimit = userlimit
         musicsession.editablequeue = True if editablequeue else False
         musicsession.visibility = visibility
         
         
-        session[userid].session = musicsession
+        session['user'].session = musicsession
         if musicsession.visibility == "public":
-            shared_sessions[musicsession.id] = musicsession
+            shared['rooms'][musicsession.id] = musicsession
 
         return redirect(f'/session/{musicsession.id}')
     else:
-        return render_template('new.html',user=session[userid])
+        return render_template('new.html',user=session['user'])
 
 @app.route("/join",methods=["POST","GET"])
+@requirelogin
 def join():
-    userid = has_login()
-    if not userid: return redirect('/')
     if request.method == 'POST':
         return redirect(f"/session/{request.form.get('session')}")
     else:
-        return render_template('join.html',user=session[userid],sessions=shared_sessions)
-
+        return render_template(
+            'join.html',
+            user=session['user'],
+            sessions=dict(filter(
+                lambda item: item[0] != (session['user'].session.id if session['user'].session else None), 
+                shared['rooms'].items()))
+        )
 @app.route("/session/<sessionid>")
+@requirelogin
 def routesession(sessionid : str):
-    userid = has_login()
-    if not userid: return redirect('/')
-    if not sessionid in shared_sessions:
-        if sessionid == session[userid].session.id:
-            shared_sessions[sessionid] = session[userid].session
-        else: 
-            return redirect('/')
+    if sessionid not in shared['rooms'] and session['user'].session and sessionid != session['user'].session.id:
+        return redirect('/')
     
-    return render_template('session.html',user=session[userid], session=shared_sessions[sessionid])
+    return render_template('session.html',user=session['user'], session=shared['rooms'][sessionid])
 
 @app.route("/session/<sessionid>/leave")
+@requirelogin
 def leavesession(sessionid : str):
-    userid = has_login()
-    if not userid: return redirect('/')
-
-    if sessionid == session[userid].session.id:
-        del shared_sessions[sessionid]
-        session[userid].session = None
+    if sessionid == session['user'].session.id:
+        del shared['rooms'][sessionid]
+        session['user'].session = None
     return redirect('/')
 
 #Root che reinderizza alla pagina di spotify per l'autentificazione
@@ -137,10 +135,9 @@ def login():
 @app.route('/logout')
 def logout():
     response = make_response(redirect('/'))
-    userid = has_login()
-    if userid: response.set_cookie('userid', '', expires=0)
-
-    if userid in session: del session[userid]
+    if session['userid']: response.set_cookie('userid', '', expires=0)
+    session.clear()
+    
     return response
 
 #Root a cui viene reinderizzato l'utente se ha completato con successo l'autentificazione con spotify
@@ -151,30 +148,31 @@ def callback():
     client = spotipy.Spotify(auth=(token:=Token(**response)).access_token)
     data = client.current_user()
 
-    sha256_hash = sha256()
-    sha256_hash.update(data['id'].encode('utf-8'))
-    userid = sha256_hash.hexdigest()
-
-    if not userid in session:
-        user = User()
-        user.id = userid
-        user.token = token
-        user.name = data['display_name']
-        user.url = data['external_urls']['spotify']
-        
-        if not len(data['images']) > 0:
-            user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=1db954&background=3333&bold=true"
-        else:
-            user.image = data['images'][0]['url']
-        
-        session[user.id] = user
-
-    print(session[userid])
+    if data is not None:
+        sha256_hash = sha256()
+        sha256_hash.update(data['id'].encode('utf-8'))
+        userid = sha256_hash.hexdigest()
     
-    response = make_response(redirect('/user'))
-    response.set_cookie('userid', userid, max_age=86400, secure=True)  #24 ore
-
-    return response
+        if 'user' not in session:
+            user = User()
+            user.id = userid
+            user.token = token
+            user.name = data['display_name']
+            user.url = data['external_urls']['spotify']
+            
+            if not len(data['images']) > 0:
+                user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=1db954&background=3333&bold=true"
+            else:
+                user.image = data['images'][0]['url']
+            
+            session['user'] = user
+            session['userid'] = user.id
+        
+        response = make_response(redirect('/user'))
+        response.set_cookie('userid', userid, max_age=86400, secure=True)  #24 ore
+        return response
+    else:
+        return redirect('/')
 
 # Routes only for development
 @app.route('/dev/template')
