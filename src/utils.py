@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from flask import request, session, redirect
+from functools import wraps
+from .oauth import Oauth
 import uuid
 
 @dataclass
@@ -20,7 +22,7 @@ class Token:
 	scope: str
 
 @dataclass
-class Session:
+class Room:
 	name: str = None
 	userlimit: int = 5
 	creator: 'User' = None
@@ -41,7 +43,7 @@ class User:
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
 	token: Token = None
-	session: Session = None
+	room: Room = None
 	id: str = field(default_factory=str,init=False)
 
 	def __eq__(self, other):
@@ -55,3 +57,19 @@ class Message:
 	sender_id : str
 	text : str = None
 
+def haslogin():
+    userid = request.cookies.get('userid')
+    if userid:
+        return userid == session.get('userid')
+    else:
+        return False
+
+def requirelogin(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not haslogin(): return redirect('/')
+        return f(*args, **kwargs)
+    return wrapper
+
+def is_token_expired():
+    return Oauth.is_token_expired(session['user'].token.access_token)

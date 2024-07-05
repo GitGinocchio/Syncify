@@ -21,7 +21,7 @@
 </head>
 <body>
   <header>
-    <a href="{{ url_for('root') }}">
+    <a href="/">
       <div class="brand">
         <img src="/static/images/icon.png" alt="account icon" class="account-icon">
         <h1>Syncify</h1>
@@ -34,40 +34,40 @@
         <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
         <div class="dropdown-menu" id="dropdown-menu">
           <a href="{{ user.url }}" target="_blank">Profile</a>
-          <a href="{{ url_for('logout') }}">Logout</a>
+          <a href="/logout">Logout</a>
         </div>
       </div>
     </div>
   </header>
   <section>
   <div class="join-private-session">
-    <form action="{{ url_for('join') }}" method="post">
+    <form action="/join" method="post">
       <h2 class="priv-session-title"">Join a private session</h2>
-      <input type="text" name="session" id="session" placeholder="Session ID" required>
+      <input type="text" name="room" id="room" placeholder="Room ID" required>
       <button type="submit">Join</button>
     </form>
   </div>
   <div class="pubblic-sessions">
       <h2>Public Sessions</h2>
-      {% if sessions %}
-        {% for key, session in sessions.items() %}
+      {% if rooms %}
+        {% for key, room in rooms.items() %}
           <div class="session">
             <div class="headerS">
-              <p class="session-name"">{{ session.name }}</p>
-              <p class="session-creator">Created by: {{ session.creator.name }}</p>
+              <p class="session-name"">{{ room.name }}</p>
+              <p class="session-creator">Created by: {{ room.creator.name }}</p>
             </div>
             <div class="infoplusS">
-              <p class="session-queue">Editable queue: {{ session.editablequeue }}</p>
-              <p class="session-creationtime">Created at: {{ session.createdate }}</p>
+              <p class="session-queue">Editable queue: {{ room.editablequeue }}</p>
+              <p class="session-creationtime">Created at: {{ room.createdate }}</p>
             </div>
             <div class="footerS">
-              <a class="session-join" href="/session/{{ session.id }}">Join</a>
-              <p class="session-members">{{ session.num_members }} / {{ session.userlimit }} Members</p>
+              <a class="session-join" href="/room/{{ room.id }}">Join</a>
+              <p class="session-members">{{ room.num_members }} / {{ room.userlimit }} Members</p>
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <p class="nosession">There are no existing public sessions!</p>
+        <p class="nosession">There are no existing public rooms!</p>
       {% endif %}
   </div>
 </section>
