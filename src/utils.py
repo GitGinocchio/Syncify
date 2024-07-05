@@ -1,7 +1,6 @@
 from dataclasses import dataclass, field
 from flask import request, session, redirect
 from functools import wraps
-from .oauth import Oauth
 import uuid
 
 @dataclass
@@ -70,6 +69,3 @@ def requirelogin(f):
         if not haslogin(): return redirect('/')
         return f(*args, **kwargs)
     return wrapper
-
-def is_token_expired():
-    return Oauth.is_token_expired(session['user'].token.access_token)

@@ -59,16 +59,3 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 });
-
-// Funzione per copiare il link negli appunti
-function copia() {
-    var input = document.createElement('input');
-    var url = window.location.href;
-    input.setAttribute('value', url);
-    document.body.appendChild(input);
-    input.select();
-    var risultato = document.execCommand('copy');
-    document.body.removeChild(input);
-    alert('Link copiato!');
-    return risultato;
-}
