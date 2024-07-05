@@ -94,7 +94,7 @@ def join():
     if request.method == 'POST':
         roomid = request.form.get('room')
         session['user'].room = shared['rooms'][roomid]
-        return redirect(f"/session/{roomid}")
+        return redirect(f"/room/{roomid}")
     else:
         if session['user'].room: return redirect('/user')
         

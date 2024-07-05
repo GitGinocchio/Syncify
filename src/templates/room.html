@@ -6,25 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Syncify</title>
   <link rel="stylesheet" href="/static/default.css" type="text/css">
-  <link rel="stylesheet" href="/static/session.css" type="text/css">
+  <link rel="stylesheet" href="/static/room.css" type="text/css">
   <link rel='icon' href="/static/images/icon.png">
-  <script src="session.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+  <script src="/static/room.js"></script>
   <script>
-      document.addEventListener('DOMContentLoaded', (event) => {
-        const socket = io('/session');
-        
+    function copyurl() {
+        var input = document.createElement('input');
+        var url = window.location.href;
+        input.setAttribute('value', url);
+        document.body.appendChild(input);
+        input.select();
+        var risultato = document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('Link copiato!');
+        return risultato;
+    }
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const socket = io('/room');
+
         const messageInput = document.getElementById('message-input');
         const messagesContainer = document.getElementById('messages');
         const sendMessageButton = document.getElementById('send-message');
-  
+
         // Gestisci l'evento 'update' ricevuto dal server
-        socket.on('refresh_session', function() {
+        socket.on('refresh_room', function() {
             console.log('Received update signal, reloading page...');
             window.location.reload(true);  // Ricarica la pagina
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
-  
+
         // Gestione del clic sul pulsante di invio
         sendMessageButton.addEventListener('click', () => {
             const message = messageInput.value;
@@ -34,13 +46,13 @@
                                                userid: '{{ user.id }}',
                                                userurl: '{{ user.url }}',
                                                userimage: '{{ user.image }}',
-                                               sessionid: '{{ session.id }}'}
+                                               roomid: '{{ room.id }}'}
                            );
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 messageInput.value = '';
             }
         });
-  
+
         // Gestione della pressione del tasto Enter
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -48,26 +60,13 @@
                 sendMessageButton.click();
             }
         });
-
-        // Funzione per copiare il link negli appunti
-        function copyurl() {
-            var input = document.createElement('input');
-            var url = window.location.href;
-            input.setAttribute('value', url);
-            document.body.appendChild(input);
-            input.select();
-            var risultato = document.execCommand('copy');
-            document.body.removeChild(input);
-            alert('Link copiato!');
-            return risultato;
-        }
-      });
+    });
   </script>
 </head>
 <body>
   
   <header>
-    <a href="{{ url_for('root') }}">
+    <a href="/">
       <div class="brand">
         <img src="/static/images/icon.png" alt="account icon" class="account-icon">
         <h1>Syncify</h1>
@@ -80,14 +79,14 @@
         <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
         <div class="dropdown-menu" id="dropdown-menu">
           <a href="{{ user.url }}" target="_blank">Profile</a>
-          <a href="{{ url_for('logout') }}">Logout</a>
+          <a href="/logout">Logout</a>
         </div>
       </div>
     </div>
   </header> 
   <div class="container1">
     <div class="sub-header">
-      <h2><i>{{ user.name }}</i>, welcome to the session "{{ session.name }}"!</h2>
+      <h2><i>{{ user.name }}</i>, welcome to the room "{{ room.name }}"!</h2>
     </div>
   </div>
   <div class="main-container">
@@ -95,7 +94,7 @@
     <div class="user-box">
       <p>Session's member:</p>
       <ul>
-        {% for member in session.members %}
+        {% for member in room.members %}
           <li>{{ member.name }}</li>
         {% endfor %}
       </ul>
@@ -104,7 +103,7 @@
           <button class="button" onclick="copyurl()">Invite</button>
         </div>
         <div class="button-leave">
-          <a class="button" href="/session/{{ session.id }}/leave">Leave</a>
+          <a class="button" href="/room/{{ room.id }}/leave">Leave</a>
         </div>
       </div>
     </div>
@@ -114,7 +113,7 @@
         <div class="logo">Chatroom</div>
       </div>
       <div class="messages" id="messages">
-        {% for message in session.chat %}
+        {% for message in room.chat %}
           {% if message.sender_id == user.id %}
             <div class="message my-message">
           {% elif message.sender_name != "system" %}

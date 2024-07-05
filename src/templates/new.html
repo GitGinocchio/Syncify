@@ -43,7 +43,7 @@
           <label for="editablequeue">Queue editable by everyone</label>
         </div>
 
-        <label for="visibility">Public or Private room</label>
+        <label for="visibility">Room Visibility</label>
         <select id="visibility" name="visibility" onchange="togglePasswordInput()">
           <option value="public" selected>Public</option>
           <option value="private">Private</option>
@@ -60,24 +60,7 @@
   </footer>
 
   <script>
-    // JavaScript per mostrare/nascondere il menu a tendina
-    document.getElementById('profile-icon').addEventListener('click', function() {
-      const menu = document.getElementById('dropdown-menu');
-      menu.classList.toggle('show');
-    });
 
-    // Nascondi il menu quando si clicca fuori
-    window.onclick = function(event) {
-      if (!event.target.matches('.account-icon')) {
-        const dropdowns = document.getElementsByClassName('dropdown-menu');
-        for (let i = 0; i < dropdowns.length; i++) {
-          const openDropdown = dropdowns[i];
-          if (openDropdown.classList.contains('show')) {
-            openDropdown.classList.remove('show');
-          }
-        }
-      }
-    }
   </script>
 </body>
 </html>
