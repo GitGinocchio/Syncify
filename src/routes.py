@@ -147,7 +147,7 @@ def leave(roomid : str):
 @blueprint.route('/logout')
 def logout():
     response = make_response(redirect('/'))
-    if session['userid']: response.set_cookie('userid', '', expires=0)
+    if 'userid' in session: response.set_cookie('userid', '', expires=0)
     session.clear()
 
     return response
