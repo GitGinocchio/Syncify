@@ -5,6 +5,7 @@
     <title>Syncify</title>
     <link rel="stylesheet" href="/static/default.css" type="text/css">
     <link rel="stylesheet" href="/static/login.css" type="text/css">
+    <link rel='icon' href="/static/images/icon.png">
   </head>
   <body>
     <header>
@@ -16,7 +17,10 @@
       </a>
 
       <div class="account">
-        <a href="{{ url_for('login') }}"><img src="/static/images/account.png" alt="account icon" class="account-icon"></a>
+        <a href="{{ url_for('login') }}">
+          <p class=username> Login </p>
+          <img src="/static/images/account.png" alt="account icon" class="account-icon">
+        </a>
       </div>
     </header>
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syncify</title>
+    <link rel="stylesheet" href="/static/default.css" type="text/css">
+    <link rel="stylesheet" href="/static/user.css" type="text/css">
+    <link rel='icon' href="/static/images/icon.png">
+  </head>
+  <body>
+    <header>
+      <a href="{{ url_for('root') }}">
+        <div class="brand">
+          <img src="/static/images/icon.png" alt="account icon" class="account-icon">
+          <h1>Syncify</h1>
+        </div>
+      </a>
+      
+      <div class="account">
+        <div class="profile-container">
+          <p class=username>{{ user.name }}</p>
+          <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+          <div class="dropdown-menu" id="dropdown-menu">
+            <a href="{{ user.url }}" target="_blank">Profile</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+          </div>
+        </div>
+      </div>
+    </header>
+     
+    <div class="container">
+      {% if user.session %}
+      <a class="button" href="/session/{{ user.session.id }}">Current Session</a>
+      <a class="button" href="/session/{{ user.session.id }}/leave">Leave Session</a>
+      {% else %}
+      <a class="button" href="{{ url_for('new') }}">Create a session</a>
+      <a class="button" href="{{ url_for('join') }}">Join a session</a>
+      {% endif %}
+    </div>
+
+    <footer>
+      <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
+    </footer>
+
+    <script>
+      // JavaScript per mostrare/nascondere il menu a tendina
+      document.getElementById('profile-icon').addEventListener('click', function() {
+        const menu = document.getElementById('dropdown-menu');
+        menu.classList.toggle('show');
+      });
+
+      // Nascondi il menu quando si clicca fuori
+      window.onclick = function(event) {
+        if (!event.target.matches('.account-icon')) {
+          const dropdowns = document.getElementsByClassName('dropdown-menu');
+          for (let i = 0; i < dropdowns.length; i++) {
+            const openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

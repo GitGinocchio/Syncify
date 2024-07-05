@@ -1,6 +1,9 @@
 section {
   margin-top: 150px;
-  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px; /* Spazio tra i due blocchi */
 }
 
 .join-private-session {
@@ -10,71 +13,95 @@ section {
   border: 3px solid #333;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 400px;
-  margin: 0 auto;
-  display: block;
   margin-bottom: 25px;
 }
-.priv-session-title{
+
+.priv-session-title {
   margin-bottom: 20px;
 }
 
 .pubblic-sessions {
-  width: 80%;
-  margin: 0 auto;
+  width: 50%; /* Puoi regolare la larghezza come preferisci */
   padding: 20px;
   border: 1px solid #1b1e1f;
   border-radius: 10px;
   background-color: #1b1e1f;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  order: -1; /* Questa proprietà sposta .pubblic-sessions a sinistra */
+}
+
+.pubblic-sessions .session-name{
+  font-size: 27px;
+}
+
+.session-name {
+  font-size: 27px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #169c3e;
+}
+
+.pubblic-sessions h2 {
+  text-align: center;
+  color: #b4b1a8;
+  padding-bottom: 10px;
+}
+
+.nosession{
+  text-align: center;
+}
+
+.headerS{
   display: flex;
-  flex-wrap: wrap; /* Aggiunto per far avvolgere le card */
-  justify-content: center;
+  justify-content: space-between
+}
+
+.infoplusS {
+    width: fit-content; /* Adatta la larghezza del contenitore al suo contenuto */
+
+}
+.infoplusS p {
+    margin: 0 0 10px 0; /* Aggiunge margine inferiore per spaziatura tra i paragrafi */
+}
+
+.footerS{
+  display: flex;
   gap: 20px;
 }
 
-
-.pubblic-sessions h2 {
-  width: 100%;
-  text-align: center;
-  color: #b4b1a8;
+.footerS p{
+  align-content: center;
 }
 
 .session {
+  position: relative;
   border: 1px solid #1b1e1f;
   border-radius: 8px;
   padding: 15px;
   background-color: #111212;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  flex: 1 0 250px;
-  max-width: 300px;
+  margin-bottom: 20px; /* Spazio tra le sessioni */
 }
 
-.session p {
-  margin: 5px 0;
-  color: #b4b1a8;
+.session-creator{
+  align-content: center;
 }
 
 .session a {
   display: inline-block;
-  margin-top: 10px;
   padding: 10px 20px;
-  color: #fff;
-  background-color: #007BFF;
+  color: #000;
+  font-weight: bold;
+  background-color: #1db954;
   border-radius: 5px;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
 .session a:hover {
-  background-color: #0056b3;
+  background-color: #169c3e;
 }
 
-.pubblic-sessions p {
-  text-align: center;
-  color: #888;
-  font-size: 1.2em;
-  margin-top: 20px;
-}
 
 input[type="text"] {
   width: 100%;
@@ -98,4 +125,15 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #169c3e;
+}
+
+@media (max-width: 768px) {
+  .pubblic-sessions,
+  .join-private-session {
+    padding: 10px;
+  }
+
+  .session {
+    margin-bottom: 10px;
+  }
 }

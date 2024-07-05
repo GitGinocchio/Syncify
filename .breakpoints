@@ -1,0 +1,26 @@
+{
+  "files": {
+    "static/session.css": [
+      {
+        "id": "2e738c67-b627-448d-aeb5-79b2f37998e9",
+        "line": 17,
+        "version": 1392,
+        "index": 383
+      },
+      {
+        "id": "8ee78cc5-2715-4b60-bdd8-fdb383cc5048",
+        "line": 20,
+        "version": 1392,
+        "index": 431
+      }
+    ],
+    "static/session.js": [
+      {
+        "id": "07f11e35-93e7-412d-ac51-31817abaebf3",
+        "line": 1,
+        "version": 196,
+        "index": 0
+      }
+    ]
+  }
+}

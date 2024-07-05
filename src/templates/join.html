@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syncify</title>
+  <link rel="stylesheet" href="/static/default.css" type="text/css">
+  <link rel="stylesheet" href="/static/join.css" type="text/css">
+  <link rel='icon' href="/static/images/icon.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+  <script>
+      const socket = io('/join');
+
+      // Gestisci l'evento 'update' ricevuto dal server
+      socket.on('refresh_sessions', function() {
+          console.log('Received update signal, reloading page...');
+          window.location.reload(true);  // Ricarica la pagina
+      });
+  </script>
+</head>
+<body>
+  <header>
+    <a href="{{ url_for('root') }}">
+      <div class="brand">
+        <img src="/static/images/icon.png" alt="account icon" class="account-icon">
+        <h1>Syncify</h1>
+      </div>
+    </a>
+
+    <div class="account">
+      <div class="profile-container">
+        <p class=username>{{ user.name }}</p>
+        <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="{{ user.url }}" target="_blank">Profile</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section>
+  <div class="join-private-session">
+    <form action="{{ url_for('join') }}" method="post">
+      <h2 class="priv-session-title"">Join a private session</h2>
+      <input type="text" name="session" id="session" placeholder="Session ID" required>
+      <button type="submit">Join</button>
+    </form>
+  </div>
+  <div class="pubblic-sessions">
+      <h2>Public Sessions</h2>
+      {% if sessions %}
+        {% for key, session in sessions.items() %}
+          <div class="session">
+            <div class="headerS">
+              <p class="session-name"">{{ session.name }}</p>
+              <p class="session-creator">Created by: {{ session.creator.name }}</p>
+            </div>
+            <div class="infoplusS">
+              <p class="session-queue">Editable queue: {{ session.editablequeue }}</p>
+              <p class="session-creationtime">Created at: {{ session.createdate }}</p>
+            </div>
+            <div class="footerS">
+              <a class="session-join" href="/session/{{ session.id }}">Join</a>
+              <p class="session-members">{{ session.num_members }} / {{ session.userlimit }} Members</p>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="nosession">There are no existing public sessions!</p>
+      {% endif %}
+  </div>
+</section>
+  <footer>
+    <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
+  </footer>
+
+  <script>
+    // JavaScript per mostrare/nascondere il menu a tendina
+    document.getElementById('profile-icon').addEventListener('click', function() {
+      const menu = document.getElementById('dropdown-menu');
+      menu.classList.toggle('show');
+    });
+
+    // Nascondi il menu quando si clicca fuori
+    window.onclick = function(event) {
+      if (!event.target.matches('.account-icon')) {
+        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        for (let i = 0; i < dropdowns.length; i++) {
+          const openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

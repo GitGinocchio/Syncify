@@ -100,16 +100,94 @@ header h1 {
   /*padding-top: 9px;*/
 }
 
-section{
-  margin-top: 50px;
-  flex-grow: 1;
-}
-
 /* Footer */
-footer p {
+footer {
   background-color: #3333; /* Grigio scuro per il footer */
   color: #fff;
   text-align: center;
   padding: 10px 0;
+  font-size: 15px;
+  margin-top: auto; /* Spinge il footer in fondo */
+}
+
+footer p {
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
   font-size: 15px
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  display: none; /* Nascosto di default */
+  position: absolute;
+  right: 30px; /* Allineato alla destra dell'immagine del profilo */
+  top: 80px; /* Sotto l'immagine del profilo */
+  background-color: black;
+  border: 1px solid #1ed760;
+  border-radius: 5px;
+  z-index: 1; /* Porta il menu davanti agli altri elementi */
+}
+
+.dropdown-menu a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+  text-align: left; /* Allinea il testo a sinistra */
+}
+
+.dropdown-menu a:hover {
+  background-color: #1ed760; /* Cambia il colore di sfondo al passaggio del mouse */
+}
+
+.show {
+  display: block; /* Mostra il menu quando viene aggiunta la classe "show" */
+}
+
+/* Sezione dell'header con l'immagine e il nome dell'account */
+.account-icon {
+  cursor: pointer; /* Indica che l'immagine è cliccabile */
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 768px) {
+  header {
+    padding: 18px 10px;
+  }
+
+  header h1 {
+    font-size: 20px;
+  }
+
+  .button {
+    width: auto; /* Impostare la larghezza su auto per consentire al pulsante di ridimensionarsi in base al contenuto */
+    margin: 0 5px; /* Aggiungere un margine per separare i pulsanti */
+  }
+
+  .brand img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .brand h1 {
+    font-size: 20px;
+  }
+
+}
+/* Tablet Styles */
+@media only screen and (max-width: 480px) {
+  .button {
+    font-size: 14px;
+  }
+
+  .brand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand h1 {
+    font-size: 18px;
+  }
 }

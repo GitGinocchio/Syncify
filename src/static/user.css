@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  flex-direction: column; /* Dispone gli elementi in una colonna */
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Centra il container verticalmente */
+}
+
+.button {
+  margin: 10px 0; /* Aggiunge un margine verticale tra i pulsanti */
+}
+

@@ -1,0 +1,12 @@
+PYTHON
+- Sostituire gli id univoci con l'id di spotify che e' anch'esso univoco (anche tra piu' dispositivi)
+- Creare il ciclo per le canzoni nella queue (vedi session.html:45)
+- Lavorare alla parte della chatbox
+
+
+HTML
+✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
+✓ Ricreare join come il file join.png (modificato il 3/07/2024)
+- Creare i contenuti di session.html
+- Ricreare session come il file session.jpg
+✓ Cambiare metologia di login e logout syncify (cliccare icona per un mini menu (profilo-logout))

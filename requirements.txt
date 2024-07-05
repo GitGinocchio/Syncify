@@ -1,5 +1,6 @@
 flask
+Flask-SocketIO
 Flask-Session
 spotipy
 gunicorn
-jwt
+werkzeug
