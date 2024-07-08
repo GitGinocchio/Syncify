@@ -4,19 +4,27 @@ from .utils import *
 
 socketio = SocketIO(cors_allowed_origins="*", engineio_logger=True)
 
-shared = {'rooms' : {}}
+users = {}
+rooms = {}
 
 @socketio.on('connect', namespace='/join')
-def connect_to_join():
-    emit('connected')
+def join_connect():
+    print("Client connected to /join namespace")
+
+@socketio.on('disconnect', namespace='/join')
+def join_disconnect():
+    print("Client disconnected from /join namespace")
 
 @socketio.on('connect', namespace='/room')
-def connect_to_room():
-    emit('connected')
+def room_connect():
+    print("Client connected to /room namespace")
+
+@socketio.on('disconnect', namespace='/room')
+def room_disconnect():
+    print("Client disconnected from /room namespace")
 
 @socketio.on('handle_message', namespace='/room')
-def handle_message(data):
-    roomid = data['roomid']
-    message = Message(data['username'],data['userimage'],data['userurl'],data['userid'],data['message'])
-    shared['rooms'][roomid].chat.append(message)
-    socketio.emit('refresh_room',namespace='/room')
+def handle_message(message_data, roomid):
+    message = Message(**message_data)
+    rooms[roomid].chat.append(message)
+    socketio.emit('new_message',message_data,namespace='/room')

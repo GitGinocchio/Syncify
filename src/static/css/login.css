@@ -58,6 +58,7 @@ h3, ol{
     padding: 12px 0px 12px 24px;
   }
   .header h1 {
+    align-self: center;
     font-size: 24px;
   }
   .account img {
@@ -84,8 +85,8 @@ h3, ol{
     font-size: 20px;
   }
   .account img {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
   }
   .section {
     flex-direction: column;

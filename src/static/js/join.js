@@ -1,7 +1,56 @@
-const socket = io('/join');
+document.addEventListener('DOMContentLoaded', (event) => {
+    const roomsContainer = document.getElementById('public-sessions');
+    const socket = io('/join');
+    
+    // Gestisci l'evento 'update' ricevuto dal server
+    socket.on('refresh_rooms', function() {
+        window.location.reload(true);
+    });
 
-// Gestisci l'evento 'update' ricevuto dal server
-socket.on('refresh_rooms', function() {
-    console.log('Received update signal, reloading page...');
-    window.location.reload(true);  // Ricarica la pagina
+    socket.on('add_room', function(room){
+        const roomElement = document.createElement('div');
+        const nosessionsElement = document.getElementById('nosession');
+        roomElement.classList.add('session');
+        roomElement.id = room.id;
+        roomElement.innerHTML = `
+        <div class="headerS">
+          <p class="session-name">${room.name}</p>
+          <p class="session-creator">Created by: ${room.creator.name}</p>
+        </div>
+        <div class="infoplusS">
+          <p class="session-queue">Editable queue: ${room.editablequeue}</p>
+        </div>
+        <div class="footerS">
+          <a class="session-join" href="/room/${room.id}">Join</a>
+          <p class="session-members">${room.num_members} / ${room.userlimit} Members</p>
+        </div>
+        `;
+        if (roomsContainer) { roomsContainer.appendChild(roomElement); }
+        if (nosessionsElement) { nosessionsElement.remove(); }
+    });
+
+    socket.on('del_room', function(room){
+        let roomElement = document.getElementById(room.id);
+        if (roomElement) { roomElement.remove(); }
+        
+        if (roomsContainer.childNodes.length === 1) {
+            console.log("ciao");
+            const nosession = document.createElement('p');
+            nosession.classList.add('nosession');
+            nosession.id = 'nosession';
+            nosession.textContent = 'There are no existing public rooms!';
+            roomsContainer.appendChild(nosession);
+        }
+    });
+
+    socket.on('update_member_count',function(room) {
+        let roomElement = document.getElementById(room.id);
+        if (roomElement) {
+            const roomMembers = roomElement.querySelector('.session-members');
+            if (roomMembers) {
+                roomMembers.textContent = `${room.num_members} / ${room.userlimit} Members`;
+            }
+        }
+    });
+    
 });

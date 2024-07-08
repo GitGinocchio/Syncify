@@ -20,13 +20,11 @@
       </a>
       
       <div class="account">
-        <div class="profile-container">
-          <p class=username>{{ user.name }}</p>
-          <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
-          <div class="dropdown-menu" id="dropdown-menu">
-            <a href="{{ user.url }}" target="_blank">Profile</a>
-            <a href="/logout">Logout</a>
-          </div>
+        <p class=username>{{ user.name }}</p>
+        <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="{{ user.url }}" target="_blank">Profile</a>
+          <a href="/logout">Logout</a>
         </div>
       </div>
     </header>

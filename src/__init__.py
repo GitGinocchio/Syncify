@@ -6,23 +6,27 @@ import os
 
 from .routes import blueprint
 from .sock import socketio
+from .oauth import jwt
 
 app = Flask(__name__)
 
 app.config['SESSION_COOKIE_NAME'] = 'Syncify Cookies'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+app.config['JWT_SECRET_KEY'] = os.urandom(32)
 app.secret_key = os.urandom(32)
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = True
 app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp()
+app.config['SESSION_FILE_DIR'] = tempfile.mkdtemp() #'./src/.session'
 
 Session(app)
 
 app.register_blueprint(blueprint)
 socketio.init_app(app)
-
-del os, tempfile, timedelta, Session, Flask
+jwt.init_app(app)
 
 __all__ = ['app']

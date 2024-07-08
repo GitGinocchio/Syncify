@@ -1,21 +1,25 @@
-from flask import Blueprint, render_template, make_response
-from hashlib import sha256
+from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask import Blueprint, render_template, make_response, redirect, request, session
 
 from .utils import *
-from .oauth import Oauth, get_client, get_token
-from .sock import shared, socketio
+from .oauth import Oauth, jwt, hasjwt, jwtrequired, get_client, get_token
+from .sock import users, rooms, socketio
 
 blueprint = Blueprint("blueprint", __name__)
 
 @blueprint.route('/')
 def index():
-    if haslogin():
+    if hasjwt():
         return redirect('/user')
     else:
-        return render_template('login.html')
+        return redirect('/login')
 
 @blueprint.route('/login')
-def login(): 
+def login():
+    return render_template('login.html')
+
+@blueprint.route('/auth')
+def auth(): 
     return redirect(Oauth.get_authorize_url())
 
 @blueprint.route('/api/spotify/v1/endpoint')
@@ -25,49 +29,51 @@ def callback():
     client = get_client(token)
 
     if client is not None:
-        sha256_hash = sha256()
-        sha256_hash.update(client['id'].encode('utf-8'))
-        userid = sha256_hash.hexdigest()
 
-        if 'user' not in session:
+        if client['id'] not in users:
             user = User()
-            user.id = userid
+            user.id = client['id']
             user.token = token
             user.name = client['display_name']
             user.url = client['external_urls']['spotify']
 
             if not len(client['images']) > 0:
-                user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=1db954&background=3333&bold=true"
+                user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
             else:
                 user.image = client['images'][0]['url']
 
+            users[user.id] = user
             session['user'] = user
             session['userid'] = user.id
-
+        else:
+            session['user'] = users[client['id']]
+            session['userid'] = client['id']
+        
+        access_token = create_access_token(identity=client['id'])
         response = make_response(redirect('/user'))
-        response.set_cookie('userid', userid, max_age=86400, secure=True)  #24 ore
+        response.set_cookie('access_token', access_token, max_age=86400, secure=True, httponly=True)  #24 ore
         return response
     else:
         return redirect('/')
 
 @blueprint.route("/user")
-@requirelogin
+@jwtrequired
 def user():
     return render_template('user.html',user=session['user'])
 
 @blueprint.route("/new",methods=["POST","GET"])
-@requirelogin
+@jwtrequired
 def new():
     if request.method == 'POST':
-        if session['user'].room and session['user'].room.id in shared['rooms']:
-            del shared['rooms'][session['user'].room.id] 
+        if session['user'].room and session['user'].room.id in rooms:
+            rooms.pop(session['user'].room.id)
         session['user'].room = None
 
-        name = request.form.get('name',"{Name}")
+        name = request.form.get('name',"[name]")
         userlimit = int(request.form.get('userlimit',5))
         editablequeue = request.form.get('editablequeue',False)
         visibility = request.form.get('visibility',"public")
-
+        
         room = Room(
             name=name,
             userlimit=userlimit,
@@ -76,10 +82,13 @@ def new():
             editablequeue=True if editablequeue else False
             )
 
+        users[session['userid']].room = room
         session['user'].room = room
-        shared['rooms'][room.id] = room
+        rooms[room.id] = room
+        
         if room.visibility == "public":
-            socketio.emit('refresh_rooms',namespace='/join')
+            socketio.emit('add_room',room.asdict(),namespace='/join')
+            #socketio.emit('refresh_rooms',namespace='/join')
 
         return redirect(f'/room/{room.id}')
     else:
@@ -88,11 +97,12 @@ def new():
         return render_template('new.html',user=session['user'])
     
 @blueprint.route("/join",methods=["POST","GET"])
-@requirelogin
+@jwtrequired
 def join():
     if request.method == 'POST':
         roomid = request.form.get('room')
-        session['user'].room = shared['rooms'][roomid]
+        users[session['userid']].room = rooms[roomid]
+        session['user'].room = rooms[roomid]
         return redirect(f"/room/{roomid}")
     else:
         if session['user'].room: return redirect('/user')
@@ -102,52 +112,75 @@ def join():
             user=session['user'],
             rooms=dict(filter(
                 lambda item: item[1].visibility == 'public', 
-                shared['rooms'].items()))
+                rooms.items()))
         )
 
 @blueprint.route("/room/<roomid>")
-@requirelogin
+@jwtrequired
 def room(roomid : str):
     #if not session['user'].session or session['user'].session.id != roomid:
         #return redirect('/user') 
     # Questo da errore perche' non viene assegnato session['user'].session
     # quando si utilizza il tasto join della card in join, perche' non viene fatta la richiesta post a riga 111
-    if roomid not in shared['rooms']:
+    if roomid not in rooms:
+        session['user'].room = None
         return redirect('/user')
+
+    if not session['user'].room or session['user'].room.id != roomid:
+        session['user'].room = rooms[roomid]
     
-    if session['user'] not in shared['rooms'][roomid].members:
-        shared['rooms'][roomid].members.append(session['user'])
-        shared['rooms'][roomid].num_members += 1
-        socketio.emit('refresh_rooms',namespace='/join')
+    if session['user'] not in rooms[roomid].members:
+        rooms[roomid].members.append(session['user'])
+        rooms[roomid].num_members += 1
+        socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
+        #socketio.emit('refresh_rooms',namespace='/join')
         socketio.emit('refresh_room',namespace='/room')
 
-    return render_template('room.html',user=session['user'], room=shared['rooms'][roomid])
+    return render_template('room.html',user=session['user'], room=rooms[roomid])
 
 @blueprint.route("/room/<roomid>/leave")
-@requirelogin
+@jwtrequired
 def leave(roomid : str):
     #if roomid not in shared['rooms'] or roomid != session['user'].session.id:
         #return redirect('/')
-    if roomid not in shared['rooms']:
+    if roomid not in rooms:
         return redirect('/user')
-
-    if shared['rooms'][roomid].creator == session['user']:
-        session['user'].room = None
-        del shared['rooms'][roomid]
-        socketio.emit('refresh_rooms',namespace='/join')
-        socketio.emit('refresh_room',namespace='/room')
+        
+    if rooms[roomid].creator == session['user']:
+        socketio.emit('del_room',session['user'].room.asdict(),namespace='/join')
     else:
-        shared['rooms'][roomid].members.remove(session['user'])
-        shared['rooms'][roomid].num_members -= 1
-        socketio.emit('refresh_rooms',namespace='/join')
-        socketio.emit('refresh_room',namespace='/room')
-
+        rooms[roomid].members.remove(session['user'])
+        rooms[roomid].num_members -= 1
+        socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
+    session['user'].room = None
+    rooms.pop(roomid)
+    
+    #socketio.emit('refresh_rooms',namespace='/join')
+    #socketio.emit('refresh_room',namespace='/room')
+    
     return redirect('/')
 
 @blueprint.route('/logout')
+@jwtrequired
 def logout():
-    response = make_response(redirect('/'))
-    if 'userid' in session: response.set_cookie('userid', '', expires=0)
+    if session['user'].room:
+        roomid = session['user'].room.id
+        if rooms[roomid].creator == session['user']:
+            session['user'].room = None
+            rooms.pop(roomid)
+            socketio.emit('del_room',rooms[roomid],namespace='/join')
+        else:
+            rooms[roomid].members.remove(session['user'])
+            rooms[roomid].num_members -= 1
+            socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
+
+        #socketio.emit('refresh_rooms',namespace='/join')
+        #socketio.emit('refresh_room',namespace='/room')
+            
+            
     session.clear()
+    
+    response = make_response(redirect('/'))
+    response.set_cookie('access_token', '', expires=0)
 
     return response

@@ -22,13 +22,11 @@
     </a>
 
     <div class="account">
-      <div class="profile-container">
-        <p class=username>{{ user.name }}</p>
-        <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
-        <div class="dropdown-menu" id="dropdown-menu">
-          <a href="{{ user.url }}" target="_blank">Profile</a>
-          <a href="/logout">Logout</a>
-        </div>
+      <p class=username>{{ user.name }}</p>
+      <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+      <div class="dropdown-menu" id="dropdown-menu">
+        <a href="{{ user.url }}" target="_blank">Profile</a>
+        <a href="/logout">Logout</a>
       </div>
     </div>
   </header>
@@ -40,13 +38,13 @@
       <button type="submit">Join</button>
     </form>
   </div>
-  <div class="pubblic-sessions">
+  <div class="public-sessions" id="public-sessions">
       <h2>Public Sessions</h2>
       {% if rooms %}
         {% for key, room in rooms.items() %}
-          <div class="session">
+          <div class="session" id="{{ room.id }}">
             <div class="headerS">
-              <p class="session-name"">{{ room.name }}</p>
+              <p class="session-name">{{ room.name }}</p>
               <p class="session-creator">Created by: {{ room.creator.name }}</p>
             </div>
             <div class="infoplusS">
@@ -54,12 +52,12 @@
             </div>
             <div class="footerS">
               <a class="session-join" href="/room/{{ room.id }}">Join</a>
-              <p class="session-members">{{ room.num_members }} / {{ room.userlimit }} Members</p>
+              <p class="session-members" id="session-members">{{ room.num_members }} / {{ room.userlimit }} Members</p>
             </div>
           </div>
         {% endfor %}
       {% else %}
-        <p class="nosession">There are no existing public rooms!</p>
+        <p class="nosession" id="nosession">There are no existing public rooms!</p>
       {% endif %}
   </div>
 </section>

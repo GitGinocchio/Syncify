@@ -20,7 +20,7 @@ section {
   margin-bottom: 20px;
 }
 
-.pubblic-sessions {
+.public-sessions {
   width: 50%; /* Puoi regolare la larghezza come preferisci */
   padding: 20px;
   border: 1px solid #1b1e1f;
@@ -30,7 +30,7 @@ section {
   order: -1; /* Questa proprietà sposta .pubblic-sessions a sinistra */
 }
 
-.pubblic-sessions .session-name{
+.public-sessions .session-name{
   font-size: 27px;
 }
 
@@ -41,7 +41,7 @@ section {
   color: #169c3e;
 }
 
-.pubblic-sessions h2 {
+.public-sessions h2 {
   text-align: center;
   color: #b4b1a8;
   padding-bottom: 10px;

@@ -10,8 +10,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh; /* Imposta l'altezza del body a 100% della viewport */
-  font-family: Arial, sans-serif, Lato;
-  background-color: #0e0e0e; /* Grigio */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #121212;
   color: white;
 }
 
@@ -62,10 +62,12 @@ header h1 {
 
 /* Sezione dell'header con l'immagine e il nome dell'account */
 .account{
+  display: flex;
   padding-right: 30px;
 }
 
 .account a {
+  display: flex;
   text-decoration: none;
 }
 
@@ -73,6 +75,7 @@ header h1 {
   width: 64px;
   height: 64px;
   border-radius: 50%;
+  cursor: pointer; /* Indica che l'immagine è cliccabile */
 }
 
 .username {
@@ -80,9 +83,8 @@ header h1 {
   font-weight: bold;
   margin-right: 10px;
   color: #1ed760;
-  display: inline-flex;
-  position: relative; /* Posizione relativa alla posizione attuale */
-  bottom: 26px;       /* 26 pixel verso l'alto dalla posizione attuale (68(altezza div)/2 - 16(altezza scritta) / 2) */
+  display: flex;
+  align-self: center;
 }
 
 /* Sezione dell'header con l'immagine e il nome del brand */
@@ -146,17 +148,8 @@ footer p {
   display: block; /* Mostra il menu quando viene aggiunta la classe "show" */
 }
 
-/* Sezione dell'header con l'immagine e il nome dell'account */
-.account-icon {
-  cursor: pointer; /* Indica che l'immagine è cliccabile */
-}
-
 /* Mobile Styles */
 @media only screen and (max-width: 768px) {
-  header {
-    padding: 18px 10px;
-  }
-
   header h1 {
     font-size: 20px;
   }

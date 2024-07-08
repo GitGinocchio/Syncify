@@ -1,6 +1,4 @@
-from dataclasses import dataclass, field
-from flask import request, session, redirect
-from functools import wraps
+from dataclasses import dataclass, field, asdict
 import uuid
 
 @dataclass
@@ -11,6 +9,8 @@ class Song:
 	album : str
 	duration : float
 
+	def asdict(self): return asdict(self)
+
 @dataclass
 class Token:
 	access_token: str
@@ -20,6 +20,8 @@ class Token:
 	expires_in: int
 	scope: str
 
+	def asdict(self): return asdict(self)
+
 @dataclass
 class Room:
 	name: str = None
@@ -28,7 +30,7 @@ class Room:
 	visibility: str = "public"
 	editablequeue: bool = False
 	num_members: int = 0
-	chat: list = field(default_factory=list)
+	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
 	queue: list[Song] = field(default_factory=list)
@@ -36,17 +38,37 @@ class Room:
 	def __eq__(self, other):
 		return self.id == other.id
 
+	def asdict(self):
+		return {
+			'name' : self.name,
+			'userlimit' : self.userlimit,
+			'creator' : self.creator.asdict(),
+			'visbility' : self.visibility,
+			'editablequeue' : self.editablequeue,
+			'num_members' : self.num_members,
+			'id' : self.id
+		}
+		
 @dataclass
 class User:
 	name: str = field(default_factory=str,init=False)
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
+	id: str = field(default_factory=str,init=False)
 	token: Token = None
 	room: Room = None
-	id: str = field(default_factory=str,init=False)
 
 	def __eq__(self, other):
 		return self.id == other.id
+
+	def asdict(self):
+		return {
+			'name' : self.name,
+			'url' : self.url,
+			'image' : self.image,
+			'id' : self.id,
+			'token' : self.token.asdict()
+		}
 
 @dataclass
 class Message:
@@ -56,16 +78,4 @@ class Message:
 	sender_id : str
 	text : str = None
 
-def haslogin():
-    userid = request.cookies.get('userid')
-    if userid:
-        return userid == session.get('userid')
-    else:
-        return False
-
-def requirelogin(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if not haslogin(): return redirect('/')
-        return f(*args, **kwargs)
-    return wrapper
+	def asdict(self): return asdict(self)
