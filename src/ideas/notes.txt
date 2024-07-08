@@ -2,6 +2,7 @@ PYTHON
 - Sostituire gli aggiornamenti delle pagine ...
 - Creare la coda di riproduzione
 - Sincronizzare tutti i client connessi alla stanza
+- Spostare la chiave 'SPOTIPY_REDIRECT_URI' da .env a un file config
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
