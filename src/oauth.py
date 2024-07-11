@@ -51,9 +51,12 @@ def get_token(code : str):
     return Token(**response)
 
 def refresh_token(token : Token):
-    Oauth.refresh_access_token(token.refresh_token)
-
+    newtoken = Token(**Oauth.refresh_access_token(token.refresh_token))
+    token.access_token = newtoken.access_token
+    token.expires_at = newtoken.expires_at
+    
 def get_client(token : Token):
-    spotify = spotipy.Spotify(auth=token.access_token,oauth_manager=Oauth)
-
-    return spotify.current_user()
+    if Oauth.is_token_expired(token.asdict()): refresh_token(token)
+    client = spotipy.Spotify(auth=token.access_token,oauth_manager=Oauth)
+    
+    return client

@@ -29,12 +29,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (nosessionsElement) { nosessionsElement.remove(); }
     });
 
-    socket.on('del_room', function(room){
-        let roomElement = document.getElementById(room.id);
+    socket.on('del_room', function(roomid){
+        let roomElement = document.getElementById(roomid);
         if (roomElement) { roomElement.remove(); }
-        
-        if (roomsContainer.childNodes.length === 1) {
-            console.log("ciao");
+
+        if (roomsContainer.childNodes.length === 4) {     // Non so il motivo ma ci sono 4 elementi...
             const nosession = document.createElement('p');
             nosession.classList.add('nosession');
             nosession.id = 'nosession';

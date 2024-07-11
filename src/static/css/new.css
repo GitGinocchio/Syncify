@@ -51,10 +51,11 @@ select {
 
 button[type="submit"] {
   background-color: #1db954;
-  color: black;
+  color: white;
   font-weight: bold;
   padding: 10px 20px;
   border: none;
+  transition: background-color 0.3s ease;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;

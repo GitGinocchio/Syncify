@@ -3,13 +3,30 @@ import uuid
 
 @dataclass
 class Song:
+	id : str
 	url : str
 	name : str
-	artist : str
-	album : str
-	duration : float
+	popularity : int
+	duration : str
+	duration_ms : int
+	preview_url : str
+	album : dict[str]
+	artists : list[dict]
+	addedby : 'User' = field(default=None)
 
-	def asdict(self): return asdict(self)
+	def asdict(self): 
+		return {
+			'id' : self.id,
+			'url' : self.url,
+			'name' : self.name,
+			'popularity' : self.popularity,
+			'duration' : self.duration,
+			'duration_ms' : self.duration_ms,
+			'preview_url' : self.preview_url,
+			'album' : self.album,
+			'artists' : self.artists,
+			'addedby' : self.addedby.asdict() if self.addedby else None
+		}
 
 @dataclass
 class Token:
@@ -55,6 +72,8 @@ class User:
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
 	id: str = field(default_factory=str,init=False)
+	refreshing : bool = field(default=False)
+	last_connection_time : float = None
 	token: Token = None
 	room: Room = None
 
@@ -67,7 +86,7 @@ class User:
 			'url' : self.url,
 			'image' : self.image,
 			'id' : self.id,
-			'token' : self.token.asdict()
+			#'token' : self.token.asdict() # Disattivato per maggior sicurezza
 		}
 
 @dataclass

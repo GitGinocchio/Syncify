@@ -4,87 +4,42 @@ function toBottom() {
 }
 
 function copyurl() {
-	var input = document.createElement('input');
-	var url = window.location.href;
-	input.setAttribute('value', url);
-	document.body.appendChild(input);
-	input.select();
-	var risultato = document.execCommand('copy');
-	document.body.removeChild(input);
-	alert('Link copiato!');
-	return risultato;
-}
-
-function togglePlayPause() {
-  var img = document.getElementById("playPauseImage");
-  if (img.src.includes("play.png")) {
-	img.src = "/static/images/pause.png";
-	img.alt = "Pause";
-  } else {
-	img.src = "/static/images/play.png";
-	img.alt = "Play";
-  }
+  var input = document.createElement('input');
+  var url = window.location.href;
+  input.setAttribute('value', url);
+  document.body.appendChild(input);
+  input.select();
+  var risultato = document.execCommand('copy');
+  document.body.removeChild(input);
+  alert('Link copiato!');
+  return risultato;
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-	const socket = io('/room');
-	const messageInput = document.getElementById('message-input');
-	const messagesContainer = document.getElementById('chat-messages');
-	const sendMessageButton = document.getElementById('send-message');
+  const resultsContainer = document.getElementById('results-search-box');
 
-	// Gestisci l'evento 'update' ricevuto dal server
-	socket.on('refresh_room', function() {
-		window.location.reload(true);  // Ricarica la pagina
-	});
-
-	// Gestisci l'evento 'new_message' ricevuto dal server
-	socket.on('new_message', function(message) {
-		addMessageToChat(message);
-	});
-
-	// Funzione per aggiungere un messaggio alla chat
-	function addMessageToChat(message) {
-		const messageElement = document.createElement('div');
-		messageElement.classList.add('message');
-		if (message.sender_id == '{{ user.id }}') {
-		  messageElement.classList.add('my-message');
-		} else if (message.sender_name !== "system") {
-		  messageElement.classList.add('other-message');
-		} else {
-		  messageElement.classList.add('system-message');
-		}
-		messageElement.innerHTML = `
-			<div class="sender">
-				<img src="${message.sender_image}">
-				<p>${message.sender_name}</p>
-			</div>
-			<p>${message.text}</p>
-		`;
-		messagesContainer.appendChild(messageElement);
-		messagesContainer.scrollTop = messagesContainer.scrollHeight;
-	}
-
-	// Gestione del clic sul pulsante di invio
-	sendMessageButton.addEventListener('click', () => {
-		const message = messageInput.value;
-		if (message.trim()) {
-			socket.emit('handle_message', {text: message, 
-										   sender_name: '{{ user.name }}', 
-										   sender_id: '{{ user.id }}',
-										   sender_url: '{{ user.url }}',
-										   sender_image: '{{ user.image }}',
-										  },
-										  '{{ room.id }}',
-					   );
-			messageInput.value = '';
-		}
-	});
-
-	// Gestione della pressione del tasto Enter
-	messageInput.addEventListener('keypress', (e) => {
-		if (e.key === 'Enter') {
-			e.preventDefault(); // Previene l'invio del modulo, se presente
-			sendMessageButton.click();
-		}
-	});
+  document.getElementById('queue-input').addEventListener('input', function() {
+      var searchingBox = document.querySelector('.searching-box');
+      var query = this.value.trim();
+      if (query && !(query.startsWith('https://'))) {
+        searchingBox.classList.add('show');
+        resultsContainer.innerHTML = '';
+        for (let i = 0; i < 10; i++) {
+          const placeholderSongElement = document.createElement('li');
+          placeholderSongElement.classList.add("song-info"); 
+          placeholderSongElement.innerHTML = `
+                <span class="album-art-load"></span>
+                <div class="details">
+                  <span class="song-title-load"></span>
+                  <span class="song-artist-load"></span>
+                </div>
+                <span class="song-duration-load"></span>
+          `;
+          resultsContainer.appendChild(placeholderSongElement);
+        }
+      } else {
+        searchingBox.classList.remove('show');
+        resultsContainer.innerHTML = '';
+      }
+  });
 });

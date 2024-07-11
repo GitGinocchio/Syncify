@@ -7,55 +7,195 @@
   <link rel="stylesheet" href="/static/css/default.css">
   <link rel="stylesheet" href="/static/css/room.css">
   <link rel='icon' href="/static/images/icon.png">
-  <script src="/static/js/default.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+  <script src="/static/js/default.js"></script>
+  <script src="/static/js/room.js"></script>
   <script>
-    function toBottom() {
-      let messagesContainer = document.getElementById('chat-messages');
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function copyurl() {
-      var input = document.createElement('input');
-      var url = window.location.href;
-      input.setAttribute('value', url);
-      document.body.appendChild(input);
-      input.select();
-      var risultato = document.execCommand('copy');
-      document.body.removeChild(input);
-      alert('Link copiato!');
-      return risultato;
-    }
-
-    function togglePlayPause() {
-      var img = document.getElementById("playPauseImage");
-      if (img.src.includes("play.png")) {
-      img.src = "/static/images/pause.png";
-      img.alt = "Pause";
-      } else {
-      img.src = "/static/images/play.png";
-      img.alt = "Play";
-      }
-    }
-
     document.addEventListener('DOMContentLoaded', (event) => {
-      const socket = io('/room');
+      const socket = io('/room', {
+          query: {
+            userid: '{{ user.id }}',
+            roomid: '{{ room.id }}',
+          }
+      });
       const messageInput = document.getElementById('message-input');
+      const queueInput = document.getElementById('queue-input');
+
       const messagesContainer = document.getElementById('chat-messages');
+      const membersContainer = document.getElementById('members-container');
+      const resultsContainer = document.getElementById('results-search-box');
+      const queueContainer = document.getElementById('queue-list')
+      const currentSongImageContainer = document.getElementById('current-song-image');
+      const currentSongDetailsContainer = document.getElementById('current-song-details');
+
       const sendMessageButton = document.getElementById('send-message');
+      const addSongButton = document.getElementById('send-song')
 
-      // Gestisci l'evento 'update' ricevuto dal server
-      socket.on('refresh_room', function() {
-        window.location.reload(true);  // Ricarica la pagina
+      let debounceTimeout;
+      
+      socket.on('member_join', function(member) {
+        const memberElement = document.createElement('li');
+        memberElement.id = member.id;
+        memberElement.innerHTML = `
+          <img src="${member.image}" alt="account icon" class="member-icon">
+          <p class="member-name">${ member.name }</p>
+        `
+        if (memberElement) {
+          membersContainer.appendChild(memberElement)
+        }
       });
 
-      // Gestisci l'evento 'new_message' ricevuto dal server
+      socket.on('member_leave', function(member) {
+        const memberElement = document.getElementById(member.id);
+        if (memberElement) {
+          membersContainer.removeChild(memberElement);
+        }
+      });
+
+      socket.on('del_room', function(room) { window.location.reload(true); });
+
+      socket.on('search_results',function(results) {
+        resultsContainer.innerHTML = '';
+        results.forEach(song => {
+          const songElement = document.createElement('li');
+          songElement.classList.add("song-info");
+          songElement.id = song.id;
+          songElement.innerHTML = `
+                <img class="album-art" src="${song.album.images[2].url}">
+                <div class="details">
+                  <span class="song-title">${song.name}</span>
+                  <span class="song-artists">${song.artists.map(artist => artist.name).join(', ')}</span>
+                </div>
+                <span class="song-duration">${song.duration}</span>
+          `;
+          songElement.addEventListener('click', handleSongClick);
+          resultsContainer.appendChild(songElement);
+        });
+      });
+
+      socket.on('new_song',function(song) {
+        const songElement = document.createElement('li');
+        songElement.classList.add("song-info");
+        songElement.id = song.id;
+        songElement.innerHTML = `
+              <img class="album-art" src="${song.album.images[2].url}">
+              <div class="details">
+                <span class="song-title">${song.name}</span>
+                <span class="song-artists">${song.artists.map(artist => 
+                  `<a href="${artist.external_urls.spotify}" target="_blank">${artist.name}</a>`
+                  ).join('<p>,</p>')}</span>
+                
+              </div>
+              <span class="addedby-user">
+                Added by:
+                <a href="${song.addedby.url}" target="_blank">
+                  <img src="${song.addedby.image}" class="member-icon">
+                  ${song.addedby.name}
+                </a>
+              </span>
+              <span class="song-duration">${song.duration}</span>
+        `;
+        queueContainer.appendChild(songElement);
+      })
+
+      socket.on('set_current_song_details', function(song) {
+        currentSongImageContainer.innerHTML = '';
+
+        currentSongImage = document.createElement('img');
+        currentSongImage.src = song.album.images[1].url;
+        currentSongImageContainer.appendChild(currentSongImage);
+
+        currentSongDetailsContainer.innerHTML = `
+          <span class="current-song-title" id="${song.id}">${song.name}</span>
+          <span class="current-song-artists">${song.artists.map(artist => 
+          `<a href="${artist.external_urls.spotify}" target="_blank">${artist.name}</a>`
+          ).join('<p>,</p>')}
+          </span>
+        `;
+        
+      });
+      
+      function handleSongClick(event) {
+        var searchingBox = document.querySelector('.searching-box');
+        const songElement = event.currentTarget;
+        searchingBox.classList.remove('show');
+        queueInput.value = '';
+        socket.emit('handle_add_song',songElement.id)
+      }
+
+      function togglePlayPause(event) {
+        var img = document.getElementById("playPauseImage");
+        var songid = document.getElementByClassName("current-song-title").id
+        if (img.src.includes("play.png")) {
+          img.src = "/static/images/pause.png";
+          img.alt = "Pause";
+          socket.emit('handle_start_playback',songid)
+        } else {
+          img.src = "/static/images/play.png";
+          img.alt = "Play";
+          socket.emit('handle_stop_playback')
+        }
+      }
+
+      playPauseButton.addEventListener('click',() => {
+        var img = document.getElementById("playPauseImage");
+        var songTitleElement = document.getElementsByClassName("current-song-title")[0];
+        
+        if (img.src.includes("play.png")) {
+          img.src = "/static/images/pause.png";
+          img.alt = "Pause";
+          socket.emit('handle_start_playback',songTitleElement.id)
+        } else {
+          img.src = "/static/images/play.png";
+          img.alt = "Play";
+          socket.emit('handle_stop_playback')
+        }
+      });
+      
+      // Quando viene premuto il tasto 'Invio':
+      // Se la input contiene 'https://' allora manda un segnale al server
+      // Con il link della canzone da aggiungere
+      addSongButton.addEventListener('click', () => {
+        let query = queueInput.value;
+        if (query.trim() && query.startsWith('https://')) {
+          socket.emit('handle_song_url',query);
+          queueInput.value = '';
+        }
+      });
+
+      // Ad ogni carattere inserito nel campo di input ad intervallo di n secondi
+      // Se la query soddisfa certe condizioni invia la query al server
+      queueInput.addEventListener('input', () => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(() => {
+          let query = queueInput.value;
+          if (query.trim() && !(query.startsWith('https://'))) {
+            socket.emit('handle_search_song', query);
+          }
+        }, 500);
+      });
+      
+      // Al click del pulsante 'invio' il messaggio viene inviato al server che lo elabora
+      // e salva nella lista dei messaggi gia' salvati
+      sendMessageButton.addEventListener('click', () => {
+        const message = messageInput.value;
+        if (message.trim()) {
+          socket.emit('handle_message', {text: message, 
+                           sender_name: '{{ user.name }}', 
+                           sender_id: '{{ user.id }}',
+                           sender_url: '{{ user.url }}',
+                           sender_image: '{{ user.image }}',
+                          });
+          messageInput.value = '';
+        }
+      });
+
+      // Successivamente il messaggio, dopo essere stato elaborato torna al client
+      // Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
+      // Attenzione: Se si riaggiorna la pagina, questo metodo non viene chiamato
+      // per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
       socket.on('new_message', function(message) {
-        addMessageToChat(message);
-      });
-
-      // Funzione per aggiungere un messaggio alla chat
-      function addMessageToChat(message) {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         if (message.sender_id == '{{ user.id }}') {
@@ -70,33 +210,26 @@
             <img src="${message.sender_image}">
             <p>${message.sender_name}</p>
           </div>
-          <p>${message.text}</p>
+          <p class="mess">${message.text}</p>
         `;
         messagesContainer.appendChild(messageElement);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-
-      // Gestione del clic sul pulsante di invio
-      sendMessageButton.addEventListener('click', () => {
-        const message = messageInput.value;
-        if (message.trim()) {
-          socket.emit('handle_message', {text: message, 
-                           sender_name: '{{ user.name }}', 
-                           sender_id: '{{ user.id }}',
-                           sender_url: '{{ user.url }}',
-                           sender_image: '{{ user.image }}',
-                          },
-                          '{{ room.id }}',
-                 );
-          messageInput.value = '';
-        }
       });
 
-      // Gestione della pressione del tasto Enter
+      // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
+      // in un click del pulsante invio
       messageInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault(); // Previene l'invio del modulo, se presente
           sendMessageButton.click();
+        }
+      });
+      // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
+      // in un click del pulsante invio
+      queueInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Previene l'invio del modulo, se presente
+          addSongButton.click();
         }
       });
     });
@@ -122,45 +255,77 @@
   </header>
   <div class="container">
     <div class="sidebar-left">
-      <div class="current-song">
-        <h2>Now Playing</h2>
-        <div class="placeholder"></div>
-        <div class="controls">
-          <button id="rewindbutton" class="animate-button">
-            <img src="/static/images/rewind.png" onclick="animateImage('rewindImage')" alt="Back"></button>
-          <button id="playPauseButton" class="animate-button" onclick="togglePlayPause()">
-            <img src="/static/images/play.png" alt="Play" id="playPauseImage"/></button>
-          <button id="forwardbutton" class="animate-button">
-            <img src="/static/images/forward.png" onclick="animateImage('forwardImage')" alt="Next"></button>
-        </div>
-        <div class="progress-bar">
-          <span class="current-time">0:00</span>
-          <span class="bar"></span>
-          <span class="total-time">0:00</span>
+      <h2>Now Playing</h2>
+      <div class="current-song-image" id="current-song-image">
+        <span></span>
+      </div>
+      <div class="current-song-details" id="current-song-details">
+        <span class="current-song-title-placeholder"></span>
+        <span class="current-song-artists-placeholder"></span>
+      </div>
+      <div class="controls">
+        <button id="rewindbutton" class="animate-button">
+          <img src="/static/images/rewind.png" onclick="animateImage('rewindImage')" alt="Back"></button>
+        <button id="playPauseButton" class="animate-button">
+          <img src="/static/images/play.png" alt="Play" id="playPauseImage"/></button>
+        <button id="forwardbutton" class="animate-button">
+          <img src="/static/images/forward.png" onclick="animateImage('forwardImage')" alt="Next"></button>
+      </div>  
+      <div class="progress-bar">
+        <span class="current-time">0:00</span>
+        <span class="bar"></span>
+        <span class="total-time">0:00</span>
+      </div>
+      <div class="devices-container">
+        <h2>Choose a device</h2>
+        <div class="devices">
+          
         </div>
       </div>
     </div>
     <div class="main-content">
         <div class="queue">
             <h2>Playback Queue</h2>
-            <div class="queue-element">
-                <ul>
-                    <!-- Parte in cui vengono aggiunte le canzoni tramite un input -->
-                    <li>
-                        <div class="song-info">
-                            <span class="album-art"></span>
-                            <div class="details">
-                              <span class="song-title">Titolo della canzone</span>
-                              <span class="song-artist">Artista della canzone</span>
-                            </div>
-                            <span class="song-duration">3:45</span>
-                        </div>
+            <div class="queue-elements">
+                <ul id="queue-list">
+                  {% for song in room.queue %}
+                    <li class="song-info" id="{{ song.id }}">
+                      <img class="album-art" src="{{ song.album.images[2].url }}">
+                      <div class="details">
+                        <span class="song-title">{{ song.name }}</span>
+                        <span class="song-artists">
+                          {% if song.artists|length > 1 %}
+                              {% for artist in song.artists %}
+                                  <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
+                                  {% if not loop.last %}<p>,</p>{% endif %}
+                              {% endfor %}
+                          {% else %}
+                              <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
+                          {% endif %}
+                        </span>
+                      </div>
+                      <span class="addedby-user">
+                        Added by:
+                        <a href="{{ song.addedby.url }}" target="_blank">
+                          <img src="{{ song.addedby.image }}" class="member-icon">
+                          {{ song.addedby.name }}
+                        </a>
+                      </span>
+                      <span class="song-duration">{{ song.duration }}</span>
                     </li>
+                  {% endfor %}
                 </ul>
             </div>
-            <div class="queue-request">
-                <input type="text" id="queue-input" placeholder="Type a message...">
-                <button id="send-queue">Send</button>
+            <div class="searching-box">
+              <h2>Searching your song</h2>
+              <div class="result-search-box">
+                <ul id='results-search-box'>
+                </ul>
+              </div>
+            </div>
+            <div class="queue-input-div">
+                <input type="text" id="queue-input" placeholder="Search or paste a Spotify song here">
+                <button class="button" id="send-song"><p>Add</p></button>
             </div>
         </div>
     </div>
@@ -170,15 +335,24 @@
           <h2>Members</h2>
           <div class="members-controls">
             <button class="button" onclick="copyurl()"><p>Invite</p></button>
-            <a class="button" href="/room/{{ room.id }}/leave"><p>Leave</p></a>
+            <a class="button" href="/room/{{ room.id }}/leave">
+              <!--
+              {% if user == room.creator %}
+              <p>Delete</p>
+              {% else %}
+              <p>Leave</p>
+              {% endif %}
+              -->
+              <p>Leave</p>
+            </a>
           </div>
         </div>
         <div>
-          <ul>
+          <ul id="members-container">
             {% for member in room.members %}
-              <li>
+              <li id="{{ member.id }}">
                 <img src="{{ member.image }}" alt="account icon" class="member-icon">
-                <p class="member-name"'>{{ member.name }}</p>
+                <p class="member-name">{{ member.name }}</p>
               </li>
             {% endfor %}
           </ul>
@@ -201,18 +375,22 @@
               </div>
               <p>{{ message.text }}</p>
             </div>
-          {% endfor %}
+            {% endfor %}
         </div>
         <div class="chat-controls">
           <input type="text" id="message-input" placeholder="Type a message...">
-          <button id="send-message">Send</button>
+          <button class="button" id="send-message"><p>Send</p></button>
         </div>
       </div>
     </div>
   </div>
+    </div>
+  </div>
   <!--
-  <footer>
-    <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
-  </footer>
+    <footer>
+      <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
+    </footer> 
+  -->
+  
 </body>
 </html>
