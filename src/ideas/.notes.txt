@@ -7,6 +7,8 @@ PYTHON
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
 - Quando esco dalla stanza la riproduzione deve interrompersi
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
+- Se un utente entra in una stanza in cui si sta gia' riproducendo musica, deve partire la musica anche a quell'utente
+  (Forse sarebbe meglio creare degli stati 'playing', 'paused', ecc.)
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
