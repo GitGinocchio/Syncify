@@ -7,6 +7,8 @@ import os
 
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer
+from gevent import monkey
+monkey.patch_all()
 
 from .routes import blueprint
 from .sock import socketio

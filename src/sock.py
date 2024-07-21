@@ -5,7 +5,7 @@ import time
 from .utils import *
 from .oauth import *
 
-socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False)
+socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='gevent')
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
@@ -146,7 +146,6 @@ def room_disconnect():
     if not user or not user.room: return
 
     room = user.room
-
 
     leave_room(room.id)
     room.members.remove(user)
