@@ -43,14 +43,16 @@ class Token:
 class Room:
 	name: str = None
 	userlimit: int = 5
+	num_members: int = 0
 	creator: 'User' = None
 	visibility: str = "public"
 	editablequeue: bool = False
-	num_members: int = 0
+	current_song_time : int = 0
 	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
 	queue: list[Song] = field(default_factory=list)
+	history: list[Song] = field(default_factory=list)
 
 	def __eq__(self, other):
 		return self.id == other.id

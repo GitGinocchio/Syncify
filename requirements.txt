@@ -1,7 +1,8 @@
 flask-jwt-extended
+flask-cors
 Flask-SocketIO
 Flask-Session
 flask
-spotipy
 gunicorn
 werkzeug
+spotipy

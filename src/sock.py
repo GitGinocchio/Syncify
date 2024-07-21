@@ -1,6 +1,5 @@
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 from flask import request
-import time
 
 from .utils import *
 from .oauth import *
@@ -91,7 +90,7 @@ def handle_search_song(query : str):
 
 @socketio.on('handle_song_url',namespace='/room')
 @socketio.on('handle_add_song',namespace='/room')
-def handle_add_song(songid_or_url : str):
+def handle_new_song(songid_or_url : str):
     userid = request.args.get('userid')
     roomid = request.args.get('roomid')
 
@@ -129,30 +128,103 @@ def handle_add_song(songid_or_url : str):
 
 @socketio.on('handle_start_playback',namespace='/room')
 def handle_start_playback(songid : str):
+    userid = request.args.get('userid')
     roomid = request.args.get('roomid')
     room = rooms.get(roomid)
 
     if not room: return
 
     for user in room.members:
-        client = get_client(user.token)
-        if not client: continue
-
-        available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
-
-        active_devices = list(filter(lambda device: device['is_active'],available_devices))
-
         try:
+            client = get_client(user.token)
+            if not client: continue
+    
+            available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+    
+            active_devices = list(filter(lambda device: device['is_active'],available_devices))
+
             if len(active_devices) > 0:
                 client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{songid}"])
             else:
                 client.start_playback(device_id=available_devices[0]['id'],uris=[f"spotify:track:{songid}"])
-        except spotipy.exceptions.SpotifyException as e:
-            print(e)
+        except spotipy.exceptions.SpotifyException:
+            socketio.emit('syncify-spicetify-play',songid)
+        
+    socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
 @socketio.on('handle_stop_playback',namespace='/room')
 def handle_stop_playback():
-    pass
+    roomid = request.args.get('roomid')
+    room = rooms.get(roomid)
+
+    if not room: return
+
+    for user in room.members:
+        try:
+            client = get_client(user.token)
+            if not client: continue
+    
+            available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+    
+            active_devices = list(filter(lambda device: device['is_active'],available_devices))
+
+            if len(active_devices) > 0:
+                client.pause_playback(device_id=active_devices[0]['id'])
+            else:
+                client.pause_playback(device_id=available_devices[0]['id'])
+        except spotipy.exceptions.SpotifyException:
+            socketio.emit('syncify-spicetify-stop')
+
+    socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+
+@socketio.on('handle_skip_playback',namespace='/room')
+def handle_skip_playback(songid : str):
+    roomid = request.args.get('roomid')
+    room = rooms.get(roomid)
+
+    if not room: return
+
+    room.history.append(room.queue[0])
+    room.queue.pop(0)
+
+    for user in room.members:
+        try:
+            client = get_client(user.token)
+            if not client: continue
+
+            available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+
+            active_devices = list(filter(lambda device: device['is_active'],available_devices))
+
+            if len(active_devices) > 0:
+                client.next_track(device_id=active_devices[0]['id'])
+            else:
+                client.next_track(device_id=available_devices[0]['id'])
+        except spotipy.exceptions.SpotifyException:
+            socketio.emit('syncify-spicetify-play',songid)
+
+@socketio.on('handle_back_playback',namespace='/room')
+def handle_back_playback():
+    roomid = request.args.get('roomid')
+    room = rooms.get(roomid)
+
+    if not room: return
+
+    for user in room.members:
+        try:
+            client = get_client(user.token)
+            if not client: continue
+
+            available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+
+            active_devices = list(filter(lambda device: device['is_active'],available_devices))
+
+            if len(active_devices) > 0:
+                client.previous_track(device_id=active_devices[0]['id'])
+            else:
+                client.previous_track(device_id=available_devices[0]['id'])
+        except spotipy.exceptions.SpotifyException:
+            socketio.emit('syncify-spicetify-back')
 
 """ Implementazione futura...
 @socketio.on('handle_room_deletion_request')

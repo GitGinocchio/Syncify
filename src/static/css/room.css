@@ -22,11 +22,14 @@
 }
 
 .sidebar-left {
+    display: flex;
+    flex-direction: column;
     border-radius: 8px;
     background-color: #2B2B2B;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     padding: 10px;
+    justify-content: space-between;
 }
 
 .sidebar-left h2 {
@@ -51,10 +54,122 @@
     transition: background-color 0.3s ease;
 }
 
+.sidebar-left .controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
 
 .sidebar-left .controls button img {
     width: 36px;
     height: 36px;
+}
+
+.devices-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column-reverse;
+}
+
+.devices-container h2 {
+    text-align: center;
+    color: white;
+}
+
+.arrow-wrapper {
+    padding: 10px;
+}
+
+.current {
+    box-shadow: 0 0 10px 1px #0a0a0a;
+    border-radius: 12px;
+    border: solid 2px #8a8a8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.arrow-container {
+    margin-bottom: 6px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#current-device {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 1vh;
+}
+
+.arrow {
+    margin-right: 15px;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.arrow::before, 
+.arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 20px;
+  border-radius: 5px;
+  background: #1DB954;
+  transition: .5s;
+}
+
+.arrow1::before {
+  right: 0;
+  transform: translate(-4px, -50%) rotate(-47deg);
+}
+
+.arrow1::after {
+  left: 0;
+  transform: translate(4px, -50%) rotate(47deg);
+}
+
+.chevron1.active {
+  transform: rotate(180deg);
+}
+
+
+#devices-list {
+    border: solid 2px #8a8a8a;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    width: 100%;
+    height: 150px;
+    display: none; /* Nasconde inizialmente la lista dei dispositivi */
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    opacity: 0; /* Inizialmente invisibile */
+    max-height: 0; /* Inizialmente altezza zero */
+    overflow: hidden; /* Nasconde il contenuto che fuoriesce */
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    overflow-y: auto;
+}
+
+#devices-list.show {
+    display: flex; /* Mostra la lista quando ha la classe "show" */
+    max-height: 150px; /* Imposta l'altezza massima quando è visibile */
+    opacity: 1; /* Assicura che sia completamente visibile */
+}
+
+
+.device {
+    display: flex;
+    gap: 1vh;
 }
 
 .queue,
@@ -62,6 +177,17 @@
 .chat {
     height: 100%;
     overflow-y: auto;
+}
+
+.header-queue {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.queue-history-buttons {
+  display: flex;
+  gap: 10px; /* Spazio tra i pulsanti, opzionale */
 }
 
 .current-song-image {
@@ -84,6 +210,15 @@
     margin-bottom: 20px;
     margin-top: 20px;
 }
+
+.history-elements {
+    flex: 1;
+    overflow-y: auto;
+    transition: opacity 0.3s;
+    max-height: 100vh;
+    min-height: 40vh;
+}
+
 
 .animate-button {
     transition: transform 0.1s;

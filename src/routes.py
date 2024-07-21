@@ -121,42 +121,13 @@ def join():
 def room(roomid : str):
     if roomid not in rooms:
         return redirect('/user')
-    #if roomid not in rooms:
-        #session['user'].room = None
-        #return redirect('/user')
 
-    #if not session['user'].room or session['user'].room.id != roomid:
-        #session['user'].room = rooms[roomid]
-    
-    #if session['user'] not in rooms[roomid].members:
-        #rooms[roomid].members.append(session['user'])
-        #rooms[roomid].num_members += 1
-        #socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
-        #socketio.emit('refresh_rooms',namespace='/join')
-        #socketio.emit('refresh_room',namespace='/room')
     user = users[session['userid']]
     return render_template('room.html',user=user, room=rooms[roomid])
 
 @blueprint.route("/room/<roomid>/leave")
 @jwtrequired
 def leave(roomid : str):
-    #if roomid not in shared['rooms'] or roomid != session['user'].session.id:
-        #return redirect('/')
-    #if roomid not in rooms:
-        #return redirect('/user')
-        
-    #if rooms[roomid].creator == session['user']:
-        #socketio.emit('del_room',session['user'].room.asdict(),namespace='/join')
-        #rooms.pop(roomid)
-    #else:
-        #rooms[roomid].members.remove(session['user'])
-        #rooms[roomid].num_members -= 1
-        #socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
-    #session['user'].room = None
-    
-    #socketio.emit('refresh_rooms',namespace='/join')
-    #socketio.emit('refresh_room',namespace='/room')
-    
     return redirect('/user')
 
 @blueprint.route('/logout')

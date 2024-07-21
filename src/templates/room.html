@@ -13,13 +13,17 @@
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
       const socket = io('/room', {
-          query: {
-            userid: '{{ user.id }}',
-            roomid: '{{ room.id }}',
-          }
+        query: {
+          userid: '{{ user.id }}',
+          roomid: '{{ room.id }}',
+        }
       });
       const messageInput = document.getElementById('message-input');
       const queueInput = document.getElementById('queue-input');
+
+      const clickableArrow = document.querySelector('.arrow');
+      const arrows = document.querySelectorAll('.arrow');
+      const devicesList = document.getElementById('devices-list');
 
       const messagesContainer = document.getElementById('chat-messages');
       const membersContainer = document.getElementById('members-container');
@@ -29,7 +33,10 @@
       const currentSongDetailsContainer = document.getElementById('current-song-details');
 
       const sendMessageButton = document.getElementById('send-message');
-      const addSongButton = document.getElementById('send-song')
+      const addSongButton = document.getElementById('send-song');
+      const playPauseButton = document.getElementById('playPauseButton');
+      const skipButton = document.getElementById('skipButton');
+      const backButton = document.getElementById('backButton');
 
       let debounceTimeout;
       
@@ -96,7 +103,7 @@
               <span class="song-duration">${song.duration}</span>
         `;
         queueContainer.appendChild(songElement);
-      })
+      });
 
       socket.on('set_current_song_details', function(song) {
         currentSongImageContainer.innerHTML = '';
@@ -114,6 +121,18 @@
         `;
         
       });
+
+      socket.on('update_playpause_button', function() {
+        var img = document.getElementById("playPauseImage");
+        var songid = document.querySelector(".current-song-title").id
+        if (img.src.includes("play.png")) {
+          img.src = "/static/images/pause.png";
+          img.alt = "Pause";
+        } else {
+          img.src = "/static/images/play.png";
+          img.alt = "Play";
+        }
+      });
       
       function handleSongClick(event) {
         var searchingBox = document.querySelector('.searching-box');
@@ -123,34 +142,30 @@
         socket.emit('handle_add_song',songElement.id)
       }
 
-      function togglePlayPause(event) {
-        var img = document.getElementById("playPauseImage");
-        var songid = document.getElementByClassName("current-song-title").id
-        if (img.src.includes("play.png")) {
-          img.src = "/static/images/pause.png";
-          img.alt = "Pause";
-          socket.emit('handle_start_playback',songid)
-        } else {
-          img.src = "/static/images/play.png";
-          img.alt = "Play";
-          socket.emit('handle_stop_playback')
-        }
-      }
-
       playPauseButton.addEventListener('click',() => {
         var img = document.getElementById("playPauseImage");
-        var songTitleElement = document.getElementsByClassName("current-song-title")[0];
         
         if (img.src.includes("play.png")) {
-          img.src = "/static/images/pause.png";
-          img.alt = "Pause";
+          var songTitleElement = document.querySelector(".current-song-title");
           socket.emit('handle_start_playback',songTitleElement.id)
         } else {
-          img.src = "/static/images/play.png";
-          img.alt = "Play";
           socket.emit('handle_stop_playback')
         }
       });
+
+      skipButton.addEventListener('click',() => {
+        if (queueContainer.length > 1) {
+          queueContainer.removeChild(firstElement);
+          var NextSongId = queueContainer.children[0].id;
+        }
+        socket.emit('handle_skip_playback',NextSongId)
+      });
+
+      backButton.addEventListener('click',() => {
+        var songTitleElement = document.querySelector(".current-song-title");
+        socket.emit('handle_back_playback')
+      });
+      
       
       // Quando viene premuto il tasto 'Invio':
       // Se la input contiene 'https://' allora manda un segnale al server
@@ -232,7 +247,16 @@
           addSongButton.click();
         }
       });
+
+      clickableArrow.addEventListener('click', () => {
+        arrows.forEach((arrow) => {
+          arrow.classList.toggle('active');
+        });
+        devicesList.classList.toggle('show');
+      });
+      
     });
+
   </script>
 </head>
 <body>
@@ -255,73 +279,149 @@
   </header>
   <div class="container">
     <div class="sidebar-left">
-      <h2>Now Playing</h2>
-      <div class="current-song-image" id="current-song-image">
-        <span></span>
+      <div>
+        <h2>Now Playing</h2>
+        <div class="current-song-image" id="current-song-image">
+          {% if room.queue|length > 0 %}
+            <img src="{{ room.queue[0].album.images[1].url }}" alt="album art">
+          {% else %}
+            <span></span>
+          {% endif %}
+        </div>
+        <div class="current-song-details" id="current-song-details">
+          {% if room.queue|length > 0 %}
+            <span class="current-song-title" id="{{ room.queue[0].id }}">{{ room.queue[0].name }}</span>
+            <span class="current-song-artists">
+                {% for artist in room.queue[0].artists %}
+                    <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+          {% else %}
+            <span class="current-song-title-placeholder"></span>
+            <span class="current-song-artists-placeholder"></span>
+          {% endif %}
+        </div>
+        <div class="controls">
+          <button id="backButton" class="animate-button">
+            <img src="/static/images/rewind.png" alt="Back"></button>
+          <button id="playPauseButton" class="animate-button">
+            <img src="/static/images/play.png" alt="Play" id="playPauseImage"/></button>
+          <button id="skipButton" class="animate-button">
+            <img src="/static/images/forward.png" alt="Next"></button>
+        </div>  
+        <div class="progress-bar">
+          <span class="current-time">0:00</span>
+          <span class="bar"></span>
+          <span class="total-time">0:00</span>
+        </div>
       </div>
-      <div class="current-song-details" id="current-song-details">
-        <span class="current-song-title-placeholder"></span>
-        <span class="current-song-artists-placeholder"></span>
-      </div>
-      <div class="controls">
-        <button id="rewindbutton" class="animate-button">
-          <img src="/static/images/rewind.png" onclick="animateImage('rewindImage')" alt="Back"></button>
-        <button id="playPauseButton" class="animate-button">
-          <img src="/static/images/play.png" alt="Play" id="playPauseImage"/></button>
-        <button id="forwardbutton" class="animate-button">
-          <img src="/static/images/forward.png" onclick="animateImage('forwardImage')" alt="Next"></button>
-      </div>  
-      <div class="progress-bar">
-        <span class="current-time">0:00</span>
-        <span class="bar"></span>
-        <span class="total-time">0:00</span>
-      </div>
-      <div class="devices-container">
-        <h2>Choose a device</h2>
-        <div class="devices">
-          
+      <div class="main-devices-container">
+        <div class="devices-container">
+          <div id="devices-list">
+            <div class="device">
+              <img src="" alt="device icon1">
+              <span><p>device1</p></span>
+            </div>
+            <div class="device">
+              <img src="" alt="device icon2">
+              <span><p>device2</p></span>
+            </div>
+            <div class="device">
+              <img src="" alt="device icon3">
+              <span><p>device3</p></span>
+            </div>
+          </div>
+        </div>
+        <div class="arrow-wrapper">
+          <div id="current-box" class="current">
+            <div class="arrow-container">
+              <div class="arrow arrow1 chevron1 clickable"></div>
+              <h2 class="title-devices">Current device:</h2>
+            </div>
+            <div id="current-device">
+              <img src="" alt="device icon1">
+              <span><p>device1</p></span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <div class="main-content">
         <div class="queue">
-            <h2>Playback Queue</h2>
-            <div class="queue-elements">
+            <div class="header-queue">
+                <h2>Playback Queue</h2>
+                <div class="queue-history-buttons">
+                    <button class="button" id="queue-button"><p>Queue</p></button>
+                    <button class="button" id="history-button"><p>History</p></button>
+                </div>
+            </div>
+            <div class="queue-elements" id="queue-elements">
                 <ul id="queue-list">
-                  {% for song in room.queue %}
-                    <li class="song-info" id="{{ song.id }}">
-                      <img class="album-art" src="{{ song.album.images[2].url }}">
-                      <div class="details">
-                        <span class="song-title">{{ song.name }}</span>
-                        <span class="song-artists">
-                          {% if song.artists|length > 1 %}
-                              {% for artist in song.artists %}
-                                  <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
-                                  {% if not loop.last %}<p>,</p>{% endif %}
-                              {% endfor %}
-                          {% else %}
-                              <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
-                          {% endif %}
-                        </span>
-                      </div>
-                      <span class="addedby-user">
-                        Added by:
-                        <a href="{{ song.addedby.url }}" target="_blank">
-                          <img src="{{ song.addedby.image }}" class="member-icon">
-                          {{ song.addedby.name }}
-                        </a>
-                      </span>
-                      <span class="song-duration">{{ song.duration }}</span>
-                    </li>
-                  {% endfor %}
+                    {% for song in room.queue %}
+                        <li class="song-info" id="{{ song.id }}">
+                            <img class="album-art" src="{{ song.album.images[2].url }}">
+                            <div class="details">
+                                <span class="song-title">{{ song.name }}</span>
+                                <span class="song-artists">
+                                    {% if song.artists|length > 1 %}
+                                        {% for artist in song.artists %}
+                                            <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
+                                            {% if not loop.last %}<p>,</p>{% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <span class="addedby-user">
+                                Added by:
+                                <a href="{{ song.addedby.url }}" target="_blank">
+                                    <img src="{{ song.addedby.image }}" class="member-icon">
+                                    {{ song.addedby.name }}
+                                </a>
+                            </span>
+                            <span class="song-duration">{{ song.duration }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="history-elements" id="history-elements" style="display: none;">
+                <ul id="history-list">
+                    <!-- Popolare questa lista con le canzoni passate in riproduzione -->
+                    {% for song in room.history %}
+                        <li class="song-info" id="{{ song.id }}">
+                            <img class="album-art" src="{{ song.album.images[2].url }}">
+                            <div class="details">
+                                <span class="song-title">{{ song.name }}</span>
+                                <span class="song-artists">
+                                    {% if song.artists|length > 1 %}
+                                        {% for artist in song.artists %}
+                                            <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
+                                            {% if not loop.last %}<p>,</p>{% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <span class="addedby-user">
+                                Added by:
+                                <a href="{{ song.addedby.url }}" target="_blank">
+                                    <img src="{{ song.addedby.image }}" class="member-icon">
+                                    {{ song.addedby.name }}
+                                </a>
+                            </span>
+                            <span class="song-duration">{{ song.duration }}</span>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
             <div class="searching-box">
-              <h2>Searching your song</h2>
-              <div class="result-search-box">
-                <ul id='results-search-box'>
-                </ul>
-              </div>
+                <h2>Searching your song</h2>
+                <div class="result-search-box">
+                    <ul id='results-search-box'>
+                    </ul>
+                </div>
             </div>
             <div class="queue-input-div">
                 <input type="text" id="queue-input" placeholder="Search or paste a Spotify song here">
@@ -329,6 +429,7 @@
             </div>
         </div>
     </div>
+
     <div class="sidebar-right">
       <div class="members">
         <div class="members-header">

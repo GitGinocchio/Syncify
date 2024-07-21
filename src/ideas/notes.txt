@@ -11,9 +11,15 @@ PYTHON
         ✓ evento dell'aggiornamento del numero di utenti
     - room: 
         - evento dell'eliminazione della room (refreshare la pagina SOLO di quella room)
-        - evento dell'ingresso di una persona all'interno della room
+        ✓ evento dell'ingresso di una persona all'interno della room
         ✓ evento dell'invio di un messaggio all'interno della room
-        - evento dell'aggiunta di una canzone all'interno della coda della room
+        ✓ evento dell'aggiunta di una canzone all'interno della coda della room
+
+    - sycnify:
+        ✓ evento play/pausa
+        - evento skip
+        - evento back
+        
 
 
 

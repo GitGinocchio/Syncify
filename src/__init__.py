@@ -1,5 +1,6 @@
-from flask import Flask
 from flask_session import Session
+from flask_cors import CORS
+from flask import Flask
 from datetime import timedelta
 import tempfile
 import os
@@ -9,6 +10,7 @@ from .sock import socketio
 from .oauth import jwt
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['SESSION_COOKIE_NAME'] = 'Syncify Cookies'
 app.config['SESSION_COOKIE_SECURE'] = True
