@@ -6,7 +6,7 @@ PYTHON
   piuttosto salvare una variabile per decidere quale dei due modi usare per quell'utente
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
 - Quando esco dalla stanza la riproduzione deve interrompersi
-
+- Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
