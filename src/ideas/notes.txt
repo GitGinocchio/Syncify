@@ -1,28 +1,11 @@
 PYTHON
-- Sostituire gli aggiornamenti delle pagine con gli eventi delle route
-- Creare la coda di riproduzione
-- Sincronizzare tutti i client connessi alla stanza
-- Spostare la chiave 'SPOTIPY_REDIRECT_URI' da .env a un file config
-
-- Eventi delle route:
-    - join: 
-        ✓ evento della creazione di una room
-        ✓ evento dell'eliminazione di una room
-        ✓ evento dell'aggiornamento del numero di utenti
-    - room: 
-        - evento dell'eliminazione della room (refreshare la pagina SOLO di quella room)
-        ✓ evento dell'ingresso di una persona all'interno della room
-        ✓ evento dell'invio di un messaggio all'interno della room
-        ✓ evento dell'aggiunta di una canzone all'interno della coda della room
-
-    - sycnify:
-        ✓ evento play/pausa
-        - evento skip
-        - evento back
-        
-
-
-
+- Sostituire i metodi per ottenere lo userid dal client con socketio con l'ottenimento dello userid con l'access_token utilizzando "get_jwt()"
+- Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
+- Evitare di passare dal WebClient gli id delle canzoni al server (Li posso ottenere molto semplicemente con il roomid accedendo alla coda o alla history della room)
+- Evitare di fare troppe richieste a spotify tentando ogni volta di riprodurre utilizzando l'api
+  piuttosto salvare una variabile per decidere quale dei due modi usare per quell'utente
+- Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
+- Quando esco dalla stanza la riproduzione deve interrompersi
 
 
 HTML

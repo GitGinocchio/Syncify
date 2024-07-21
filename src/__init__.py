@@ -5,6 +5,9 @@ from datetime import timedelta
 import tempfile
 import os
 
+from geventwebsocket.handler import WebSocketHandler
+from gevent.pywsgi import WSGIServer
+
 from .routes import blueprint
 from .sock import socketio
 from .oauth import jwt
@@ -31,4 +34,6 @@ app.register_blueprint(blueprint)
 socketio.init_app(app)
 jwt.init_app(app)
 
-__all__ = ['app']
+server = WSGIServer(('127.0.0.1', 5000), app, handler_class=WebSocketHandler)
+
+__all__ = ['server']

@@ -12,12 +12,10 @@
   <script src="/static/js/room.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
-      const socket = io('/room', {
-        query: {
-          userid: '{{ user.id }}',
-          roomid: '{{ room.id }}',
-        }
-      });
+      const socket = io('/room');
+      const USERID = '{{ user.id }}';
+      const ROOMID = '{{ room.id }}';
+
       const messageInput = document.getElementById('message-input');
       const queueInput = document.getElementById('queue-input');
 
@@ -39,6 +37,10 @@
       const backButton = document.getElementById('backButton');
 
       let debounceTimeout;
+
+      socket.on('connect', () => { socket.emit('handle_join_room',USERID,ROOMID) });
+
+      socket.on('disconnect', () => { socket.emit('handle_leave_room',USERID) });
       
       socket.on('member_join', function(member) {
         const memberElement = document.createElement('li');
@@ -80,7 +82,7 @@
         });
       });
 
-      socket.on('new_song',function(song) {
+      socket.on('new_song',function(song, pos) {
         const songElement = document.createElement('li');
         songElement.classList.add("song-info");
         songElement.id = song.id;
@@ -102,6 +104,7 @@
               </span>
               <span class="song-duration">${song.duration}</span>
         `;
+        
         queueContainer.appendChild(songElement);
       });
 
@@ -139,7 +142,7 @@
         const songElement = event.currentTarget;
         searchingBox.classList.remove('show');
         queueInput.value = '';
-        socket.emit('handle_add_song',songElement.id)
+        socket.emit('handle_add_song',USERID,ROOMID,songElement.id)
       }
 
       playPauseButton.addEventListener('click',() => {
@@ -147,70 +150,72 @@
         
         if (img.src.includes("play.png")) {
           var songTitleElement = document.querySelector(".current-song-title");
-          socket.emit('handle_start_playback',songTitleElement.id)
+          socket.emit('handle_start_playback',ROOMID,songTitleElement.id)
         } else {
-          socket.emit('handle_stop_playback')
+          socket.emit('handle_stop_playback',ROOMID)
         }
       });
 
       skipButton.addEventListener('click',() => {
-        if (queueContainer.length > 1) {
-          queueContainer.removeChild(firstElement);
+        var numsongs = queueContainer.querySelectorAll('li').length
+        var firstsong = queueContainer.querySelector('li');
+        if (numsongs > 1) {
+          queueContainer.removeChild(firstsong);
           var NextSongId = queueContainer.children[0].id;
+          socket.emit('handle_skip_playback',ROOMID,NextSongId)
         }
-        socket.emit('handle_skip_playback',NextSongId)
       });
 
       backButton.addEventListener('click',() => {
         var songTitleElement = document.querySelector(".current-song-title");
-        socket.emit('handle_back_playback')
+        socket.emit('handle_back_playback',ROOMID)
       });
       
-      
-      // Quando viene premuto il tasto 'Invio':
-      // Se la input contiene 'https://' allora manda un segnale al server
-      // Con il link della canzone da aggiungere
       addSongButton.addEventListener('click', () => {
+        // Quando viene premuto il tasto 'Invio':
+        // Se la input contiene 'https://' allora manda un segnale al server
+        // Con il link della canzone da aggiungere
         let query = queueInput.value;
         if (query.trim() && query.startsWith('https://')) {
-          socket.emit('handle_song_url',query);
+          socket.emit('handle_song_url',USERID,ROOMID,query);
           queueInput.value = '';
         }
       });
 
-      // Ad ogni carattere inserito nel campo di input ad intervallo di n secondi
-      // Se la query soddisfa certe condizioni invia la query al server
       queueInput.addEventListener('input', () => {
+        // Ad ogni carattere inserito nel campo di input ad intervallo di n secondi
+        // Se la query soddisfa certe condizioni invia la query al server
         clearTimeout(debounceTimeout);
 
         debounceTimeout = setTimeout(() => {
           let query = queueInput.value;
           if (query.trim() && !(query.startsWith('https://'))) {
-            socket.emit('handle_search_song', query);
+            socket.emit('handle_search_song',USERID, query);
           }
         }, 500);
       });
       
-      // Al click del pulsante 'invio' il messaggio viene inviato al server che lo elabora
-      // e salva nella lista dei messaggi gia' salvati
       sendMessageButton.addEventListener('click', () => {
+        // Al click del pulsante 'invio' il messaggio viene inviato al server che lo elabora
+        // e salva nella lista dei messaggi gia' salvati
         const message = messageInput.value;
         if (message.trim()) {
-          socket.emit('handle_message', {text: message, 
-                           sender_name: '{{ user.name }}', 
-                           sender_id: '{{ user.id }}',
-                           sender_url: '{{ user.url }}',
-                           sender_image: '{{ user.image }}',
-                          });
+          socket.emit('handle_message', ROOMID, {
+                                        text: message, 
+                                        sender_name: '{{ user.name }}', 
+                                        sender_id: '{{ user.id }}',
+                                        sender_url: '{{ user.url }}',
+                                        sender_image: '{{ user.image }}',
+                                        });
           messageInput.value = '';
         }
       });
 
-      // Successivamente il messaggio, dopo essere stato elaborato torna al client
-      // Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
-      // Attenzione: Se si riaggiorna la pagina, questo metodo non viene chiamato
-      // per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
       socket.on('new_message', function(message) {
+        // Successivamente il messaggio, dopo essere stato elaborato torna al client
+        // Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
+        // Attenzione: Se si riaggiorna la pagina, questo metodo non viene chiamato
+        // per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         if (message.sender_id == '{{ user.id }}') {
@@ -231,17 +236,18 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
       });
 
-      // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
-      // in un click del pulsante invio
       messageInput.addEventListener('keypress', (e) => {
+        // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
+        // in un click del pulsante invio
         if (e.key === 'Enter') {
           e.preventDefault(); // Previene l'invio del modulo, se presente
           sendMessageButton.click();
         }
       });
-      // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
-      // in un click del pulsante invio
+
       queueInput.addEventListener('keypress', (e) => {
+        // Metodo che traduce la pressione del tasto 'Enter' della tastiera 
+        // in un click del pulsante invio
         if (e.key === 'Enter') {
           e.preventDefault(); // Previene l'invio del modulo, se presente
           addSongButton.click();
@@ -254,7 +260,7 @@
         });
         devicesList.classList.toggle('show');
       });
-      
+
     });
 
   </script>

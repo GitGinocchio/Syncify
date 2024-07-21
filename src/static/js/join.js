@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const roomsContainer = document.getElementById('public-sessions');
     const socket = io('/join');
-    
-    // Gestisci l'evento 'update' ricevuto dal server
-    socket.on('refresh_rooms', function() {
-        window.location.reload(true);
-    });
 
     socket.on('add_room', function(room){
         const roomElement = document.createElement('div');

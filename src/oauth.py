@@ -6,12 +6,9 @@ import os
 
 from .utils import Token
 
-CLIENT_SECRET = os.environ['SPOTIPY_CLIENT_SECRET']
-REDIRECT_URI = os.environ["SPOTIPY_REDIRECT_URI"]
-CLIENT_ID = os.environ["SPOTIPY_CLIENT_ID"]
 SCOPE = os.environ['SPOTIPY_SCOPE']
 
-cache_handler = spotipy.CacheFileHandler('src/cache/.cache')
+cache_handler = spotipy.CacheFileHandler(os.devnull)
 
 Oauth = spotipy.SpotifyOAuth(scope=SCOPE, cache_handler=cache_handler)
 

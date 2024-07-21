@@ -3,6 +3,6 @@ flask-cors
 Flask-SocketIO
 Flask-Session
 flask
-gunicorn
 werkzeug
 spotipy
+gevent-websocket

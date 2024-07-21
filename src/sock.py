@@ -1,12 +1,11 @@
 from flask_socketio import SocketIO, join_room, leave_room, send, emit
 from flask import request
+import time
 
 from .utils import *
 from .oauth import *
 
-socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,ping_timeout=30)
-
-REFRESH_TIME_LIMIT = 10
+socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False)
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
@@ -15,18 +14,35 @@ rooms : dict[str, Room] = {}
 
 @socketio.on('connect', namespace='/join')
 def join_connect():
-    print("Client connected to /join namespace")
+    userid = getjwt()
+    if not userid: return # Sostituire con un redirect alla pagina home
+
+    user = users.get(userid)
+
+    print(f"{user.name} connected to /join namespace")
 
 @socketio.on('disconnect', namespace='/join')
 def join_disconnect():
-    print("Client disconnected from /join namespace")
+    userid = getjwt()
+    if not userid: return # Sostituire con un redirect alla pagina home
 
-# -------- Room --------
+    user = users.get(userid)
+
+    print(f"{user.name} disconnected from /join namespace")
+
+# -------- Room -------- (Web Client)
 
 @socketio.on('connect', namespace='/room')
 def room_connect():
-    userid = request.args.get('userid')
-    roomid = request.args.get('roomid')
+    userid = getjwt()
+    if not userid: return
+
+    user = users.get(userid)
+
+    print(f"{user.name} connected to /room namespace")
+
+@socketio.on('handle_join_room', namespace='/room')
+def handle_join_room(userid: str, roomid: str):
     user = users.get(userid)
     room = rooms.get(roomid)
 
@@ -42,22 +58,17 @@ def room_connect():
 
     socketio.emit('update_member_count',room.asdict(),namespace='/join')
     socketio.emit('member_join',user.asdict(),namespace='/room',to=roomid)
-    print("Client connected to /room namespace")
 
 @socketio.on('handle_message', namespace='/room')
-def handle_message(message_data):
-    roomid = request.args.get('roomid')
-    message = Message(**message_data)
+def handle_message(roomid: str, messagedict: dict):
+    message = Message(**messagedict)
     rooms[roomid].chat.append(message)
-    socketio.emit('new_message',message_data,namespace='/room', to=roomid)
+    socketio.emit('new_message',messagedict,namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
-def handle_search_song(query : str):
-    userid = request.args.get('userid')
-    roomid = request.args.get('roomid')
-    
+def handle_search_song(userid: str, query: str):
     user = users.get(userid)
-    if not user or not roomid: return
+    if not user: return
         
     client = get_client(user.token)
     if not client: return
@@ -86,14 +97,11 @@ def handle_search_song(query : str):
                    )
         songs.append(song.asdict())
 
-    socketio.emit('search_results',songs,namespace='/room',to=request.sid)
+    socketio.emit('search_results',songs,to=request.sid,namespace='/room')
 
 @socketio.on('handle_song_url',namespace='/room')
 @socketio.on('handle_add_song',namespace='/room')
-def handle_new_song(songid_or_url : str):
-    userid = request.args.get('userid')
-    roomid = request.args.get('roomid')
-
+def handle_new_song(userid: str, roomid: str, songid_or_url : str):
     user = users.get(userid)
     room = rooms.get(roomid)
 
@@ -126,10 +134,50 @@ def handle_new_song(songid_or_url : str):
     if len(room.queue) == 1:
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
 
+@socketio.on('disconnect', namespace='/room')
+def room_disconnect():
+    userid = getjwt()
+
+    if not userid: return   # Sostituire con un redirect alla pagina home
+
+    user = users.get(userid)
+
+    # Forse questo puo' creare problemi
+    if not user or not user.room: return
+
+    room = user.room
+
+
+    leave_room(room.id)
+    room.members.remove(user)
+    room.num_members -= 1
+    socketio.emit('update_member_count',room.asdict(),namespace='/join')
+    socketio.emit('member_leave',user.asdict(),namespace='/room',to=room.id)
+    user.room = None
+
+    if room.creator.id != user.id: return
+
+    def room_scheduled_removal(creator : User, room : Room):
+        time.sleep(5)
+
+        if creator in room.members: return
+
+        socketio.emit('del_room',room.id,namespace='/join')
+        socketio.emit('del_room',namespace='/room',to=room.id)
+        if room.id in rooms: rooms.pop(room.id)
+
+    socketio.start_background_task(room_scheduled_removal,user,room)
+
+    print(f"{user.name} disconnected from room '{room.name}' created by {room.creator.name}")
+
+# -------- Room -------- (Spotify Client)
+
 @socketio.on('handle_start_playback',namespace='/room')
-def handle_start_playback(songid : str):
-    userid = request.args.get('userid')
-    roomid = request.args.get('roomid')
+def handle_start_playback(roomid: str, songid : str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     room = rooms.get(roomid)
 
     if not room: return
@@ -145,7 +193,7 @@ def handle_start_playback(songid : str):
 
             if len(active_devices) > 0:
                 client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{songid}"])
-            else:
+            elif len(available_devices) > 0:
                 client.start_playback(device_id=available_devices[0]['id'],uris=[f"spotify:track:{songid}"])
         except spotipy.exceptions.SpotifyException:
             socketio.emit('syncify-spicetify-play',songid)
@@ -153,8 +201,11 @@ def handle_start_playback(songid : str):
     socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
 @socketio.on('handle_stop_playback',namespace='/room')
-def handle_stop_playback():
-    roomid = request.args.get('roomid')
+def handle_stop_playback(roomid: str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     room = rooms.get(roomid)
 
     if not room: return
@@ -170,7 +221,7 @@ def handle_stop_playback():
 
             if len(active_devices) > 0:
                 client.pause_playback(device_id=active_devices[0]['id'])
-            else:
+            elif len(available_devices) > 0:
                 client.pause_playback(device_id=available_devices[0]['id'])
         except spotipy.exceptions.SpotifyException:
             socketio.emit('syncify-spicetify-stop')
@@ -178,8 +229,11 @@ def handle_stop_playback():
     socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
 @socketio.on('handle_skip_playback',namespace='/room')
-def handle_skip_playback(songid : str):
-    roomid = request.args.get('roomid')
+def handle_skip_playback(roomid: str, songid : str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     room = rooms.get(roomid)
 
     if not room: return
@@ -198,17 +252,29 @@ def handle_skip_playback(songid : str):
 
             if len(active_devices) > 0:
                 client.next_track(device_id=active_devices[0]['id'])
-            else:
+            elif len(available_devices) > 0:
                 client.next_track(device_id=available_devices[0]['id'])
         except spotipy.exceptions.SpotifyException:
             socketio.emit('syncify-spicetify-play',songid)
 
 @socketio.on('handle_back_playback',namespace='/room')
-def handle_back_playback():
-    roomid = request.args.get('roomid')
+def handle_back_playback(roomid: str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     room = rooms.get(roomid)
 
     if not room: return
+
+    if len(room.history) == 0: return
+
+    lastsong = room.history[-1]
+    room.queue.pop(0)
+    room.history.append(lastsong)
+    room.queue.insert(0,lastsong)
+
+    socketio.emit('new_song',lastsong.asdict(),namespace='/room',to=roomid)
 
     for user in room.members:
         try:
@@ -221,37 +287,7 @@ def handle_back_playback():
 
             if len(active_devices) > 0:
                 client.previous_track(device_id=active_devices[0]['id'])
-            else:
+            elif len(available_devices) > 0:
                 client.previous_track(device_id=available_devices[0]['id'])
         except spotipy.exceptions.SpotifyException:
-            socketio.emit('syncify-spicetify-back')
-
-""" Implementazione futura...
-@socketio.on('handle_room_deletion_request')
-def handle_room_deletion_request():
-    pass
-"""
-
-@socketio.on('disconnect', namespace='/room')
-def room_disconnect():
-    userid = request.args.get('userid')
-    user = users.get(userid)
-
-    # Forse questo puo' creare problemi
-    if not user or not user.room: return
-
-    room = user.room
-
-    leave_room(room.id)
-
-    if room.creator == user:
-        socketio.emit('del_room',room.id,namespace='/join')
-        socketio.emit('del_room',namespace='/room',to=room.id)
-        rooms.pop(room.id)
-    else:
-        room.members.remove(user)
-        room.num_members -= 1
-        socketio.emit('update_member_count',room.asdict(),namespace='/join')
-        socketio.emit('member_leave',user.asdict(),namespace='/room',to=room.id)
-    user.room = None
-    print("Client disconnected from /room namespace")
+            socketio.emit('syncify-spicetify-play',lastsong.id)
