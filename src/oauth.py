@@ -29,7 +29,7 @@ def getjwt():
     access_token = request.cookies.get('access_token')
     if access_token:
         try:
-            userid = decode_token(access_token)['sub']
+            userid = str(decode_token(access_token)['sub'])
             return userid
         except Exception:
             return None

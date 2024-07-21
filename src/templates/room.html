@@ -13,7 +13,6 @@
   <script>
     document.addEventListener('DOMContentLoaded', (event) => {
       const socket = io('/room');
-      const USERID = '{{ user.id }}';
       const ROOMID = '{{ room.id }}';
 
       const messageInput = document.getElementById('message-input');
@@ -38,9 +37,9 @@
 
       let debounceTimeout;
 
-      socket.on('connect', () => { socket.emit('handle_join_room',USERID,ROOMID) });
+      socket.on('connect', () => { socket.emit('handle_join_room',ROOMID) });
 
-      socket.on('disconnect', () => { socket.emit('handle_leave_room',USERID) });
+      socket.on('disconnect', () => { socket.emit('handle_leave_room') });
       
       socket.on('member_join', function(member) {
         const memberElement = document.createElement('li');
@@ -142,7 +141,7 @@
         const songElement = event.currentTarget;
         searchingBox.classList.remove('show');
         queueInput.value = '';
-        socket.emit('handle_add_song',USERID,ROOMID,songElement.id)
+        socket.emit('handle_add_song',ROOMID,songElement.id)
       }
 
       playPauseButton.addEventListener('click',() => {
@@ -177,7 +176,7 @@
         // Con il link della canzone da aggiungere
         let query = queueInput.value;
         if (query.trim() && query.startsWith('https://')) {
-          socket.emit('handle_song_url',USERID,ROOMID,query);
+          socket.emit('handle_song_url',ROOMID,query);
           queueInput.value = '';
         }
       });
@@ -190,7 +189,7 @@
         debounceTimeout = setTimeout(() => {
           let query = queueInput.value;
           if (query.trim() && !(query.startsWith('https://'))) {
-            socket.emit('handle_search_song',USERID, query);
+            socket.emit('handle_search_song', query);
           }
         }, 500);
       });

@@ -1,8 +1,8 @@
+flask
 flask-jwt-extended
 flask-cors
 Flask-SocketIO
 Flask-Session
-flask
 werkzeug
 spotipy
 gevent-websocket

@@ -33,16 +33,21 @@ def join_disconnect():
 # -------- Room -------- (Web Client)
 
 @socketio.on('connect', namespace='/room')
-def room_connect():
+def handle_room_connect():
     userid = getjwt()
-    if not userid: return
+
+    if not userid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
 
     print(f"{user.name} connected to /room namespace")
 
 @socketio.on('handle_join_room', namespace='/room')
-def handle_join_room(userid: str, roomid: str):
+def handle_join_room(roomid: str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     user = users.get(userid)
     room = rooms.get(roomid)
 
@@ -66,7 +71,11 @@ def handle_message(roomid: str, messagedict: dict):
     socketio.emit('new_message',messagedict,namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
-def handle_search_song(userid: str, query: str):
+def handle_search_song(query: str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     user = users.get(userid)
     if not user: return
         
@@ -101,14 +110,18 @@ def handle_search_song(userid: str, query: str):
 
 @socketio.on('handle_song_url',namespace='/room')
 @socketio.on('handle_add_song',namespace='/room')
-def handle_new_song(userid: str, roomid: str, songid_or_url : str):
+def handle_new_song(roomid: str, songid : str):
+    userid = getjwt()
+    
+    if not userid: return # Sostituire con un redirect alla pagina home
+
     user = users.get(userid)
     room = rooms.get(roomid)
 
     if not user or not room: return
 
     client = get_client(user.token)
-    track = client.track(songid_or_url)
+    track = client.track(songid)
 
     if not track: return
 
@@ -135,7 +148,7 @@ def handle_new_song(userid: str, roomid: str, songid_or_url : str):
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
 
 @socketio.on('disconnect', namespace='/room')
-def room_disconnect():
+def handle_room_disconnect():
     userid = getjwt()
 
     if not userid: return   # Sostituire con un redirect alla pagina home
