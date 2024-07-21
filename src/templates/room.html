@@ -25,7 +25,8 @@
       const messagesContainer = document.getElementById('chat-messages');
       const membersContainer = document.getElementById('members-container');
       const resultsContainer = document.getElementById('results-search-box');
-      const queueContainer = document.getElementById('queue-list')
+      const queueContainer = document.getElementById('queue-list');
+      const historyContainer = document.getElementById('history-list');
       const currentSongImageContainer = document.getElementById('current-song-image');
       const currentSongDetailsContainer = document.getElementById('current-song-details');
 
@@ -34,7 +35,7 @@
       const playPauseButton = document.getElementById('playPauseButton');
       const skipButton = document.getElementById('skipButton');
       const backButton = document.getElementById('backButton');
-
+      
       let debounceTimeout;
 
       socket.on('connect', () => { socket.emit('handle_join_room',ROOMID) });
@@ -360,7 +361,7 @@
                     <button class="button" id="history-button"><p>History</p></button>
                 </div>
             </div>
-            <div class="queue-elements" id="queue-elements">
+            <div class="queue-elements">
                 <ul id="queue-list">
                     {% for song in room.queue %}
                         <li class="song-info" id="{{ song.id }}">
@@ -390,7 +391,7 @@
                     {% endfor %}
                 </ul>
             </div>
-            <div class="history-elements" id="history-elements" style="display: none;">
+            <div class="history-elements hide">
                 <ul id="history-list">
                     <!-- Popolare questa lista con le canzoni passate in riproduzione -->
                     {% for song in room.history %}

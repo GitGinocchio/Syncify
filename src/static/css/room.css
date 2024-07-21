@@ -219,6 +219,10 @@
     min-height: 40vh;
 }
 
+.hide{
+    display: none;
+}
+
 
 .animate-button {
     transition: transform 0.1s;
@@ -291,6 +295,8 @@
     padding-bottom: 10px;
     color: #FFFFFF; /* Colore del testo dell'intestazione */
 }
+
+
 
 .queue-elements {
     flex: 1; /* Occupa lo spazio disponibile sopra il footer */

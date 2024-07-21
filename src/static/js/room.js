@@ -17,7 +17,9 @@ function copyurl() {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   const resultsContainer = document.getElementById('results-search-box');
-
+  const queueContainer = document.getElementById('queue-list');
+  const historyContainer = document.getElementById('history-list');
+  
   document.getElementById('queue-input').addEventListener('input', function() {
       var searchingBox = document.querySelector('.searching-box');
       var query = this.value.trim();
@@ -42,5 +44,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         resultsContainer.innerHTML = '';
       }
   });
+
+  document.getElementById('queue-button').addEventListener('click', function() {
+    queueContainer.classList.remove('hide')
+    historyContainer.classList.add('hide')
+  });
+
+  document.getElementById('history-button').addEventListener('click', function() {
+    queueContainer.classList.add('hide')
+    historyContainer.classList.remove('hide')
+  });
+
 });
 

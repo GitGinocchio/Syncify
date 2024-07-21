@@ -1,5 +1,5 @@
 PYTHON
-- Sostituire i metodi per ottenere lo userid dal client con socketio con l'ottenimento dello userid con l'access_token utilizzando "get_jwt()"
+✓ Sostituire i metodi per ottenere lo userid dal client con socketio con l'ottenimento dello userid con l'access_token utilizzando "get_jwt()"
 - Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
 - Evitare di passare dal WebClient gli id delle canzoni al server (Li posso ottenere molto semplicemente con il roomid accedendo alla coda o alla history della room)
 - Evitare di fare troppe richieste a spotify tentando ogni volta di riprodurre utilizzando l'api
@@ -9,6 +9,9 @@ PYTHON
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
 - Se un utente entra in una stanza in cui si sta gia' riproducendo musica, deve partire la musica anche a quell'utente
   (Forse sarebbe meglio creare degli stati 'playing', 'paused', ecc.)
+- Aggiornare la sezione "Now Playing" allo skip
+- Quando si torna indietro la canzone da ascoltare nuovamente deve essere messa come primo Child
+- Quando torno alla canzone precedente il tasto play deve aggiornarsi
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
