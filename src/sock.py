@@ -185,7 +185,7 @@ def handle_new_song(roomid: str, songid : str):
         addedby=user
        )
     room.queue.append(song)
-    socketio.emit('new_song',song.asdict(),namespace='/room',to=roomid)
+    socketio.emit('add_song',(song.asdict(),-1),namespace='/room',to=roomid)
 
     if len(room.queue) == 1:
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
@@ -309,14 +309,16 @@ def handle_skip_playback(roomid: str):
 
     if not room: return
 
-    if len(room.queue) == 0:             # Se non esistono canzoni nella queue ritorna
-        room.status = 'idle'
+    if len(room.queue) == 0:             # Se non esistono canzoni nella queue
+        room.status = 'idle'                 # Imposta lo stato della stanza in idle
 
-    lastplayed = room.queue.pop(0)       # Ottengo e tolgo dalla queue la prima canzone
-    room.history.append(lastplayed)      # La prima canzone nella coda viene aggiunta nella history
+    if room.status == 'playing':         # Se lo stato della stanza e' playing
+        lastplayed = room.queue.pop(0)       # Ottengo e tolgo dalla queue la prima canzone
+        room.history.append(lastplayed)      # La prima canzone nella coda viene aggiunta nella history
 
     if len(room.queue) == 0:             # Se dopo aver saltato la canzone non ce ne sono altre non si riproduce altro
-        room.status = 'idle'
+        room.status = 'idle'                # Imposta lo stato della stanza in idle
+        socketio.emit('del_song',0,namespace='/room',to=roomid)
 
     if room.status == 'idle':
         for user in room.members:
@@ -390,7 +392,8 @@ def handle_back_playback(roomid: str):
 
     room.queue.insert(0,lastplayed)       # Inserisco come prossima canzone nella queue l'ultima canzone ascoltata
 
-    socketio.emit('new_song',lastplayed.asdict(),namespace='/room',to=roomid) # Aggiungere la canzone come primo elemento e non alla fine della coda
+    socketio.emit('del_song',0,namespace='/room',to=roomid)
+    socketio.emit('add_song',(lastplayed.asdict(),0),namespace='/room',to=roomid) # Aggiungere la canzone come primo elemento e non alla fine della coda
 
     for user in room.members:
         if user.product == 'premium':

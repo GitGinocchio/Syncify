@@ -80,7 +80,7 @@
         });
       });
 
-      socket.on('new_song',function(song, pos) {
+      socket.on('add_song',function(song, index) {
         const songElement = document.createElement('li');
         songElement.classList.add("song-info");
         songElement.id = song.id;
@@ -103,7 +103,18 @@
               <span class="song-duration">${song.duration}</span>
         `;
         
-        queueContainer.appendChild(songElement);
+        if (index === -1) {
+          queueContainer.appendChild(songElement);
+        } else {
+          queueContainer.insertBefore(songElement, queueContainer.children[index]);
+        }
+      });
+
+      socket.on('del_song', function(index) {
+        if (queueContainer && queueContainer.children && index >= 0 && index < queueContainer.children.length) {
+          const item = queueContainer.children[index];
+          queueContainer.removeChild(item);
+        }
       });
 
       socket.on('set_current_song_details', function(song) {
