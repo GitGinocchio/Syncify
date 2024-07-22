@@ -10,6 +10,26 @@ socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
 
+# -------- User --------
+
+@socketio.on('connect',namespace='/user')
+def user_connect():
+    userid = getjwt()
+    if not userid: return # Sostituire con un redirect alla pagina home
+
+    user = users.get(userid)
+
+    print(f"{user.name} connected to /user namespace")
+
+@socketio.on('disconnect',namespace='/user')
+def user_disconnect():
+    userid = getjwt()
+    if not userid: return # Sostituire con un redirect alla pagina home
+
+    user = users.get(userid)
+
+    print(f"{user.name} disconnected from /user namespace")
+
 # -------- Join --------
 
 @socketio.on('connect', namespace='/join')
@@ -46,7 +66,7 @@ def handle_room_connect():
 def handle_join_room(roomid: str):
     userid = getjwt()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid: return                                          # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
@@ -54,6 +74,23 @@ def handle_join_room(roomid: str):
     if not room or not user: return
 
     join_room(roomid)
+
+    if len(room.queue) > 0 and room.status == 'playing':
+        nextsong = room.queue[0]
+
+        # Qui bisognera' fare un seek, alla posizione attuale della riproduzione
+        if user.product == 'premium':
+            client = get_client(user.token)
+            available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+            active_devices = list(filter(lambda device: device['is_active'],available_devices))
+            if len(active_devices) > 0:
+                client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{nextsong.id}"])
+            elif len(available_devices) > 0:
+                client.pause_playback(device_id=available_devices[0]['id'])
+        else:
+            socketio.emit('syncify-spicetify-play',nextsong.id)     # Questo da fare solo per l'utente che esce e non tutti gli utenti
+
+        socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
     if user in room.members: return
 
@@ -151,14 +188,24 @@ def handle_new_song(roomid: str, songid : str):
 def handle_room_disconnect():
     userid = getjwt()
 
-    if not userid: return   # Sostituire con un redirect alla pagina home
+    if not userid: return                           # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
 
-    # Forse questo puo' creare problemi
-    if not user or not user.room: return
+    if not user or not user.room: return            # Forse questo puo' creare problemi
 
     room = user.room
+
+    if user.product == 'premium':
+        client = get_client(user.token)
+        available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+        active_devices = list(filter(lambda device: device['is_active'],available_devices))
+        if len(active_devices) > 0:
+            client.pause_playback(device_id=active_devices[0]['id'])
+        elif len(available_devices) > 0:
+            client.pause_playback(device_id=available_devices[0]['id'])
+    else:
+        socketio.emit('syncify-spicetify-stop')     # Questo da fare solo per l'utente che esce e non tutti gli utenti
 
     leave_room(room.id)
     room.members.remove(user)
@@ -185,7 +232,7 @@ def handle_room_disconnect():
 # -------- Room -------- (Spotify Client)
 
 @socketio.on('handle_start_playback',namespace='/room')
-def handle_start_playback(roomid: str, songid : str):
+def handle_start_playback(roomid: str):
     userid = getjwt()
 
     if not userid: return # Sostituire con un redirect alla pagina home
@@ -194,21 +241,26 @@ def handle_start_playback(roomid: str, songid : str):
 
     if not room: return
 
+    if len(room.queue) == 0: return
+    
+    nextsong = room.queue[0]
+
+    room.status = 'playing'
+
     for user in room.members:
-        try:
+        if user.product == 'premium':
             client = get_client(user.token)
             if not client: continue
-    
+
             available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
-    
             active_devices = list(filter(lambda device: device['is_active'],available_devices))
 
             if len(active_devices) > 0:
-                client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{songid}"])
+                client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{nextsong.id}"])
             elif len(available_devices) > 0:
-                client.start_playback(device_id=available_devices[0]['id'],uris=[f"spotify:track:{songid}"])
-        except spotipy.exceptions.SpotifyException:
-            socketio.emit('syncify-spicetify-play',songid)
+                client.start_playback(device_id=available_devices[0]['id'],uris=[f"spotify:track:{nextsong.id}"])
+        else:
+            socketio.emit('syncify-spicetify-play',nextsong.id)
         
     socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
@@ -222,52 +274,78 @@ def handle_stop_playback(roomid: str):
 
     if not room: return
 
+    room.status = 'idle'
+
     for user in room.members:
-        try:
+        if user.product == 'premium':
             client = get_client(user.token)
             if not client: continue
     
             available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
-    
             active_devices = list(filter(lambda device: device['is_active'],available_devices))
 
             if len(active_devices) > 0:
                 client.pause_playback(device_id=active_devices[0]['id'])
             elif len(available_devices) > 0:
                 client.pause_playback(device_id=available_devices[0]['id'])
-        except spotipy.exceptions.SpotifyException:
+        else:
             socketio.emit('syncify-spicetify-stop')
 
     socketio.emit('update_playpause_button',namespace='/room',to=roomid)
 
 @socketio.on('handle_skip_playback',namespace='/room')
-def handle_skip_playback(roomid: str, songid : str):
+def handle_skip_playback(roomid: str):
     userid = getjwt()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid: return                # Sostituire con un redirect alla pagina home
 
     room = rooms.get(roomid)
 
     if not room: return
 
-    room.history.append(room.queue[0])
-    room.queue.pop(0)
+    if len(room.queue) == 0:             # Se non esistono canzoni nella queue ritorna
+        room.status = 'idle'
+
+    lastplayed = room.queue.pop(0)       # Ottengo e tolgo dalla queue la prima canzone
+    room.history.append(lastplayed)      # La prima canzone nella coda viene aggiunta nella history
+
+    if len(room.queue) == 0:             # Se dopo aver saltato la canzone non ce ne sono altre non si riproduce altro
+        room.status = 'idle'
+
+    if room.status == 'idle':
+        for user in room.members:
+            if user.product == 'premium':
+                client = get_client(user.token)
+                if not client: continue
+        
+                available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+                active_devices = list(filter(lambda device: device['is_active'],available_devices))
+
+                if len(active_devices) > 0:
+                    client.pause_playback(device_id=active_devices[0]['id'])
+                elif len(available_devices) > 0:
+                    client.pause_playback(device_id=available_devices[0]['id'])
+            else:
+                socketio.emit('syncify-spicetify-stop')
+        socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+        return
+
+    nextsong = room.queue[0]             # Ottengo la prossima canzone presente nella queue
 
     for user in room.members:
-        try:
+        if user.product == 'premium':
             client = get_client(user.token)
             if not client: continue
 
             available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
-
             active_devices = list(filter(lambda device: device['is_active'],available_devices))
 
             if len(active_devices) > 0:
-                client.next_track(device_id=active_devices[0]['id'])
+                client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{nextsong.id}"])
             elif len(available_devices) > 0:
-                client.next_track(device_id=available_devices[0]['id'])
-        except spotipy.exceptions.SpotifyException:
-            socketio.emit('syncify-spicetify-play',songid)
+                client.start_playback(device_id=available_devices[0]['id'], uris=[f"spotify:track:{nextsong.id}"])
+        else:
+            socketio.emit('syncify-spicetify-play',nextsong.id)
 
 @socketio.on('handle_back_playback',namespace='/room')
 def handle_back_playback(roomid: str):
@@ -279,27 +357,46 @@ def handle_back_playback(roomid: str):
 
     if not room: return
 
-    if len(room.history) == 0: return
+    if len(room.history) == 0:            # Se non esiste una canzone gia' ascoltata ritorna
+        room.status = 'idle'
+        for user in room.members:
+            if user.product == 'premium':
+                client = get_client(user.token)
+                if not client: continue
+        
+                available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
+                active_devices = list(filter(lambda device: device['is_active'],available_devices))
 
-    lastsong = room.history[-1]
-    room.queue.pop(0)
-    room.history.append(lastsong)
-    room.queue.insert(0,lastsong)
+                if len(active_devices) > 0:
+                    client.pause_playback(device_id=active_devices[0]['id'])
+                elif len(available_devices) > 0:
+                    client.pause_playback(device_id=available_devices[0]['id'])
+            else:
+                socketio.emit('syncify-spicetify-stop')
+        socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+        return
+    
+    lastplayed = room.history[-1]         # Prendo l'ultima canzone ascoltata dalla history ma non la tolgo
 
-    socketio.emit('new_song',lastsong.asdict(),namespace='/room',to=roomid)
+    if len(room.queue) > 0:               # Se esiste una canzone attuale nella coda
+        currentsong = room.queue.pop(0)       # Prendo la canzone attuale e la tolgo dalla coda  
+        room.history.append(currentsong)      # Inserisco la canzone attuale nella history
+
+    room.queue.insert(0,lastplayed)       # Inserisco come prossima canzone nella queue l'ultima canzone ascoltata
+
+    socketio.emit('new_song',lastplayed.asdict(),namespace='/room',to=roomid) # Aggiungere la canzone come primo elemento e non alla fine della coda
 
     for user in room.members:
-        try:
+        if user.product == 'premium':
             client = get_client(user.token)
             if not client: continue
 
             available_devices = list(filter(lambda device: not device['is_restricted'],client.devices()['devices']))
-
             active_devices = list(filter(lambda device: device['is_active'],available_devices))
 
             if len(active_devices) > 0:
-                client.previous_track(device_id=active_devices[0]['id'])
+                client.start_playback(device_id=active_devices[0]['id'], uris=[f"spotify:track:{lastplayed.id}"])
             elif len(available_devices) > 0:
-                client.previous_track(device_id=available_devices[0]['id'])
-        except spotipy.exceptions.SpotifyException:
-            socketio.emit('syncify-spicetify-play',lastsong.id)
+                client.start_playback(device_id=available_devices[0]['id'], uris=[f"spotify:track:{lastplayed.id}"])
+        else:
+            socketio.emit('syncify-spicetify-play',lastplayed.id)

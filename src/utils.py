@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field, asdict
+from typing import Literal
 import uuid
 
 @dataclass
@@ -45,9 +46,10 @@ class Room:
 	userlimit: int = 5
 	num_members: int = 0
 	creator: 'User' = None
-	visibility: str = "public"
+	visibility: str = 'public'
 	editablequeue: bool = False
 	current_song_time : int = 0
+	status : Literal['idle','playing'] = 'idle'
 	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
@@ -65,7 +67,8 @@ class Room:
 			'visbility' : self.visibility,
 			'editablequeue' : self.editablequeue,
 			'num_members' : self.num_members,
-			'id' : self.id
+			'id' : self.id,
+			'status' : self.status
 		}
 		
 @dataclass
@@ -74,8 +77,7 @@ class User:
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
 	id: str = field(default_factory=str,init=False)
-	refreshing : bool = field(default=False)
-	last_connection_time : float = None
+	product: Literal['premium','free']
 	token: Token = None
 	room: Room = None
 
@@ -88,6 +90,7 @@ class User:
 			'url' : self.url,
 			'image' : self.image,
 			'id' : self.id,
+			'product' : self.product
 			#'token' : self.token.asdict() # Disattivato per maggior sicurezza
 		}
 

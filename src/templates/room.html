@@ -49,9 +49,7 @@
           <img src="${member.image}" alt="account icon" class="member-icon">
           <p class="member-name">${ member.name }</p>
         `
-        if (memberElement) {
-          membersContainer.appendChild(memberElement)
-        }
+        membersContainer.appendChild(memberElement)
       });
 
       socket.on('member_leave', function(member) {
@@ -127,7 +125,6 @@
 
       socket.on('update_playpause_button', function() {
         var img = document.getElementById("playPauseImage");
-        var songid = document.querySelector(".current-song-title").id
         if (img.src.includes("play.png")) {
           img.src = "/static/images/pause.png";
           img.alt = "Pause";
@@ -149,8 +146,7 @@
         var img = document.getElementById("playPauseImage");
         
         if (img.src.includes("play.png")) {
-          var songTitleElement = document.querySelector(".current-song-title");
-          socket.emit('handle_start_playback',ROOMID,songTitleElement.id)
+          socket.emit('handle_start_playback',ROOMID)
         } else {
           socket.emit('handle_stop_playback',ROOMID)
         }
@@ -161,9 +157,8 @@
         var firstsong = queueContainer.querySelector('li');
         if (numsongs > 1) {
           queueContainer.removeChild(firstsong);
-          var NextSongId = queueContainer.children[0].id;
-          socket.emit('handle_skip_playback',ROOMID,NextSongId)
         }
+        socket.emit('handle_skip_playback',ROOMID)
       });
 
       backButton.addEventListener('click',() => {
