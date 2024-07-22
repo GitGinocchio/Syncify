@@ -77,7 +77,7 @@ class User:
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
 	id: str = field(default_factory=str,init=False)
-	product: Literal['premium','free']
+	product: Literal['premium','free'] = None
 	token: Token = None
 	room: Room = None
 
