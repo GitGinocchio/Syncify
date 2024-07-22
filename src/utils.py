@@ -70,7 +70,18 @@ class Room:
 			'id' : self.id,
 			'status' : self.status
 		}
-		
+
+@dataclass
+class Message:
+	sender : 'User'
+	text : str = None
+
+	def asdict(self): 
+		return {
+			'sender' : self.sender.asdict(exclude_devices=True),
+			'text' : self.text
+		}
+
 @dataclass
 class User:
 	name: str = field(default_factory=str,init=False)
@@ -78,28 +89,34 @@ class User:
 	image: str = field(default_factory=str,init=False)
 	id: str = field(default_factory=str,init=False)
 	product: Literal['premium','free'] = None
+	devices: list['Device'] = field(default_factory=list,init=False)
 	token: Token = None
 	room: Room = None
 
 	def __eq__(self, other):
 		return self.id == other.id
 
-	def asdict(self):
-		return {
+	def asdict(self,*, exclude_devices : bool = False):
+		_dict = {
 			'name' : self.name,
 			'url' : self.url,
 			'image' : self.image,
 			'id' : self.id,
-			'product' : self.product
-			#'token' : self.token.asdict() # Disattivato per maggior sicurezza
+			'product' : self.product,
 		}
+		if not exclude_devices:
+			_dict['devices'] = [device.asdict() for device in self.devices]
+		return _dict
 
 @dataclass
-class Message:
-	sender_name : str
-	sender_image : str
-	sender_url : str
-	sender_id : str
-	text : str = None
+class Device:
+	id : str
+	name : str
+	type : str
+	supports_volume : bool
+	volume_percent : int
+	is_active : bool
+	is_private_session : bool
+	is_restricted : bool
 
 	def asdict(self): return asdict(self)

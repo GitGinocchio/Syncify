@@ -193,15 +193,9 @@
       sendMessageButton.addEventListener('click', () => {
         // Al click del pulsante 'invio' il messaggio viene inviato al server che lo elabora
         // e salva nella lista dei messaggi gia' salvati
-        const message = messageInput.value;
-        if (message.trim()) {
-          socket.emit('handle_message', ROOMID, {
-                                        text: message, 
-                                        sender_name: '{{ user.name }}', 
-                                        sender_id: '{{ user.id }}',
-                                        sender_url: '{{ user.url }}',
-                                        sender_image: '{{ user.image }}',
-                                        });
+        const text = messageInput.value;
+        if (text.trim()) {
+          socket.emit('handle_message', ROOMID, text)
           messageInput.value = '';
         }
       });
@@ -213,17 +207,17 @@
         // per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
-        if (message.sender_id == '{{ user.id }}') {
+        if (message.sender.id == '{{ user.id }}') {
           messageElement.classList.add('my-message');
-        } else if (message.sender_name !== "system") {
+        } else if (message.sender.name !== "system") {
           messageElement.classList.add('other-message');
         } else {
           messageElement.classList.add('system-message');
         }
         messageElement.innerHTML = `
           <div class="sender">
-            <img src="${message.sender_image}">
-            <p>${message.sender_name}</p>
+            <img src="${message.sender.image}">
+            <p>${message.sender.name}</p>
           </div>
           <p class="mess">${message.text}</p>
         `;
@@ -461,16 +455,16 @@
         <h2>Chat</h2>
         <div class="chat-messages" id="chat-messages" onload="toBottom()">
           {% for message in room.chat %}
-            {% if message.sender_id == user.id %}
+            {% if message.sender.id == user.id %}
             <div class="message my-message">
-            {% elif message.sender_name != "system" %}
+            {% elif message.sender.name != "system" %}
             <div class="message other-message">
             {% else %}
             <div class="message system-message">
             {% endif %}
               <div class="sender">
-                <img src="{{ message.sender_image }}">
-                <p>{{ message.sender_name }}</p>
+                <img src="{{ message.sender.image }}">
+                <p>{{ message.sender.name }}</p>
               </div>
               <p>{{ message.text }}</p>
             </div>

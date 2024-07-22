@@ -28,6 +28,8 @@ def callback():
     token = get_token(code)
     client = get_client(token)
     current_user = client.current_user()
+
+    print(client.devices()['devices'])
     
     try:
         client.queue()

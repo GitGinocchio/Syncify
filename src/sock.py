@@ -102,10 +102,16 @@ def handle_join_room(roomid: str):
     socketio.emit('member_join',user.asdict(),namespace='/room',to=roomid)
 
 @socketio.on('handle_message', namespace='/room')
-def handle_message(roomid: str, messagedict: dict):
-    message = Message(**messagedict)
+def handle_message(roomid: str, text : str):
+    userid = getjwt()
+
+    if not userid: return # Sostituire con un redirect alla pagina home
+    user = users.get(userid)
+    if not user: return
+
+    message = Message(sender=user,text=text)
     rooms[roomid].chat.append(message)
-    socketio.emit('new_message',messagedict,namespace='/room', to=roomid)
+    socketio.emit('new_message',message.asdict(),namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
 def handle_search_song(query: str):
