@@ -356,7 +356,7 @@
                     <button class="button" id="history-button"><p>History</p></button>
                 </div>
             </div>
-            <div class="queue-elements">
+            <div class="song-elements">
                 <ul id="queue-list">
                     {% for song in room.queue %}
                         <li class="song-info" id="{{ song.id }}">
@@ -385,37 +385,34 @@
                         </li>
                     {% endfor %}
                 </ul>
-            </div>
-            <div class="history-elements hide">
-                <ul id="history-list">
-                    <!-- Popolare questa lista con le canzoni passate in riproduzione -->
-                    {% for song in room.history %}
-                        <li class="song-info" id="{{ song.id }}">
-                            <img class="album-art" src="{{ song.album.images[2].url }}">
-                            <div class="details">
-                                <span class="song-title">{{ song.name }}</span>
-                                <span class="song-artists">
-                                    {% if song.artists|length > 1 %}
-                                        {% for artist in song.artists %}
-                                            <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
-                                            {% if not loop.last %}<p>,</p>{% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
-                                    {% endif %}
-                                </span>
-                            </div>
-                            <span class="addedby-user">
-                                Added by:
-                                <a href="{{ song.addedby.url }}" target="_blank">
-                                    <img src="{{ song.addedby.image }}" class="member-icon">
-                                    {{ song.addedby.name }}
-                                </a>
-                            </span>
-                            <span class="song-duration">{{ song.duration }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
+                <ul id="history-list" class="hide">
+                  {% for song in room.history %}
+                      <li class="song-info" id="{{ song.id }}">
+                          <img class="album-art" src="{{ song.album.images[2].url }}">
+                          <div class="details">
+                              <span class="song-title">{{ song.name }}</span>
+                              <span class="song-artists">
+                                  {% if song.artists|length > 1 %}
+                                      {% for artist in song.artists %}
+                                          <a href="{{ artist.external_urls.spotify }}" target="_blank">{{ artist.name }}</a>
+                                          {% if not loop.last %}<p>,</p>{% endif %}
+                                      {% endfor %}
+                                  {% else %}
+                                      <a href="{{ song.artists[0].external_urls.spotify }}" target="_blank">{{ song.artists[0].name }}</a>
+                                  {% endif %}
+                              </span>
+                          </div>
+                          <span class="addedby-user">
+                              Added by:
+                              <a href="{{ song.addedby.url }}" target="_blank">
+                                  <img src="{{ song.addedby.image }}" class="member-icon">
+                                  {{ song.addedby.name }}
+                              </a>
+                          </span>
+                          <span class="song-duration">{{ song.duration }}</span>
+                      </li>
+                  {% endfor %}
+              </ul>
             </div>
             <div class="searching-box">
                 <h2>Searching your song</h2>
