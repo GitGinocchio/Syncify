@@ -9,9 +9,9 @@ PYTHON
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
 ✓ Se un utente entra in una stanza in cui si sta gia' riproducendo musica, deve partire la musica anche a quell'utente
   (Forse sarebbe meglio creare degli stati 'playing', 'paused', ecc.)
-- Aggiornare la sezione "Now Playing" allo skip
+✓ Aggiornare la sezione "Now Playing" allo skip
 - Quando si torna indietro la canzone da ascoltare nuovamente deve essere messa come primo Child
-- Quando torno alla canzone precedente il tasto play deve aggiornarsi
+✓ Quando torno alla canzone precedente il tasto play deve aggiornarsi
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
