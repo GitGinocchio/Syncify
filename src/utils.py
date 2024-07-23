@@ -61,14 +61,14 @@ class Room:
 
 	def asdict(self):
 		return {
+			'id' : self.id,
 			'name' : self.name,
+			'status' : self.status,
 			'userlimit' : self.userlimit,
 			'creator' : self.creator.asdict(),
 			'visbility' : self.visibility,
 			'editablequeue' : self.editablequeue,
 			'num_members' : self.num_members,
-			'id' : self.id,
-			'status' : self.status
 		}
 
 @dataclass
@@ -90,6 +90,7 @@ class User:
 	id: str = field(default_factory=str,init=False)
 	product: Literal['premium','free'] = None
 	devices: list['Device'] = field(default_factory=list,init=False)
+	current_device: 'Device' = None
 	token: Token = None
 	room: Room = None
 
@@ -106,6 +107,7 @@ class User:
 		}
 		if not exclude_devices:
 			_dict['devices'] = [device.asdict() for device in self.devices]
+			_dict['current_device'] = self.current_device.asdict() if self.current_device else None
 		return _dict
 
 @dataclass

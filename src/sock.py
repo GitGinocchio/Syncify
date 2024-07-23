@@ -90,7 +90,7 @@ def handle_join_room(roomid: str):
         else:
             socketio.emit('syncify-spicetify-play',nextsong.id)     # Questo da fare solo per l'utente che esce e non tutti gli utenti
 
-        socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+        socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
 
     if user in room.members: return
 
@@ -185,7 +185,7 @@ def handle_new_song(roomid: str, songid : str):
         addedby=user
        )
     room.queue.append(song)
-    socketio.emit('add_song',(song.asdict(),-1),namespace='/room',to=roomid)
+    socketio.emit('add_song',('queue',song.asdict(),-1),namespace='/room',to=roomid)
 
     if len(room.queue) == 1:
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
@@ -268,7 +268,7 @@ def handle_start_playback(roomid: str):
         else:
             socketio.emit('syncify-spicetify-play',nextsong.id)
         
-    socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+    socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
 
 @socketio.on('handle_stop_playback',namespace='/room')
 def handle_stop_playback(roomid: str):
@@ -297,7 +297,7 @@ def handle_stop_playback(roomid: str):
         else:
             socketio.emit('syncify-spicetify-stop')
 
-    socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+    socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
 
 @socketio.on('handle_skip_playback',namespace='/room')
 def handle_skip_playback(roomid: str):
@@ -314,11 +314,13 @@ def handle_skip_playback(roomid: str):
 
     if room.status == 'playing':         # Se lo stato della stanza e' playing
         lastplayed = room.queue.pop(0)       # Ottengo e tolgo dalla queue la prima canzone
-        room.history.append(lastplayed)      # La prima canzone nella coda viene aggiunta nella history
+        room.history.insert(0,lastplayed)    # Inserisco la canzone nella history
+
+        socketio.emit('del_song',0,namespace='/room',to=roomid)
+        socketio.emit('add_song',('history',lastplayed.asdict(),0),namespace='/room',to=roomid)
 
     if len(room.queue) == 0:             # Se dopo aver saltato la canzone non ce ne sono altre non si riproduce altro
         room.status = 'idle'                # Imposta lo stato della stanza in idle
-        socketio.emit('del_song',0,namespace='/room',to=roomid)
 
     if room.status == 'idle':
         for user in room.members:
@@ -336,6 +338,7 @@ def handle_skip_playback(roomid: str):
             else:
                 socketio.emit('syncify-spicetify-stop')
         socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+        socketio.emit('set_current_song_details',namespace='/room',to=roomid)
         return
 
     nextsong = room.queue[0]             # Ottengo la prossima canzone presente nella queue
@@ -354,6 +357,7 @@ def handle_skip_playback(roomid: str):
                 client.start_playback(device_id=available_devices[0]['id'], uris=[f"spotify:track:{nextsong.id}"])
         else:
             socketio.emit('syncify-spicetify-play',nextsong.id)
+    socketio.emit('set_current_song_details',nextsong.asdict(),namespace='/room',to=roomid)
 
 @socketio.on('handle_back_playback',namespace='/room')
 def handle_back_playback(roomid: str):
@@ -381,19 +385,22 @@ def handle_back_playback(roomid: str):
                     client.pause_playback(device_id=available_devices[0]['id'])
             else:
                 socketio.emit('syncify-spicetify-stop')
-        socketio.emit('update_playpause_button',namespace='/room',to=roomid)
+        socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+        socketio.emit('set_current_song_details',namespace='/room',to=roomid)
         return
     
-    lastplayed = room.history[-1]         # Prendo l'ultima canzone ascoltata dalla history ma non la tolgo
+    lastplayed = room.history[0]         # Prendo l'ultima canzone ascoltata dalla history ma non la tolgo
 
     if len(room.queue) > 0:               # Se esiste una canzone attuale nella coda
-        currentsong = room.queue.pop(0)       # Prendo la canzone attuale e la tolgo dalla coda  
-        room.history.append(currentsong)      # Inserisco la canzone attuale nella history
+        currentsong = room.queue.pop(0)       # Prendo la canzone attuale e la tolgo dalla coda
+        room.history.insert(0,currentsong)    # Inserisco la canzone attuale nella history
+        
+        socketio.emit('del_song',0,namespace='/room',to=roomid)
+        socketio.emit('add_song',('history',currentsong.asdict(),0),namespace='/room',to=roomid)
 
     room.queue.insert(0,lastplayed)       # Inserisco come prossima canzone nella queue l'ultima canzone ascoltata
 
-    socketio.emit('del_song',0,namespace='/room',to=roomid)
-    socketio.emit('add_song',(lastplayed.asdict(),0),namespace='/room',to=roomid) # Aggiungere la canzone come primo elemento e non alla fine della coda
+    socketio.emit('add_song',('queue',lastplayed.asdict(),0),namespace='/room',to=roomid) # Aggiungere la canzone come primo elemento e non alla fine della coda
 
     for user in room.members:
         if user.product == 'premium':
@@ -409,3 +416,7 @@ def handle_back_playback(roomid: str):
                 client.start_playback(device_id=available_devices[0]['id'], uris=[f"spotify:track:{lastplayed.id}"])
         else:
             socketio.emit('syncify-spicetify-play',lastplayed.id)
+
+    socketio.emit('set_current_song_details',lastplayed.asdict(),namespace='/room',to=roomid)
+    socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+    

@@ -69,7 +69,6 @@
 .devices-container {
     display: flex;
     justify-content: center;
-    align-items: center;
     flex-direction: column-reverse;
 }
 
@@ -147,15 +146,13 @@
     border: solid 2px #8a8a8a;
     border-radius: 12px;
     margin-bottom: 10px;
-    width: 100%;
+    width: auto;
     height: 150px;
-    display: none; /* Nasconde inizialmente la lista dei dispositivi */
+    display: none;
     flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    opacity: 0; /* Inizialmente invisibile */
-    max-height: 0; /* Inizialmente altezza zero */
-    overflow: hidden; /* Nasconde il contenuto che fuoriesce */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
     transition: opacity 0.3s ease, max-height 0.3s ease;
     overflow-y: auto;
 }
@@ -168,8 +165,16 @@
 
 
 .device {
+    margin-left: 5px;
+    padding: 10px;
     display: flex;
     gap: 1vh;
+    align-items: center;
+}
+
+.device img {
+    width: 32px;
+    height: 32px;
 }
 
 .queue,

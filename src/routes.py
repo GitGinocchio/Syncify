@@ -29,8 +29,6 @@ def callback():
     client = get_client(token)
     current_user = client.current_user()
 
-    print(client.devices()['devices'])
-
     try:
         client.queue()
     except spotipy.SpotifyException:
@@ -48,6 +46,7 @@ def callback():
             user.name = current_user['display_name']
             user.url = current_user['external_urls']['spotify']
             user.devices = [Device(**device_info) for device_info in client.devices()['devices']]
+            user.current_device = user.devices[0]
 
             if not len(current_user['images']) > 0:
                 user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
