@@ -32,8 +32,8 @@
      
     <div class="container">
       {% if user.room %}
-      <a class="button" href="/room/{{ user.room.id }}">Current Room</a>
-      <a class="button" href="/room/{{ user.room.id }}/leave">Leave Room</a>
+      <a class="button" href="/room">Current Room</a>
+      <a class="button" href="/room/leave">Leave Room</a>
       {% else %}
       <a class="button" href="/new">Create a room</a>
       <a class="button" href="/join">Join a room</a>

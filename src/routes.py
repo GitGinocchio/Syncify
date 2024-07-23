@@ -9,7 +9,7 @@ blueprint = Blueprint("blueprint", __name__)
 
 @blueprint.route('/')
 def index():
-    if hasjwt():
+    if hasuserid():
         return redirect('/user')
     else:
         return redirect('/login')
@@ -60,18 +60,18 @@ def callback():
         
         access_token = create_access_token(identity=current_user['id'])
         response = make_response(redirect('/user'))
-        response.set_cookie('access_token', access_token, max_age=86400, secure=True, httponly=True)  #24 ore
+        response.set_cookie('user_access_token', access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
         return response
     else:
         return redirect('/')
 
 @blueprint.route("/user")
-@jwtrequired
+@useridrequired
 def user():
     return render_template('user.html',user=users[session['userid']])
 
 @blueprint.route("/new",methods=["POST","GET"])
-@jwtrequired
+@useridrequired
 def new():
     user = users[session['userid']]
     if request.method == 'POST':
@@ -91,30 +91,35 @@ def new():
             visibility=visibility,
             editablequeue=True if editablequeue else False
             )
-
-        #users[session['userid']].room = room
         user.room = room
         rooms[room.id] = room
+        session['roomid'] = room.id
         
         if room.visibility == "public":
             socketio.emit('add_room',room.asdict(),namespace='/join')
-            #socketio.emit('refresh_rooms',namespace='/join')
 
-        return redirect(f'/room/{room.id}')
+        room_access_token = create_access_token(identity=room.id)
+        response = make_response(redirect('/room'))
+        response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True,samesite='Strict')
+        return response
     else:
         if user.room: return redirect('/user')
 
         return render_template('new.html',user=user)
     
 @blueprint.route("/join",methods=["POST","GET"])
-@jwtrequired
+@useridrequired
 def join():
-    user = users[session['userid']]
+    userid = getuserid()
+    
+    user = users[userid]
     if request.method == 'POST':
         roomid = request.form.get('room')
-        #users[session['userid']].room = rooms[roomid]
-        #session['user'].room = rooms[roomid]
-        return redirect(f"/room/{roomid}")
+
+        room_access_token = create_access_token(identity=roomid)
+        response = make_response(redirect('/room'))
+        response.set_cookie('room_access_token', room_access_token, secure=True, httponly=True,samesite='Strict')
+        return response
     else:
         if user.room: return redirect('/user')
         
@@ -126,26 +131,34 @@ def join():
                 rooms.items()))
         )
 
-@blueprint.route("/room/<roomid>")
-@jwtrequired
-def room(roomid : str):
-    if roomid not in rooms:
+@blueprint.route("/room")
+@useridrequired
+@roomidrequired
+def room():
+    userid = getuserid()
+    roomid = getroomid()
+    if roomid and roomid not in rooms:
         return redirect('/user')
 
-    user = users[session['userid']]
-    return render_template('room.html',user=user, room=rooms[roomid])
+    return render_template('room.html',user=users[userid], room=rooms[roomid])
 
-@blueprint.route("/room/<roomid>/leave")
-@jwtrequired
-def leave(roomid : str):
-    return redirect('/user')
+@blueprint.route("/room/leave")
+@useridrequired
+@roomidrequired
+def leave():
+    response = make_response(redirect('/'))
+    response.set_cookie('room_access_token', '',expires=0)
+    return response
 
 @blueprint.route('/logout')
-@jwtrequired
+@useridrequired
 def logout():
-    user = users[session['userid']]
-    if user.room:
-        roomid = user.room.id
+    userid = getuserid()
+    roomid = getroomid()
+    
+    user = users[userid]
+    
+    if roomid and user.room:
         if rooms[roomid].creator == user:
             user.room = None
             rooms.pop(roomid)
@@ -155,10 +168,11 @@ def logout():
             rooms[roomid].num_members -= 1
             socketio.emit('update_member_count',rooms[roomid].asdict(),namespace='/join')
             
-    users.pop(session['userid'])
+    users.pop(userid)
     session.clear()
     
     response = make_response(redirect('/'))
-    response.set_cookie('access_token', '', expires=0)
+    response.set_cookie('user_access_token', '', expires=0)
+    response.set_cookie('room_access_token', '', expires=0)
 
     return response

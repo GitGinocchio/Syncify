@@ -12,7 +12,7 @@ PYTHON
 ✓ Aggiornare la sezione "Now Playing" allo skip
 ✓ Quando si torna indietro la canzone da ascoltare nuovamente deve essere messa come primo Child
 ✓ Quando torno alla canzone precedente il tasto play deve aggiornarsi
-- Quando skippo, il bottone continua a mettersi in pausa e rimettere play
+✓ Quando skippo, il bottone continua a mettersi in pausa e rimettere play
 
 HTML
 ✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso

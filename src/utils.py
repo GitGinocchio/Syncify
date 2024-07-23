@@ -55,6 +55,7 @@ class Room:
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
 	queue: list[Song] = field(default_factory=list)
 	history: list[Song] = field(default_factory=list)
+	client_sids: list[str] = field(default_factory=list)
 
 	def __eq__(self, other):
 		return self.id == other.id

@@ -14,8 +14,10 @@ Oauth = spotipy.SpotifyOAuth(scope=SCOPE, cache_handler=cache_handler)
 
 jwt = JWTManager()
 
-def hasjwt():
-    access_token = request.cookies.get('access_token')
+# User ID
+
+def hasuserid():
+    access_token = request.cookies.get('user_access_token')
     if access_token:
         try:
             userid = decode_token(access_token)['sub']
@@ -25,8 +27,8 @@ def hasjwt():
     else:
         return False
 
-def getjwt():
-    access_token = request.cookies.get('access_token')
+def getuserid():
+    access_token = request.cookies.get('user_access_token')
     if access_token:
         try:
             userid = str(decode_token(access_token)['sub'])
@@ -36,12 +38,45 @@ def getjwt():
     else:
         return None
 
-def jwtrequired(f):
+def useridrequired(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if not hasjwt(): return redirect('/')
+        if not hasuserid(): return redirect('/')
         return f(*args, **kwargs)
     return wrapper
+
+# Room ID
+
+def hasroomid():
+    access_token = request.cookies.get('room_access_token')
+    if access_token:
+        try:
+            roomid = decode_token(access_token)['sub']
+            return roomid == session.get('roomid')
+        except Exception:
+            return False
+    else:
+        return False
+
+def getroomid():
+    access_token = request.cookies.get('room_access_token')
+    if access_token:
+        try:
+            userid = str(decode_token(access_token)['sub'])
+            return userid
+        except Exception:
+            return None
+    else:
+        return None
+
+def roomidrequired(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not hasroomid(): return redirect('/')
+        return f(*args, **kwargs)
+    return wrapper
+
+# Token
 
 def get_token(code : str):
     response = Oauth.get_access_token(code,check_cache=False)
