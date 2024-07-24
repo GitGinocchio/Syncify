@@ -67,6 +67,7 @@
 }
 
 .devices-container {
+    padding: 10px;
     display: flex;
     justify-content: center;
     flex-direction: column-reverse;
@@ -145,22 +146,35 @@
 #devices-list {
     border: solid 2px #8a8a8a;
     border-radius: 12px;
-    margin-bottom: 10px;
     width: auto;
-    height: 150px;
+    height: 160px;
     display: none;
     flex-direction: column;
     opacity: 0;
     max-height: 0;
     overflow: hidden;
-    transition: opacity 0.3s ease, max-height 0.3s ease;
+    transition: opacity 0.8s ease, max-height 0.8s ease;
     overflow-y: auto;
 }
 
 #devices-list.show {
-    display: flex; /* Mostra la lista quando ha la classe "show" */
-    max-height: 150px; /* Imposta l'altezza massima quando è visibile */
-    opacity: 1; /* Assicura che sia completamente visibile */
+    display: flex;
+    max-height: 250px;
+    opacity: 1;
+}
+
+#devices-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#devices-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+#devices-list::-webkit-scrollbar-thumb{
+    background: #555;
+    border-radius: 10px;
 }
 
 
@@ -173,8 +187,8 @@
 }
 
 .device img {
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
 }
 
 .queue,
@@ -285,7 +299,6 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    height: 86vh; /* Assicurati che il contenitore abbia una altezza definita se necessario */
     overflow: hidden; /* Gestisce lo scroll se necessario */
 }
 
@@ -491,6 +504,10 @@
     font-weight: normal;
     color: #fff;
     font-family: 'Roboto', sans-serif;
+}
+
+.current-song-artists a:hover{
+    color: #1ed760;
 }
 
 

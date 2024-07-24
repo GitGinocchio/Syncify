@@ -87,18 +87,18 @@ section {
   align-content: center;
 }
 
-.session a {
+.session-join {
   display: inline-block;
   padding: 10px 20px;
-  color: #000;
+  color: #fff;
   font-weight: bold;
   background-color: #1db954;
-  border-radius: 5px;
+  border-radius: 15px;
   text-decoration: none;
   transition: background-color 0.3s ease;
 }
 
-.session a:hover {
+.session-join:hover {
   background-color: #169c3e;
 }
 

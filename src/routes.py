@@ -29,41 +29,32 @@ def callback():
     client = get_client(token)
     current_user = client.current_user()
 
-    try:
-        client.queue()
-    except spotipy.SpotifyException:
-        product = 'free'
-    else:
-        product = 'premium'
+    if not current_user: return redirect('/')
 
-    if current_user is not None:
+    if current_user['id'] not in users:
+        user = User()
+        user.token = token
+        user.product = current_user['product']
+        user.id = current_user['id']
+        user.name = current_user['display_name']
+        user.url = current_user['external_urls']['spotify']
+        user.devices = [Device(**device_info) for device_info in client.devices()['devices']]
+        user.current_device = user.devices[0]
 
-        if current_user['id'] not in users:
-            user = User()
-            user.token = token
-            user.product = product
-            user.id = current_user['id']
-            user.name = current_user['display_name']
-            user.url = current_user['external_urls']['spotify']
-            user.devices = [Device(**device_info) for device_info in client.devices()['devices']]
-            user.current_device = user.devices[0]
-
-            if not len(current_user['images']) > 0:
-                user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
-            else:
-                user.image = current_user['images'][0]['url']
-
-            users[user.id] = user
-            session['userid'] = user.id
+        if not len(current_user['images']) > 0:
+            user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
         else:
-            session['userid'] = current_user['id']
-        
-        access_token = create_access_token(identity=current_user['id'])
-        response = make_response(redirect('/user'))
-        response.set_cookie('user_access_token', access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
-        return response
+            user.image = current_user['images'][0]['url']
+
+        users[user.id] = user
+        session['userid'] = user.id
     else:
-        return redirect('/')
+        session['userid'] = current_user['id']
+    
+    access_token = create_access_token(identity=current_user['id'])
+    response = make_response(redirect('/user'))
+    response.set_cookie('user_access_token', access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
+    return response
 
 @blueprint.route("/user")
 @useridrequired
@@ -107,21 +98,35 @@ def new():
 
         return render_template('new.html',user=user)
     
-@blueprint.route("/join",methods=["POST","GET"])
+@blueprint.route("/join",defaults={'roomid': None},methods=["POST","GET"])
+@blueprint.route("/join/<roomid>", methods=["GET"])
 @useridrequired
-def join():
+def join(roomid):
     userid = getuserid()
-    
-    user = users[userid]
-    if request.method == 'POST':
-        roomid = request.form.get('room')
 
+    if not userid: return redirect('/')
+    
+    user = users.get(userid)
+
+    if not user: return redirect('/')
+    
+    if request.method == 'POST':
+        roomid = request.form.get('roomid')
+
+        session['roomid'] = roomid
+        
         room_access_token = create_access_token(identity=roomid)
         response = make_response(redirect('/room'))
-        response.set_cookie('room_access_token', room_access_token, secure=True, httponly=True,samesite='Strict')
+        response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
         return response
     else:
-        if user.room: return redirect('/user')
+        if roomid:
+            session['roomid'] = roomid
+
+            room_access_token = create_access_token(identity=roomid)
+            response = make_response(redirect('/room'))
+            response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
+            return response
         
         return render_template(
             'join.html',
@@ -137,10 +142,15 @@ def join():
 def room():
     userid = getuserid()
     roomid = getroomid()
-    if roomid and roomid not in rooms:
-        return redirect('/user')
 
-    return render_template('room.html',user=users[userid], room=rooms[roomid])
+    if not userid or not roomid: return redirect('/')
+
+    user = users.get(userid)
+    room = rooms.get(roomid)
+
+    if not user or not room: return redirect('/')
+
+    return render_template('room.html',user=user, room=room)
 
 @blueprint.route("/room/leave")
 @useridrequired
@@ -156,7 +166,7 @@ def logout():
     userid = getuserid()
     roomid = getroomid()
     
-    user = users[userid]
+    user = users.get(userid)
     
     if roomid and user.room:
         if rooms[roomid].creator == user:

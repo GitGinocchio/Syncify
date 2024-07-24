@@ -2,6 +2,10 @@
 chcp 65001 > nul
 setlocal enabledelayedexpansion
 
+set "extension=syncify.js"
+set "url=https://raw.githubusercontent.com/GitGinocchio/Syncify/main/src/spicetify-extension/syncify.js"
+
+rem Verifica i privilegi amministrativi
 net session > nul 2>&1
 if %errorlevel% neq 0 (
     echo Questo script richiede privilegi amministrativi.
@@ -10,22 +14,24 @@ if %errorlevel% neq 0 (
     exit
 )
 
-cd %appdata%
-cd ..
-cd local
+rem Naviga nella cartella Extensions di Spicetify
+cd /d "%appdata%\..\local\spicetify\Extensions"
 
-if exist "spicetify" (
-  cd spicetify
-  cd Extensions
-  if exist "%~dp0\syncify.js" (
-    move "%~dp0\syncify.js" ".\syncify.js" > nul 2>&1
-    start "" /min cmd /c "spicetify config extensions syncify.js & spicetify apply"
-    echo Estensione Syncify installata con successo!
-  ) else (
-    echo Il file javascript non e' presente in questa cartella, inserire qui il file "syncify.js" e riprovare.
-  )
-) else (
-  echo Spicetify non è installato su questo pc.
+rem Scarica il file
+curl -s -o "%extension%" %url%
+
+rem Attendi fino a quando il file è stato scaricato
+:waitloop
+if not exist "%extension%" (
+    timeout /t 1 >nul
+    goto waitloop
 )
+
+rem Applica l'estensione
+start "" /min cmd /c "spicetify config extensions %extension% & spicetify apply"
+
+echo Estensione Syncify installata con successo!
 pause
+
+rem Avvia un nuovo cmd per eliminare questo script
 start "" /min cmd /c "del %0"

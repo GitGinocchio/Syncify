@@ -33,7 +33,7 @@ def user_disconnect():
 # -------- Join --------
 
 @socketio.on('connect', namespace='/join')
-def join_connect():
+def handle_join_connect():
     userid = getuserid()
     if not userid: return # Sostituire con un redirect alla pagina home
 
@@ -41,8 +41,12 @@ def join_connect():
 
     print(f"{user.name} connected to /join namespace")
 
+@socketio.on('handle_join_room', namespace='/join')
+def handle_join_room():
+    pass
+
 @socketio.on('disconnect', namespace='/join')
-def join_disconnect():
+def handle_join_disconnect():
     userid = getuserid()
     if not userid: return # Sostituire con un redirect alla pagina home
 
@@ -93,15 +97,17 @@ def handle_room_connect():
     print(f"{user.name} connected to /room namespace")
 
 @socketio.on('handle_message', namespace='/room')
-def handle_message(roomid: str, text : str):
+def handle_message(text : str):
     userid = getuserid()
+    roomid = getroomid()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return # Sostituire con un redirect alla pagina home
     user = users.get(userid)
-    if not user: return
+    room = rooms.get(roomid)
+    if not user or not room: return
 
     message = Message(sender=user,text=text)
-    rooms[roomid].chat.append(message)
+    room.chat.append(message)
     socketio.emit('new_message',message.asdict(),namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
@@ -144,10 +150,11 @@ def handle_search_song(query: str):
 
 @socketio.on('handle_song_url',namespace='/room')
 @socketio.on('handle_add_song',namespace='/room')
-def handle_new_song(roomid: str, songid : str):
+def handle_new_song(songid : str):
     userid = getuserid()
+    roomid = getroomid()
     
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
@@ -248,15 +255,16 @@ def register_spotify_client(roomid: str):
     room.client_sids.append(request.sid)
 
 @socketio.on('handle_start_playback',namespace='/room')
-def handle_start_playback(roomid: str):
+def handle_start_playback():
     userid = getuserid()
+    roomid = getroomid()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
 
-    if not room: return
+    if not user or not room: return
 
     if len(room.queue) == 0: return
     
@@ -284,15 +292,16 @@ def handle_start_playback(roomid: str):
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
 
 @socketio.on('handle_stop_playback',namespace='/room')
-def handle_stop_playback(roomid: str):
+def handle_stop_playback():
     userid = getuserid()
+    roomid = getroomid()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
 
-    if not room: return
+    if not user or not room: return
 
     room.status = 'idle'
 
@@ -316,15 +325,16 @@ def handle_stop_playback(roomid: str):
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
 
 @socketio.on('handle_skip_playback',namespace='/room')
-def handle_skip_playback(roomid: str):
+def handle_skip_playback():
     userid = getuserid()
+    roomid = getroomid()
 
-    if not userid: return                # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return                # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
 
-    if not room: return
+    if not user or not room: return
 
     if len(room.queue) == 0:             # Se non esistono canzoni nella queue
         room.status = 'idle'                 # Imposta lo stato della stanza in idle
@@ -379,15 +389,16 @@ def handle_skip_playback(roomid: str):
     socketio.emit('set_current_song_details',nextsong.asdict(),namespace='/room',to=roomid)
 
 @socketio.on('handle_back_playback',namespace='/room')
-def handle_back_playback(roomid: str):
+def handle_back_playback():
     userid = getuserid()
+    roomid = getroomid()
 
-    if not userid: return # Sostituire con un redirect alla pagina home
+    if not userid or not roomid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
     room = rooms.get(roomid)
 
-    if not room: return
+    if not user or not room: return
 
     if len(room.history) == 0:            # Se non esiste una canzone gia' ascoltata ritorna
         room.status = 'idle'

@@ -3,16 +3,12 @@ function toBottom() {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
-function copyurl() {
-  var input = document.createElement('input');
-  var url = window.location.href;
-  input.setAttribute('value', url);
-  document.body.appendChild(input);
-  input.select();
-  var risultato = document.execCommand('copy');
-  document.body.removeChild(input);
-  alert('Link copiato!');
-  return risultato;
+function copyurl(roomid) {
+  navigator.clipboard.writeText(roomid).then(function() {
+    alert('Link copiato!');
+  }).catch(function(err) {
+    console.error('Errore durante la copia del link: ', err);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {

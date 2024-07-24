@@ -1,3 +1,10 @@
+function joinroom(roomid) {
+    const joinform = document.getElementById('join-form');
+    const roomidInput = document.getElementById('roomidInput');
+    roomidInput.value = roomid;
+    joinform.submit();
+};
+
 document.addEventListener('DOMContentLoaded', (event) => {
     const roomsContainer = document.getElementById('public-sessions');
     const socket = io('/join');
@@ -16,7 +23,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
           <p class="session-queue">Editable queue: ${room.editablequeue}</p>
         </div>
         <div class="footerS">
-          <a class="session-join" href="/room/${room.id}">Join</a>
+          <button class="session-join" onclick="joinroom('${ room.id }')" href="/room">Join</button>
           <p class="session-members">${room.num_members} / ${room.userlimit} Members</p>
         </div>
         `;
@@ -46,5 +53,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         }
     });
-    
 });

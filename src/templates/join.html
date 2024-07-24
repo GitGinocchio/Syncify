@@ -32,9 +32,9 @@
   </header>
   <section>
   <div class="join-private-session">
-    <form action="/join" method="post">
+    <form action="/join" method="post" id="join-form">
       <h2 class="priv-session-title"">Join a private session</h2>
-      <input type="text" name="room" id="room" placeholder="Room ID" required>
+      <input type="text" name="roomid" id="roomidInput" placeholder="Room ID" required>
       <button type="submit">Join</button>
     </form>
   </div>
@@ -51,7 +51,7 @@
               <p class="session-queue">Editable queue: {{ room.editablequeue }}</p>
             </div>
             <div class="footerS">
-              <a class="session-join" href="/room/{{ room.id }}">Join</a>
+              <button class="session-join" onclick="joinroom('{{ room.id }}')" href="/room">Join</button>
               <p class="session-members" id="session-members">{{ room.num_members }} / {{ room.userlimit }} Members</p>
             </div>
           </div>
