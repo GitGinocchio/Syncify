@@ -18,7 +18,7 @@ body:
       placeholder: ex. email@example.com
     validations:
       required: false
- - type: textarea
+  - type: textarea
     id: what-happened
     attributes:
       label: What happened?
@@ -27,7 +27,7 @@ body:
       value: "A bug happened!"
     validations:
       required: true
- - type: dropdown
+  - type: dropdown
     id: browsers
     attributes:
       label: Browsers
@@ -38,10 +38,10 @@ body:
         - Safari
         - Microsoft Edge
         - Other
-
   - type: input
     id: other-browser
     attributes:
       label: Other Browser
       description: If you selected "Other", please specify the browser.
       placeholder: Enter the name of your browser...
+
