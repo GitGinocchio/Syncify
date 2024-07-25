@@ -216,6 +216,12 @@
 
                 socket.on('syncify-spicetify-deleted-room', () => {
                     console.error('Room connection error: Failed to connect to the room. The room has been deleted.');
+                    if (Spicetify.Player.isPlaying) {
+                        console.log('Pausing playback');
+                        Spicetify.Player.pause();
+                    } else {
+                        console.log('Playback is already paused or stopped');
+                    }
                     showErrorDialog('Failed to connect to the room. The room has been deleted.');
                     resetButton();
                 });
