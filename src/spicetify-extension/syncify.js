@@ -68,6 +68,8 @@
     function showRoomIdDialog() {
         const modalContent = document.createElement('div');
 
+        modalContent.style.overflowY = 'hidden';
+
         // Crea un paragrafo di spiegazione
         const paragraph = document.createElement('p');
         paragraph.textContent = 'Please enter the Room ID \nto connect your Spotify client to the room.';

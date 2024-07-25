@@ -2,10 +2,11 @@ PYTHON
 - Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
+- Una volta che l'ultima canzone viene schippata, deve essere rimossa dalla queue
 
 HTML
 - User
-    - Rendere le card della stessa grandezza
-    - Ombra appena il cursore va sopra alla card
-    - Testo piu' semplice che chiarisca la differenza tra le due
-    - Provare a togliere i bottoni cliccando solo sulla card
+    ✔ Rendere le card della stessa grandezza
+    ✔ Ombra appena il cursore va sopra alla card
+    - Modificare il testo
+    ✔ Provare a togliere i bottoni cliccando solo sulla card
