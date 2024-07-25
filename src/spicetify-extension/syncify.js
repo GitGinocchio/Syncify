@@ -145,7 +145,15 @@
 
             socket.on('connect', () => {
                 socket.emit('register_spotify_client', roomid);
+            });
+
+            socket.on('syncify-spicetify-registered', () => {
                 resolve(socket);
+            });
+
+            socket.on('syncify-spicetify-server-error', (error) => {
+                showErrorDialog(error)
+                reject(socket);
             });
 
             socket.on('connect_error', (error) => {

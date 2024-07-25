@@ -41,10 +41,6 @@ def handle_join_connect():
 
     print(f"{user.name} connected to /join namespace")
 
-@socketio.on('handle_join_room', namespace='/join')
-def handle_join_room():
-    pass
-
 @socketio.on('disconnect', namespace='/join')
 def handle_join_disconnect():
     userid = getuserid()
@@ -244,7 +240,10 @@ def register_spotify_client(roomid: str):
     room = rooms.get(roomid)
 
     if not room:
-        return     # Inviare un segnale per la room sbagliata
+        socketio.emit('syncify-spicetify-server-error','Invalid Room ID',namespace='/room',to=request.sid)
+        return
+    
+    socketio.emit('syncify-spicetify-registered', namespace='/room',to=request.sid)
 
     socketio.emit('syncify-spicetify-stop', namespace='/room',to=request.sid)
 
