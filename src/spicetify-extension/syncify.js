@@ -152,8 +152,8 @@
             });
 
             socket.on('syncify-spicetify-server-error', (error) => {
-                showErrorDialog(error)
-                reject(socket);
+                socket.close();
+                reject(error);
             });
 
             socket.on('connect_error', (error) => {
@@ -239,8 +239,7 @@
                 });
             })
             .catch((error) => {
-                console.error('Error connecting to any socket:', error);
-                showErrorDialog('Failed to connect to the room. Please try again.');
+                showErrorDialog(error);
             });
     }
 
