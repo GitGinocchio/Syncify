@@ -170,7 +170,6 @@
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
-                socket.close()
                 if (error.fatal) { throw new Error(error.message); }
             }
         }
