@@ -27,6 +27,47 @@ body:
       value: "A bug happened!"
     validations:
       required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Please describe the steps to reproduce the bug.
+      placeholder: 1. Go to page... 2. Click on...
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Low
+        - Medium
+        - High
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      options:
+        - Desktop
+        - Mobile
+        - Tablet
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - iOS
+        - Android
+        - Other
+  - type: input
+    id: other-os
+    attributes:
+      label: Other Operating System
+      description: If you selected "Other", please specify the operating system.
+      placeholder: Enter the name of your operating system...
   - type: dropdown
     id: browsers
     attributes:
@@ -44,4 +85,8 @@ body:
       label: Other Browser
       description: If you selected "Other", please specify the browser.
       placeholder: Enter the name of your browser...
-
+  - type: file
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Upload any screenshots that help illustrate the issue.
