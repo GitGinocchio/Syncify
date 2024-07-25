@@ -153,31 +153,28 @@
 
             socket.on('syncify-spicetify-server-error', (error) => {
                 socket.close();
-                reject({'type' : 'invalid-roomid', 'message' : error,'show' : true,'show_attempts_failed_error' : false});
+                reject({'type' : 'invalid-roomid', 'message' : error,'show' : true,'fatal' : true});
             });
 
             socket.on('connect_error', (error) => {
                 socket.close();
-                reject({'type' : 'connection-error', 'message' : error,'show' : false,'show_attempts_failed_error' : true});
+                reject({'type' : 'connection-error', 'message' : error,'show' : false,'fatal' : false});
             });
         });
     }
 
     async function ConnectToFirstAvailableWebSocket(urls, roomid) {
-        let show_attempts_failed_error = true;
         for (const url of urls) {
             try {
                 const socket = await tryConnect(url, roomid);
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
-                if (error.show) { showErrorDialog(error); }
-                if (error.show_attempts_failed_error === false) { show_attempts_failed_error = false; }
+                if (error.fatal) { throw new Error(error.message)}
+                if (error.show) { showErrorDialog(error.message); }
             }
         }
-        if (show_attempts_failed_error) {
-            throw new Error('Failed to connect to all provided URLs');
-        }
+        throw new Error('Failed to connect to Spicetify. try again later.');
     }
 
     let socket = null; // Variabile per memorizzare il socket
