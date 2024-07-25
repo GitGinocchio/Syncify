@@ -28,6 +28,7 @@
 			const historyContainer = document.getElementById('history-list');
 			const currentSongImageContainer = document.getElementById('current-song-image');
 			const currentSongDetailsContainer = document.getElementById('current-song-details');
+			const currentSongTotalTime = document.getElementById('total-time');
 
 			const sendMessageButton = document.getElementById('send-message');
 			const addSongButton = document.getElementById('send-song');
@@ -128,6 +129,7 @@
 					<span class="current-song-title-placeholder"></span>
 					<span class="current-song-artists-placeholder"></span>
 					`;
+					currentSongTotalTime.textContent = "0:00";
 				}
 				else {
 					currentSongImageContainer.innerHTML = '';
@@ -143,6 +145,7 @@
 						).join('<p>,</p>')}
 						</span>
 					`;
+					currentSongTotalTime.textContent = song.duration;
 				}
 				
 			});
@@ -166,8 +169,6 @@
 				queueInput.value = '';
 				socket.emit('handle_add_song',songElement.id)
 			}
-
-			
 
 			playPauseButton.addEventListener('click',() => {
 				var img = document.getElementById("playPauseImage");
@@ -328,9 +329,9 @@
 						<img src="/static/images/forward.png" alt="Next"></button>
 				</div>  
 				<div class="progress-bar">
-					<span class="current-time">0:00</span>
-					<span class="bar"></span>
-					<span class="total-time">0:00</span>
+					<span id="current-time">0:00</span>
+					<span id="bar"></span>
+					<span id="total-time">0:00</span>
 				</div>
 			</div>
 		

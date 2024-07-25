@@ -277,7 +277,7 @@
     justify-content: center;
 }
 
-.bar {
+#bar {
     align-self: center;
     width: 70%;
     height: 5px;
@@ -295,8 +295,8 @@
     border-radius: 5px;
 }
 
-.current-time, 
-.total-time {
+#current-time, 
+#total-time {
     color: #888;
     font-size: 12px;
     text-align: center;
@@ -427,7 +427,7 @@
     background-color: #748179; 
 }
 
-.song-info: clicked {
+.song-info:clicked {
     background-color: #262f29;
 }
 

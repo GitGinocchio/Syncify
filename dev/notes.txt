@@ -3,6 +3,10 @@ PYTHON
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
 - Una volta che l'ultima canzone viene schippata, deve essere rimossa dalla queue
+- Sincronizzare la canzone con gli altri, falla partire e riprendere nella stessa posizione degli altri
+- Quando uno abbandona deve stopparsi la musica solo per chi abbandona
+- Non far entrare qualcuno quando la stanza e' gia' piena
+- Cercare di capire perche' a volte si duplicano i membri presenti
 
 HTML
 - User
