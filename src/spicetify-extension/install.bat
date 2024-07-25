@@ -17,18 +17,24 @@ if %errorlevel% neq 0 (
 rem Naviga nella cartella Extensions di Spicetify
 cd /d "%appdata%\..\local\spicetify\Extensions"
 
+if not exist "%extension%" (
+    spicetify config extensions %extension%
+)
+
 rem Scarica il file
 curl -s -o "%extension%" %url%
 
 rem Attendi fino a quando il file è stato scaricato
 :waitloop
 if not exist "%extension%" (
-    timeout /t 1 >nul
+    timeout /t 1 > nul
     goto waitloop
 )
 
 rem Applica l'estensione
-start "" /min cmd /c "spicetify config extensions %extension% & spicetify apply"
+spicetify apply
+
+REM start "" /min cmd /c "spicetify config extensions %extension% & spicetify apply & spicetify reload"
 
 echo Estensione Syncify installata con successo!
 pause

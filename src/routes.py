@@ -59,7 +59,7 @@ def callback():
 @blueprint.route("/user")
 @useridrequired
 def user():
-    return render_template('user.html',user=users[session['userid']])
+    return render_template('user.html',user=users[session['userid']], num_public_rooms=len(dict(filter(lambda item: item[1].visibility == 'public', rooms.items()))))
 
 @blueprint.route("/new",methods=["POST","GET"])
 @useridrequired
