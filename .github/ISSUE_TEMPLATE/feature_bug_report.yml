@@ -16,7 +16,7 @@ body:
     id: bug-description
     attributes:
       label: Description
-      description: Provide a detailed description of the bug you encountered and what the expected behavior was. Be sure to include: \n- What went wrong (the bug you experienced)\n- What you expected to happen (the correct behavior)
+      description: Provide a detailed description of the bug you encountered and what the expected behavior was. Be sure to include what went wrong (the bug you experienced) and what you expected to happen (the correct behavior)
       placeholder: Describe the bug and the expected behavior here...
 
   - type: markdown
