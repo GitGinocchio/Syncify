@@ -164,7 +164,7 @@
     }
 
     async function ConnectToFirstAvailableWebSocket(urls, roomid) {
-        let show_attempts_failed_error = false;
+        let show_attempts_failed_error = true;
         for (const url of urls) {
             try {
                 const socket = await tryConnect(url, roomid);
@@ -172,7 +172,7 @@
                 return socket;
             } catch (error) {
                 if (error.show) { showErrorDialog(error); }
-                if (!error.show_attempts_failed_error) { show_attempts_failed_error = false; }
+                if (error.show_attempts_failed_error === false) { show_attempts_failed_error = false; }
             }
         }
         if (show_attempts_failed_error) {
