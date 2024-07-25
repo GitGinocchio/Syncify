@@ -223,7 +223,7 @@
                         console.log('Playback is already paused or stopped');
                     }
                     showErrorDialog('Disconnected from the room.');
-                    Disconnect()
+                    resetButton();
                 });
 
                 socket.on('connect_error', (error) => {
@@ -235,7 +235,7 @@
                         console.log('Playback is already paused or stopped');
                     }
                     showErrorDialog('Failed to connect to the room. The room has been deleted.');
-                    Disconnect()
+                    resetButton();
                 });
             })
             .catch((error) => {
