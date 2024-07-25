@@ -85,8 +85,9 @@ body:
       label: Other Browser
       description: If you selected "Other", please specify the browser.
       placeholder: Enter the name of your browser...
-  - type: file
+  - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
-      description: Upload any screenshots that help illustrate the issue.
+      description: Please provide links to screenshots that help illustrate the issue.
+      placeholder: Provide links to screenshots...
