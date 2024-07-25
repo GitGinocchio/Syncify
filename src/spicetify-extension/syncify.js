@@ -153,29 +153,29 @@
 
             socket.on('syncify-spicetify-server-error', (error) => {
                 socket.close();
-                reject(error);
+                reject({'type' : 'invalid-roomid', 'message' : error,'show' : true,'show_attempts_failed_error' : false});
             });
 
             socket.on('connect_error', (error) => {
                 socket.close();
-                reject(error);
+                reject({'type' : 'connection-error', 'message' : error,'show' : false,'show_attempts_failed_error' : true});
             });
         });
     }
 
     async function ConnectToFirstAvailableWebSocket(urls, roomid) {
-        let failedattempts = 0;
+        let show_attempts_failed_error = false;
         for (const url of urls) {
             try {
                 const socket = await tryConnect(url, roomid);
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
-                showErrorDialog(error);
-                failedattempts++;
+                if (error.show) { showErrorDialog(error); }
+                if (error.show_attempts_failed_error) { show_attempts_failed_error = true; }
             }
         }
-        if (failedattempts === urls.length) {
+        if (show_attempts_failed_error) {
             throw new Error('Failed to connect to all provided URLs');
         }
     }
