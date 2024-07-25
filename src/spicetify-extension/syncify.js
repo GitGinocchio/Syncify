@@ -164,16 +164,21 @@
     }
 
     async function ConnectToFirstAvailableWebSocket(urls, roomid) {
+        let failedattempts = 0;
         for (const url of urls) {
             try {
                 const socket = await tryConnect(url, roomid);
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
+                showErrorDialog(error)
                 // console.error(`Failed to connect to ${url}: ${error.message}`);
+                failedattempts++;
             }
         }
-        throw new Error('Failed to connect to all provided URLs');
+        if (failedattempts === urls.length) {
+            throw new Error('Failed to connect to all provided URLs');
+        }
     }
 
     let socket = null; // Variabile per memorizzare il socket
@@ -234,7 +239,7 @@
                     } else {
                         console.log('Playback is already paused or stopped');
                     }
-                    showErrorDialog('Failed to connect to the room. Please check the Room ID and try again.');
+                    showErrorDialog('Failed to connect to the room. The room has been deleted.');
                     resetButton();
                 });
             })
