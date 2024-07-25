@@ -692,6 +692,8 @@
 }
 
 .members-controls {
+    display: flex;
+    gap: 10px;
 }
 
 .button {
@@ -811,7 +813,7 @@ p{
 
 .my-message {
     align-self: flex-end;
-    background-color: #1ed760;
+    background-color: #1b1d1c;
 }
 
 .other-message {

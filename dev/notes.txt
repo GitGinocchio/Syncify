@@ -10,3 +10,12 @@ HTML
     ✔ Ombra appena il cursore va sopra alla card
     - Modificare il testo
     ✔ Provare a togliere i bottoni cliccando solo sulla card
+
+- Room
+    - Sistemare barra di scorrimento sezione membri
+    - Sistemare problema delle dimensioni delle div
+    - Sostituire bottoni queue e history con immagini
+    - Spazio tra i bottoni Queue e History uguale a quelli Invite e Leave
+
+- Inserire un bottone in tutte le pagine sull'header
+    (https://github.com/GitGinocchio/Syncify/issues/new/choose)
