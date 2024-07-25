@@ -150,7 +150,7 @@
             });
 
             socket.on('syncify-spicetify-registered', (trackid) => {
-                if (songid === undefined) { resolve(socket); }
+                if (!trackid) { resolve(socket); }
 
                 console.log('Play request received');
 
