@@ -153,12 +153,12 @@
 
             socket.on('syncify-spicetify-server-error', (error) => {
                 socket.close();
-                reject({'type' : 'invalid-roomid', 'message' : error,'fatal' : true});
+                reject({'type' : 'invalid-roomid', 'message' : error, 'fatal' : true});
             });
 
             socket.on('connect_error', (error) => {
                 socket.close();
-                reject({'type' : 'connection-error', 'message' : error,'fatal' : false});
+                reject({'type' : 'connection-error', 'message' : error, 'fatal' : false});
             });
         });
     }
@@ -170,6 +170,7 @@
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
+                socket.close()
                 if (error.fatal) { throw new Error(error.message); }
             }
         }
@@ -223,7 +224,7 @@
                         console.log('Playback is already paused or stopped');
                     }
                     showErrorDialog('Disconnected from the room.');
-                    resetButton();
+                    Disconnect()
                 });
 
                 socket.on('connect_error', (error) => {
@@ -235,7 +236,7 @@
                         console.log('Playback is already paused or stopped');
                     }
                     showErrorDialog('Failed to connect to the room. The room has been deleted.');
-                    resetButton();
+                    Disconnect()
                 });
             })
             .catch((error) => {
@@ -246,8 +247,8 @@
     function Disconnect() {
         if (socket) {
             socket.close();
-            resetButton();
         }
+        resetButton();
     }
 
     function resetButton() {
