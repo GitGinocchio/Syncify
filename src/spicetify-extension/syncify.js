@@ -172,7 +172,7 @@
                 return socket;
             } catch (error) {
                 if (error.show) { showErrorDialog(error); }
-                if (error.show_attempts_failed_error) { show_attempts_failed_error = true; }
+                if (!error.show_attempts_failed_error) { show_attempts_failed_error = false; }
             }
         }
         if (show_attempts_failed_error) {
