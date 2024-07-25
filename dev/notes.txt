@@ -1,41 +1,11 @@
 PYTHON
-✓ Sostituire i metodi per ottenere lo userid dal client con socketio con l'ottenimento dello userid con l'access_token utilizzando "get_jwt()"
 - Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
-✓ Evitare di passare dal WebClient gli id delle canzoni al server (Li posso ottenere molto semplicemente con il roomid accedendo alla coda o alla history della room)
-✓ Evitare di fare troppe richieste a spotify tentando ogni volta di riprodurre utilizzando l'api
-  piuttosto salvare una variabile per decidere quale dei due modi usare per quell'utente
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
-✓ Quando esco dalla stanza la riproduzione deve interrompersi
 - Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
-✓ Se un utente entra in una stanza in cui si sta gia' riproducendo musica, deve partire la musica anche a quell'utente
-  (Forse sarebbe meglio creare degli stati 'playing', 'paused', ecc.)
-✓ Aggiornare la sezione "Now Playing" allo skip
-✓ Quando si torna indietro la canzone da ascoltare nuovamente deve essere messa come primo Child
-✓ Quando torno alla canzone precedente il tasto play deve aggiornarsi
-✓ Quando skippo, il bottone continua a mettersi in pausa e rimettere play
 
 HTML
-✓ I bottoni della /user devono essere ordinati in modo verticale per vederli meglio da telefono, oppure ordinati in modo diverso
-✓ Ricreare join come il file join.png (modificato il 3/07/2024)
-✓ Creare i contenuti di room.html
-✓ Ricreare session come il file session.jpg
-✓ Cambiare metologia di login e logout syncify (cliccare icona per un mini menu (profilo-logout))
-- Finire container (current-song)
-    1. Modificare il suo css
-✓ Iniziare "main-content" (queue)
-    ✓. Iniziare il suo css
-
-
-CSS
-✓ Sistemare problema della barra di scorrimeto
--input:
-    ✓ background trasparente
-    ✓ border color medio scuro
-    ✓ border color hover chiaro
-    ✓ border color focus chiaro 2px / ancora più chiaro 2px
-
--button
-    ✓ modificare i colori dei bottoni (bianco)
-
-✓ sistemare barra di scorrimento (renderle più semplici da vedere e non come sono fatti male di loro)
-✓ creare lo stile al bordo della tendina "searching-box"
+- User
+    - Rendere le card della stessa grandezza
+    - Ombra appena il cursore va sopra alla card
+    - Testo piu' semplice che chiarisca la differenza tra le due
+    - Provare a togliere i bottoni cliccando solo sulla card

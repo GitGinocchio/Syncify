@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', (event) => {
+cdocument.addEventListener('DOMContentLoaded', (event) => {
     // JavaScript per mostrare/nascondere il menu a tendina
     document.getElementById('profile-icon').addEventListener('click', function() {
         const menu = document.getElementById('dropdown-menu');

@@ -1,12 +1,83 @@
 .container {
+  margin-top: auto;
   display: flex;
-  flex-direction: column; /* Dispone gli elementi in una colonna */
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Centra il container verticalmente */
 }
 
-.button {
-  margin: 10px 0; /* Aggiunge un margine verticale tra i pulsanti */
+/* Card Styles */
+.card {
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  width: 100%;
+  max-width: 350px;
+  height: 250px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0px 20px rgba(255, 255, 255, 0.2);
+}
+
+/* Headings and Paragraphs in Cards */
+.card h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #1ed760;
+}
+
+.create-description, .join-description {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.counter-publicrooms {
+  display: flex;
+  font-size: 20px;
+  color: #1ed760;
+  font-weight: bold;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+/* Mobile Styles */
+@media only screen and (max-width: 768px) {
+  .card {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .card h2 {
+    font-size: 20px;
+  }
+
+  .card p {
+    font-size: 14px;
+  }
+}
+
+/* Tablet Styles */
+@media only screen and (max-width: 480px) {
+  .card {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .card h2 {
+    font-size: 18px;
+  }
+
+  .card p {
+    font-size: 12px;
+  }
+}

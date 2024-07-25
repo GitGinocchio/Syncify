@@ -39,7 +39,7 @@ def callback():
         user.name = current_user['display_name']
         user.url = current_user['external_urls']['spotify']
         user.devices = [Device(**device_info) for device_info in client.devices()['devices']]
-        user.current_device = user.devices[0]
+        user.current_device = user.devices[0] if len(user.devices) > 0 else None
 
         if not len(current_user['images']) > 0:
             user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
@@ -51,9 +51,9 @@ def callback():
     else:
         session['userid'] = current_user['id']
     
-    access_token = create_access_token(identity=current_user['id'])
+    user_access_token = create_access_token(identity=current_user['id'])
     response = make_response(redirect('/user'))
-    response.set_cookie('user_access_token', access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
+    response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
     return response
 
 @blueprint.route("/user")
@@ -91,7 +91,7 @@ def new():
 
         room_access_token = create_access_token(identity=room.id)
         response = make_response(redirect('/room'))
-        response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True,samesite='Strict')
+        response.set_cookie('room_access_token', room_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')
         return response
     else:
         if user.room: return redirect('/user')

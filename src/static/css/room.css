@@ -107,6 +107,11 @@
     gap: 1vh;
 }
 
+#current-device img {
+    width: 48px;
+    height: 48px;
+}
+
 .arrow {
     margin-right: 15px;
     position: relative;
@@ -233,6 +238,11 @@
 
 .hide{
     display: none;
+}
+
+#queue-list ul,
+#history-list ul{
+    max-height: 65vh;
 }
 
 

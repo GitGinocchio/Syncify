@@ -29,15 +29,18 @@
         </div>
       </div>
     </header>
-     
     <div class="container">
-      {% if user.room %}
-      <a class="button" href="/room">Current Room</a>
-      <a class="button" href="/room/leave">Leave Room</a>
-      {% else %}
-      <a class="button" href="/new">Create a room</a>
-      <a class="button" href="/join">Join a room</a>
-      {% endif %}
+      <div class="card createroom-container" onclick="location.href='/new'">
+        <h2>Create a Room</h2>
+        <p class="create-description">Create a new room to enjoy synchronized Spotify music with friends and family.</p>
+      </div>
+      <div class="card joinroom-container" onclick="location.href='/join'">
+        <h2>Join a Room</h2>
+        <p class="create-description">Join an existing room using a room code to experience synchronized Spotify music with others.</p>
+        <div class="room-container">
+          <p class="counter-publicrooms">[[]] Public rooms</p>
+        </div>
+      </div>
     </div>
 
     <footer>
