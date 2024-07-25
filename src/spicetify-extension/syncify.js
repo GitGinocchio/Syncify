@@ -149,7 +149,24 @@
                 socket.emit('register_spotify_client', roomid);
             });
 
-            socket.on('syncify-spicetify-registered', () => {
+            socket.on('syncify-spicetify-registered', (trackid) => {
+                if (songid === undefined) { resolve(socket); }
+
+                console.log('Play request received');
+
+                const trackUri = `spotify:track:${trackid}`;
+                const currentTrackUri = Spicetify.Player.data?.item.uri;
+
+                if (Spicetify.Player.isPlaying) {
+                    Spicetify.Player.pause();
+                }
+
+                if (currentTrackUri === trackUri) {
+                    Spicetify.Player.play();
+                } else {
+                    Spicetify.Player.playUri(trackUri);
+                } 
+
                 resolve(socket);
             });
 
@@ -258,9 +275,7 @@
     }
 
     function Disconnect() {
-        if (socket) {
-            socket.close();
-        }
+        if (socket) { socket.close(); socket = null; }
         resetButton();
     }
 

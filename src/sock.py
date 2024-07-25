@@ -245,14 +245,12 @@ def register_spotify_client(roomid: str):
     if not room:
         socketio.emit('syncify-spicetify-server-error','Invalid Room ID',namespace='/room',to=request.sid)
         return
-    
-    socketio.emit('syncify-spicetify-registered', namespace='/room',to=request.sid)
-
-    socketio.emit('syncify-spicetify-stop', namespace='/room',to=request.sid)
 
     if len(room.queue) > 0 and room.status == 'playing':
         nextsong = room.queue[0]
-        socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/room',to=request.sid)
+        socketio.emit('syncify-spicetify-registered',nextsong.id, namespace='/room',to=request.sid)
+    else:
+        socketio.emit('syncify-spicetify-registered', namespace='/room',to=request.sid)
 
     room.client_sids.append(request.sid)
 
