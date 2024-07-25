@@ -1,6 +1,6 @@
 name: Backend Client or Server Side Bug
 description: Template for reporting bugs relating to Client Side or Server Side features of the Syncify Site or the Syncify extension for Spicetify
-title: "[CRITICAL/HIGH/MEDIUM/LOW] [WEBSITE/EXTENSION BUG] Description of the Problem"
+title: "[Priority] [Website/Extension] Description of the Problem"
 labels: ["bug","HTTP error","Unexpected Behavior"]
 assignees: 
   - 'ginocchio'
@@ -99,6 +99,7 @@ body:
       value: |
         **Additional Context**
         Add any other context about the problem here.
+        Screenshots and videos are appreciated
 
   - type: textarea
     id: additional-context
