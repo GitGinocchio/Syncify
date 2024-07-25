@@ -150,9 +150,7 @@
             });
 
             socket.on('syncify-spicetify-registered', (trackid) => {
-                console.log(trackid)
-                
-                if (!trackid) { resolve(socket); }
+                if (trackid === undefined) { resolve(socket); }
 
                 console.log('Play request received');
 
