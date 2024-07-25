@@ -90,15 +90,15 @@ body:
       label: Other Browser
       description: If you selected "Other", please specify the browser.
       placeholder: Enter the name of your browser...
+  - type: input
+    id: viewport-size
+    attributes:
+      label: Viewport Size
+      description: Please specify the size of your viewport (width x height).
+      placeholder: ex. 1920x1080
   - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
       description: Please provide links to screenshots that help illustrate the issue.
       placeholder: Provide links to screenshots...
-  - type: markdown
-    attributes:
-      value: |
-        ## Thank you!
-
-        We appreciate your feedback and will look into the issue as soon as possible.
