@@ -1,5 +1,4 @@
 name: Template for reporting bugs relating to Client Side or Server Side features of the Syncify Site or the Syncify extension for Spicetify
-about: Report a general issue or bug in the project
 title: "[CRITICAL/HIGH/MEDIUM/LOW] [WEBSITE/EXTENSION BUG] Description of the Problem"
 labels: ["bug","HTTP error","Unexpected Behavior"]
 assignees: 
