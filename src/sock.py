@@ -225,6 +225,9 @@ def handle_room_disconnect():
         socketio.emit('del_room',namespace='/room',to=room.id)
         if room.id in rooms: rooms.pop(room.id)
 
+        for sid in room.client_sids:
+            socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=sid)
+
     socketio.start_background_task(room_scheduled_removal,user,room)
 
     print(f"{user.name} disconnected from room '{room.name}' created by {room.creator.name}")

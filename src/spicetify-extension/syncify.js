@@ -214,6 +214,12 @@
                     }
                 });
 
+                socket.on('syncify-spicetify-deleted-room', () => {
+                    console.error('Room connection error: Failed to connect to the room. The room has been deleted.');
+                    showErrorDialog('Failed to connect to the room. The room has been deleted.');
+                    resetButton();
+                });
+
                 socket.on('disconnect', () => {
                     console.log('Socket.IO connection closed');
                     if (Spicetify.Player.isPlaying) {
@@ -234,7 +240,7 @@
                     } else {
                         console.log('Playback is already paused or stopped');
                     }
-                    showErrorDialog('Failed to connect to the room. The room has been deleted.');
+                    showErrorDialog('Failed to connect to the room.');
                     resetButton();
                 });
             })
