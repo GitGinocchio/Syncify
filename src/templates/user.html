@@ -32,13 +32,16 @@
     <div class="container">
       <div class="card createroom-container" onclick="location.href='/new'">
         <h2>Create a Room</h2>
-        <p class="create-description">Create a new room to enjoy synchronized Spotify music with friends and family.</p>
+        <p class="description">Create a new room to enjoy synchronized Spotify music with friends and family.</p>
+        <div class="room-container">
+          <p class="counter-rooms">{{ num_rooms }} Total rooms</p>
+        </div>
       </div>
       <div class="card joinroom-container" onclick="location.href='/join'">
         <h2>Join a Room</h2>
-        <p class="create-description">Join an existing room using a room code to experience synchronized Spotify music with others.</p>
+        <p class="description">Join an existing room using a room code to experience synchronized Spotify music with others.</p>
         <div class="room-container">
-          <p class="counter-publicrooms">{{ num_public_rooms }} Public rooms</p>
+          <p class="counter-rooms">{{ num_public_rooms }} Public rooms</p>
         </div>
       </div>
     </div>

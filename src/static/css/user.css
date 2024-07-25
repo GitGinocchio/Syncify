@@ -35,13 +35,14 @@
   color: #1ed760;
 }
 
-.create-description, .join-description {
+.description {
   font-size: 16px;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
+  min-height: 70px;
   color: #ccc;
 }
 
-.counter-publicrooms {
+.counter-rooms {
   display: flex;
   font-size: 20px;
   color: #1ed760;
