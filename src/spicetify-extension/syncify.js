@@ -170,11 +170,11 @@
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
-                if (error.fatal) { throw new Error(error.message)}
+                if (error.fatal) { throw new Error(error.message); }
                 if (error.show) { showErrorDialog(error.message); }
             }
         }
-        throw new Error('Failed to connect to Spicetify. try again later.');
+        throw new Error('Failed to connect to Syncify. try again later.');
     }
 
     let socket = null; // Variabile per memorizzare il socket
