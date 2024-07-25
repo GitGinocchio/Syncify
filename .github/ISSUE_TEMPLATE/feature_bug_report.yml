@@ -10,14 +10,16 @@ body:
     attributes:
       value: |
         **Bug Description**
-        Please provide a clear and precise description of the bug you encountered.
+        Please describe the issue you encountered and also specify what the correct behavior should have been.
 
   - type: textarea
     id: bug-description
     attributes:
       label: Description
-      description: A clear and concise description of what the bug is.
-      placeholder: Briefly describe the bug...
+      description: Provide a detailed description of the bug you encountered and what the expected behavior was. Be sure to include:
+        - What went wrong (the bug you experienced)
+        - What you expected to happen (the correct behavior)
+      placeholder: Describe the bug and the expected behavior here...
 
   - type: markdown
     attributes:
@@ -36,18 +38,15 @@ body:
       description: Steps to reproduce the behavior.
       placeholder: Describe the steps to reproduce the issue...
 
-  - type: markdown
+  - type: dropdown
+    id: severity
     attributes:
-      value: |
-        **Expected Behavior**
-        A clear and concise description of what you expected to happen.
-
-  - type: textarea
-    id: expected-behavior
-    attributes:
-      label: Expected Behavior
-      description: A clear and concise description of what you expected to happen.
-      placeholder: Describe what you expected to happen...
+      label: Severity
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
 
   - type: markdown
     attributes:
