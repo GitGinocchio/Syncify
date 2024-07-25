@@ -153,12 +153,12 @@
 
             socket.on('syncify-spicetify-server-error', (error) => {
                 socket.close();
-                reject({'type' : 'invalid-roomid', 'message' : error,'show' : true,'fatal' : true});
+                reject({'type' : 'invalid-roomid', 'message' : error,'fatal' : true});
             });
 
             socket.on('connect_error', (error) => {
                 socket.close();
-                reject({'type' : 'connection-error', 'message' : error,'show' : false,'fatal' : false});
+                reject({'type' : 'connection-error', 'message' : error,'fatal' : false});
             });
         });
     }
@@ -171,7 +171,6 @@
                 return socket;
             } catch (error) {
                 if (error.fatal) { throw new Error(error.message); }
-                if (error.show) { showErrorDialog(error.message); }
             }
         }
         throw new Error('Failed to connect to Syncify. try again later.');
