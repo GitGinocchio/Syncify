@@ -171,8 +171,7 @@
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
-                showErrorDialog(error)
-                // console.error(`Failed to connect to ${url}: ${error.message}`);
+                showErrorDialog(error);
                 failedattempts++;
             }
         }
