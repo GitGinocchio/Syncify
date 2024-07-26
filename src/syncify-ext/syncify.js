@@ -146,8 +146,7 @@
             const socket = io(url, { reconnectionAttempts: reconnectionAttempts });
 
             socket.on('connect', () => {
-                console.log(Spicetify.Platform.LocalStorageAPI.namespace);
-                socket.emit('register_spotify_client', roomid);
+                socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace, roomid);
             });
 
             socket.on('syncify-spicetify-registered', (trackid) => {
