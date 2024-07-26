@@ -120,20 +120,29 @@ def join(roomid):
     
     if request.method == 'POST':
         roomid = request.form.get('roomid')
+        room = rooms.get(roomid)
 
-        session['roomid'] = roomid
-        
-        room_access_token = create_access_token(identity=roomid)
-        response = make_response(redirect('/room'))
-        response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
-        return response
-    else:
-        if roomid:
+        if room.num_members+1 <= room.userlimit:
             session['roomid'] = roomid
-
+            
             room_access_token = create_access_token(identity=roomid)
             response = make_response(redirect('/room'))
             response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
+        else:
+            response = make_response(redirect('/join'))
+        return response
+    else:
+        if roomid:
+            room = rooms.get(roomid)
+
+            if room.num_members+1 <= room.userlimit:
+                session['roomid'] = roomid
+
+                room_access_token = create_access_token(identity=roomid)
+                response = make_response(redirect('/room'))
+                response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
+            else:
+                response = make_response(redirect('/join'))
             return response
         
         return render_template(
