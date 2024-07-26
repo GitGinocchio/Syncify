@@ -7,6 +7,8 @@ PYTHON
 ✔ Quando uno abbandona deve stopparsi la musica solo per chi abbandona
 ✔ Non far entrare qualcuno quando la stanza e' gia' piena
 - Cercare di capire perche' a volte si duplicano i membri presenti
+- Provare a rimuovere il roomid dall'estensione Syncify e provare ad ottenere il roomid tramite server
+- Cercare di spostare tutti gli script javascript dai file .html ai file .js (quando possibile)
 
 HTML
 - User

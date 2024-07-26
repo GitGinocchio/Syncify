@@ -4,7 +4,7 @@ function toBottom() {
 }
 
 function copyurl(roomid) {
-  navigator.clipboard.writeText(roomid).then(function() {
+  navigator.clipboard.writeText(`${window.location.host}/join/${roomid}`).then(function() {
     alert('Link copiato!');
   }).catch(function(err) {
     console.error('Errore durante la copia del link: ', err);
