@@ -334,7 +334,7 @@
 					<span id="total-time">0:00</span>
 				</div>
 			</div>
-		
+			{% if user.product == "premium" %}
 			<div class="main-devices-container">
 				<div class="devices-container">
 					<div id="devices-list">
@@ -373,6 +373,7 @@
 					</div>
 				</div>
 			</div>
+			{% endif %}
 		</div>
 		<div class="main-content">
 			<div class="queue">
