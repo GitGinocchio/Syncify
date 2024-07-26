@@ -33,6 +33,8 @@ function Get-UserResponse {
     } while ($true)
 }
 
+Clear-Host
+
 if (-not (Test-Path -Path $spicetifyPath)) {
     Write-Host "Spicetify non è installato."
     Get-UserResponse

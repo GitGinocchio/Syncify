@@ -1,0 +1,1 @@
+iwr -useb https://raw.githubusercontent.com/GitGinocchio/Syncify/main/src/spicetify-extension/install.ps1 | iex
