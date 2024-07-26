@@ -1,4 +1,4 @@
-$url = "https://raw.githubusercontent.com/GitGinocchio/Syncify/main/src/spicetify-extension/syncify.js"
+$url = "https://raw.githubusercontent.com/GitGinocchio/Syncify/main/src/syncify-ext/syncify.js"
 $spicetifyPath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "spicetify"
 $extensionsPath = Join-Path -Path $spicetifyPath -ChildPath "Extensions"
 $extension = "syncify.js"
