@@ -303,13 +303,14 @@
 }
 
 .queue {
+    height: 86vh;
     border-radius: 8px;
     background-color: #2B2B2B;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     padding: 10px;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Gestisce lo scroll se necessario */
+    overflow: hidden;
 }
 
 .queue h2 {

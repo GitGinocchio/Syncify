@@ -7,6 +7,8 @@ PYTHON
 - Quando uno abbandona deve stopparsi la musica solo per chi abbandona
 - Non far entrare qualcuno quando la stanza e' gia' piena
 - Cercare di capire perche' a volte si duplicano i membri presenti
+- spotipy.oauth2.SpotifyOauthError: error: invalid_grant, error_description: Invalid authorization code
+
 
 HTML
 - User
