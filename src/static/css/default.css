@@ -104,39 +104,92 @@ header h1 {
 
 /* Footer */
 footer {
-  background-color: #3333; /* Grigio scuro per il footer */
+  display: grid;
+  grid-template-columns: 1fr auto;
+  background-color: #3333;
   color: #fff;
   text-align: center;
   padding: 10px 0;
   font-size: 15px;
-  margin-top: auto; /* Spinge il footer in fondo */
+  margin-top: auto;
+  align-items: center;
 }
 
 footer p {
-  color: #fff;
-  text-align: center;
-  padding: 10px 0;
-  font-size: 15px
+  grid-column: 1 / 2;
+  justify-self: center;
+}
+
+.contact-container {
+  grid-column: 2 / 3;
+  justify-self: end;
+}
+
+
+footer p {
+    margin-left: 15%;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
 }
 
 /* Dropdown Menu */
+/* Stili esistenti */
+/* Nascondi il checkbox */
+.toggle-menu {
+  display: none;
+}
+
+/* Contenitore account per Flexbox */
+.account {
+  display: flex;
+  align-items: center; /* Allinea verticalmente */
+  position: relative; /* Necessario per posizionare il dropdown menu */
+  cursor: pointer; /* Cambia il cursore per indicare che è cliccabile */
+}
+
+.account-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer; /* Cambia il cursore per indicare che è cliccabile */
+}
+
+.username {
+  font-size: 18px; 
+  margin-right: 12px; 
+  color: #1ed760;
+}
+
+.account-icon {
+  width: 50px; /* Dimensiona l'immagine dell'icona dell'account */
+  height: 50px;
+  border-radius: 50%; /* Opzionale: per fare in modo che l'icona sia rotonda */
+}
+
+/* Stili del menu a discesa */
 .dropdown-menu {
-  display: none; /* Nascosto di default */
+  display: none;
   position: absolute;
-  right: 30px; /* Allineato alla destra dell'immagine del profilo */
-  top: 80px; /* Sotto l'immagine del profilo */
+  right: 15px;
+  top: 100%;
   background-color: black;
   border: 1px solid #1ed760;
   border-radius: 5px;
-  z-index: 1; /* Porta il menu davanti agli altri elementi */
+  z-index: 1;
+  box-shadow: 0px 0px 16px 1px #3f3f3f;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 .dropdown-menu a {
   color: white;
-  padding: 12px 16px;
+  padding: 14px 20px; /* Aumenta il padding per migliorare la visibilità */
   text-decoration: none;
   display: block;
-  font-size: 14px;
+  font-size: 16px; /* Aumenta la dimensione del testo dei link */
   text-align: left; /* Allinea il testo a sinistra */
 }
 
@@ -144,9 +197,69 @@ footer p {
   background-color: #1ed760; /* Cambia il colore di sfondo al passaggio del mouse */
 }
 
-.show {
-  display: block; /* Mostra il menu quando viene aggiunta la classe "show" */
+/* Keyframes per animazione */
+@keyframes slideDown {
+  0% {
+    max-height: 0;
+    opacity: 0;
+  }
+  100% {
+    max-height: 500px; /* o un'altezza adeguata */
+    opacity: 1;
+  }
 }
+
+@keyframes slideUp {
+  0% {
+    max-height: 500px; /* o un'altezza adeguata */
+    opacity: 1;
+  }
+  100% {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+/* Mostra il menu quando il checkbox è selezionato */
+.toggle-menu:checked ~ .dropdown-menu {
+  display: block;
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.toggle-menu:not(:checked) ~ .dropdown-menu {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+/* Miglioramenti estetici */
+.dropdown-menu a {
+  border-bottom: 1px solid #1ed760;
+}
+
+.dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu a {
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu a:hover {
+  background-color: #1ed760;
+  color: black;
+}
+
+.dropdown-menu a::before {
+  content: '→'; /* Un'icona o un simbolo a piacere */
+  margin-right: 10px; /* Aumenta lo spazio tra il simbolo e il testo */
+  transition: margin-right 0.3s ease;
+}
+
+.dropdown-menu a:hover::before {
+  margin-right: 15px; /* Aumenta lo spazio quando si passa sopra */
+}
+
 
 /* Mobile Styles */
 @media only screen and (max-width: 768px) {

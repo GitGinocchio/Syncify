@@ -19,10 +19,14 @@
           <h1>Syncify</h1>
         </div>
       </a>
-      
+      <div class="github-question-container">
+      </div>
       <div class="account">
-        <p class=username>{{ user.name }}</p>
-        <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        <input type="checkbox" id="toggle-menu" class="toggle-menu">
+        <label for="toggle-menu" class="account-label">
+          <p class="username">{{ user.name }}</p>
+          <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        </label>
         <div class="dropdown-menu" id="dropdown-menu">
           <a href="{{ user.url }}" target="_blank">Profile</a>
           <a href="/logout">Logout</a>
@@ -48,6 +52,9 @@
 
     <footer>
       <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
+      <div class="contact-container">
+        <a class="button" href="https://github.com/GitGinocchio/Syncify/issues/new/choose" target="_blank";>Contact us</a>
+      </div>
     </footer>
   </body>
 </html>

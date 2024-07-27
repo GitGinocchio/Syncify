@@ -1,6 +1,13 @@
-section{
-  margin-top: 50px;
-  flex-grow: 1;
+section {
+  display: grid;
+  place-items: center; /* Centro sia orizzontalmente che verticalmente */
+  flex-grow: 1; /* Permette alla sezione di crescere e occupare lo spazio disponibile */
+  padding: 20px; /* Aggiunge spazio interno */
+}
+
+.container {
+  width: 100%;
+  max-width: 400px; /* Mantieni la larghezza massima del form */
 }
 
 
@@ -12,11 +19,6 @@ form{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 400px; /* Larghezza massima del form */
   margin: 0 auto; /* Centro del form nella pagina */
-}
-
-label {
-  display: block;
-  margin-bottom: 15px;
 }
 
 .queue-settings {
