@@ -38,8 +38,13 @@ def callback():
         user.id = current_user['id']
         user.name = current_user['display_name']
         user.url = current_user['external_urls']['spotify']
-        user.devices = [Device(**device_info) for device_info in client.devices()['devices']]
-        user.current_device = user.devices[0] if len(user.devices) > 0 else None
+
+        if user.product == 'premium':
+            active_devices = list(filter(lambda device: device['is_active'],client.devices()['devices']))
+            user.devices = [Device(**device_info) for device_info in active_devices]
+            user.current_device = user.devices[0] if len(user.devices) > 0 else None
+        else:
+            user.client_sid = None
 
         if not len(current_user['images']) > 0:
             user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
@@ -115,20 +120,29 @@ def join(roomid):
     
     if request.method == 'POST':
         roomid = request.form.get('roomid')
+        room = rooms.get(roomid)
 
-        session['roomid'] = roomid
-        
-        room_access_token = create_access_token(identity=roomid)
-        response = make_response(redirect('/room'))
-        response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
-        return response
-    else:
-        if roomid:
+        if room.num_members+1 <= room.userlimit:
             session['roomid'] = roomid
-
+            
             room_access_token = create_access_token(identity=roomid)
             response = make_response(redirect('/room'))
             response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
+        else:
+            response = make_response(redirect('/join'))
+        return response
+    else:
+        if roomid:
+            room = rooms.get(roomid)
+
+            if room.num_members+1 <= room.userlimit:
+                session['roomid'] = roomid
+
+                room_access_token = create_access_token(identity=roomid)
+                response = make_response(redirect('/room'))
+                response.set_cookie('room_access_token', room_access_token,max_age=86400, secure=True, httponly=True)
+            else:
+                response = make_response(redirect('/join'))
             return response
         
         return render_template(

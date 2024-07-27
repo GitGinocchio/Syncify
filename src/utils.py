@@ -55,7 +55,7 @@ class Room:
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
 	queue: list[Song] = field(default_factory=list)
 	history: list[Song] = field(default_factory=list)
-	client_sids: list[str] = field(default_factory=list)
+	#client_sids: list[str] = field(default_factory=list)
 
 	def __eq__(self, other):
 		return self.id == other.id
@@ -89,9 +89,10 @@ class User:
 	url: str = field(default_factory=str,init=False)
 	image: str = field(default_factory=str,init=False)
 	id: str = field(default_factory=str,init=False)
-	product: Literal['premium','free'] = None
 	devices: list['Device'] = field(default_factory=list,init=False)
 	current_device: 'Device' = None
+	product: Literal['premium','free'] = None
+	client_sid: str = None
 	token: Token = None
 	room: Room = None
 
@@ -107,8 +108,11 @@ class User:
 			'product' : self.product,
 		}
 		if not exclude_devices:
-			_dict['devices'] = [device.asdict() for device in self.devices]
-			_dict['current_device'] = self.current_device.asdict() if self.current_device else None
+			if self.product == 'premium':
+				_dict['devices'] = [device.asdict() for device in self.devices]
+				_dict['current_device'] = self.current_device.asdict() if self.current_device else None
+			else:
+				_dict['client_sid'] = self.client_sid
 		return _dict
 
 @dataclass
