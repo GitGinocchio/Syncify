@@ -219,8 +219,8 @@ def handle_room_disconnect():
 
         print(f"Room '{room.name}' created by {room.creator.name} deleted")
 
-        for sid in room.client_sids:
-            socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=sid)
+        for member in room.members:
+            socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=member.client_sid)
 
         for member in room.members:
             if member.product == 'premium':
