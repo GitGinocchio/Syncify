@@ -1,0 +1,83 @@
+/* Bug Report Container */
+.bug-report-container {
+  background-color: #1c1c1c;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px auto; /* Center the container horizontally */
+  color: white;
+  width: 45%;
+}
+
+.bug-report-container h2 {
+  color: #1ed760;
+  text-align: center;
+}
+
+.bug-report-container label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.bug-report-container select,
+.bug-report-container textarea,
+.bug-report-container input[type="file"] {
+  width: calc(100% - 20px); /* Adjust width to account for padding */
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #333;
+  color: white;
+  box-sizing: border-box; /* Ensure padding is included in element's total width and height */
+}
+
+.bug-report-container textarea {
+  height: 250px;
+  min-height: 250px;
+  max-height: 335px;
+  resize: vertical;
+  overflow-y: auto;
+}
+
+.bug-report-container select:focus,
+.bug-report-container textarea:focus,
+.bug-report-container input[type="file"]:focus {
+  border-color: #1ed760;
+}
+
+.bug-report-container .button {
+  display: block;
+  width: calc(100% - 20px); /* Adjust width to account for padding */
+  margin: 0 auto; /* Center the button horizontally */
+  background-color: #1ed760;
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center; /* Ensure text is centered */
+}
+
+.bug-report-container .button:hover {
+  background-color: #45a049;
+}
+
+.bug-report-container .button:active {
+  background-color: #169c46;
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 768px) {
+  .bug-report-container {
+    width: 90%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .bug-report-container {
+    width: 100%;
+  }
+}

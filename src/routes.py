@@ -203,3 +203,11 @@ def logout():
     response.set_cookie('room_access_token', '', expires=0)
 
     return response
+
+@blueprint.route('/bugreport')
+@useridrequired
+def bugreport():
+    userid = getuserid()
+    
+    return render_template('bugreport.html')
+    
