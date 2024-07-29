@@ -150,7 +150,10 @@
             });
 
             socket.on('syncify-spicetify-registered', (trackid) => {
-                if (trackid === undefined) { resolve(socket); return; }
+                if (trackid === undefined) {
+                    if (Spicetify.Player.isPlaying) { Spicetify.Player.pause(); }
+                    resolve(socket); return; 
+                }
 
                 console.log('Play request received');
 

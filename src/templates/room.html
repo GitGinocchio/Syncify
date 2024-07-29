@@ -14,6 +14,8 @@
 		document.addEventListener("DOMContentLoaded", (event) => {
 			const socket = io("/room");
 
+			const messagesContainer = document.getElementById("chat-messages");
+
 			socket.on("new_message", function (message) {
 				// Successivamente il messaggio, dopo essere stato elaborato torna al client
 				// Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
