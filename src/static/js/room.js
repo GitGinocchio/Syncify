@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const skipButton = document.getElementById("skipButton");
 	const backButton = document.getElementById("backButton");
 
+	var progressInterval;
 	let debounceTimeout;
 
 	socket.on("connect", () => { });
@@ -142,9 +143,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		if (song === undefined) {
 			currentSongImageContainer.innerHTML = "<span></span>";
 			currentSongDetailsContainer.innerHTML = `
-	  <span class="current-song-title-placeholder"></span>
-	  <span class="current-song-artists-placeholder"></span>
-	  `;
+			<span class="current-song-title-placeholder"></span>
+			<span class="current-song-artists-placeholder"></span>
+			`;
 			currentSongTotalTime.textContent = "0:00";
 		} else {
 			currentSongImageContainer.innerHTML = "";
@@ -154,15 +155,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			currentSongImageContainer.appendChild(currentSongImage);
 
 			currentSongDetailsContainer.innerHTML = `
-		<span class="current-song-title" id="${song.id}">${song.name}</span>
-		<span class="current-song-artists">${song.artists
-					.map(
-						(artist) =>
-							`<a href="${artist.external_urls.spotify}" target="_blank">${artist.name}</a>`
-					)
-					.join("<p>,</p>")}
-		</span>
-	  `;
+			<span class="current-song-title" id="${song.id}">${song.name}</span>
+			<span class="current-song-artists">${song.artists
+						.map(
+							(artist) =>
+								`<a href="${artist.external_urls.spotify}" target="_blank">${artist.name}</a>`
+						)
+						.join("<p>,</p>")}
+			</span>
+	  		`;
 			currentSongTotalTime.textContent = song.duration;
 		}
 	});
@@ -176,6 +177,21 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			img.src = "/static/images/play.png";
 			img.alt = "Play";
 		}
+	});
+
+	socket.on('update_progress', function(started_at,paused_at, song_duration_ms) {
+		if (progressInterval) { clearInterval(progressInterval); }
+		progressInterval = setInterval(function() {
+			var elapsed_time;
+			if (paused_at !== null) {
+				elapsed_time = paused_at - started_at
+			}
+			else {
+				elapsed_time = Date.now() - started_at
+			}
+
+			var progress = Math.min((elapsed_time / song_duration_ms) * 100,100)
+		}, 1000);
 	});
 
 	function handleSongClick(event) {
@@ -257,12 +273,12 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	});
 
 	if (clickableArrow) {
-			clickableArrow.addEventListener("click", () => {
-					arrows.forEach((arrow) => {
-							arrow.classList.toggle("active");
-					});
-					devicesList.classList.toggle("show");
+		clickableArrow.addEventListener("click", () => {
+			arrows.forEach((arrow) => {
+				arrow.classList.toggle("active");
 			});
+			devicesList.classList.toggle("show");
+		});
 	};
 
 	document.getElementById("queue-input").addEventListener("input", function () {

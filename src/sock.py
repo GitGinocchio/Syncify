@@ -1,4 +1,4 @@
-from flask_socketio import SocketIO, join_room, leave_room, send, emit
+from flask_socketio import SocketIO, join_room, leave_room, close_room, send, emit
 from flask import request, make_response
 import time
 
@@ -181,6 +181,18 @@ def handle_new_song(songid : str):
     if len(room.queue) == 1:
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
 
+@socketio.on('handle_progress_request',namespace='/room')
+def handle_progress_request():
+    roomid = getroomid()
+
+    if not roomid: return
+
+    room = rooms.get(roomid)
+
+    if not room: return
+
+    socketio.emit('current_progress', room.song_started_at, room.song_paused_at,to=request.sid)
+
 @socketio.on('disconnect', namespace='/room')
 def handle_room_disconnect():
     userid = getuserid()
@@ -215,6 +227,8 @@ def handle_room_disconnect():
 
         socketio.emit('del_room',room.id,namespace='/join')
         socketio.emit('del_room',namespace='/room',to=room.id)
+        
+        close_room(room.id)
         if room.id in rooms: rooms.pop(room.id)
 
         print(f"Room '{room.name}' created by {room.creator.name} deleted")
@@ -255,7 +269,6 @@ def register_spotify_client(userid: str, roomid: str):
         socketio.emit('syncify-spicetify-registered', namespace='/room',to=request.sid)
 
     user.client_sid = str(request.sid)
-    #room.client_sids.append(request.sid)
 
 @socketio.on('handle_start_playback',namespace='/room')
 def handle_start_playback():
@@ -274,6 +287,11 @@ def handle_start_playback():
     nextsong = room.queue[0]
 
     room.status = 'playing'
+    if not room.song_started_at:
+        room.song_started_at = time.time()
+    elif room.song_paused_at:
+        room.song_started_at += time.time() - room.song_paused_at
+    room.song_paused_at = None
 
     for member in room.members:
         if member.product == 'premium':
@@ -297,6 +315,7 @@ def handle_stop_playback():
     if not user or not room: return
 
     room.status = 'idle'
+    room.song_paused_at = time.time()
 
     for member in room.members:
         if member.product == 'premium':
@@ -318,6 +337,9 @@ def handle_skip_playback():
     room = rooms.get(roomid)
 
     if not user or not room: return
+
+    room.song_started_at = None
+    room.song_paused_at = None
 
     if len(room.queue) == 0:             # Se non esistono canzoni nella queue
         room.status = 'idle'                 # Imposta lo stato della stanza in idle
@@ -366,6 +388,9 @@ def handle_back_playback():
     room = rooms.get(roomid)
 
     if not user or not room: return
+
+    room.song_started_at = None
+    room.song_paused_at = None
 
     if len(room.history) == 0:            # Se non esiste una canzone gia' ascoltata ritorna
         room.status = 'idle'

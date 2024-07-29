@@ -48,14 +48,14 @@ class Room:
 	creator: 'User' = None
 	visibility: str = 'public'
 	editablequeue: bool = False
-	current_song_time : int = 0
+	song_started_at : float = None
+	song_paused_at : float = None
 	status : Literal['idle','playing'] = 'idle'
 	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
 	id: str = field(default_factory=lambda: uuid.uuid4().hex)
 	queue: list[Song] = field(default_factory=list)
 	history: list[Song] = field(default_factory=list)
-	#client_sids: list[str] = field(default_factory=list)
 
 	def __eq__(self, other):
 		return self.id == other.id
@@ -70,6 +70,8 @@ class Room:
 			'visbility' : self.visibility,
 			'editablequeue' : self.editablequeue,
 			'num_members' : self.num_members,
+			'song_started_at' : self.song_started_at,
+			'song_paused_at' : self.song_paused_at
 		}
 
 @dataclass

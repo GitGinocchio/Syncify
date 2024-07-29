@@ -9,7 +9,8 @@ PYTHON
 - Cercare di capire perche' a volte si duplicano i membri presenti
 - spotipy.oauth2.SpotifyOauthError: error: invalid_grant, error_description: Invalid authorization code
 - Provare a rimuovere il roomid dall'estensione Syncify e provare ad ottenere il roomid tramite server
-- Cercare di spostare tutti gli script javascript dai file .html ai file .js (quando possibile)
+✔ Cercare di spostare tutti gli script javascript dai file .html ai file .js (quando possibile)
+- Trasformare tutte le liste che contengono dati che devono essere specificati una volta sola con dei set()
 
 HTML
 - User
