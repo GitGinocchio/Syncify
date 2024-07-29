@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const historyContainer = document.getElementById("history-list");
 	const currentSongImageContainer = document.getElementById("current-song-image");
 	const currentSongDetailsContainer = document.getElementById("current-song-details");
+	const currentSongCurrentTime = document.getElementById("current-time");
 	const currentSongTotalTime = document.getElementById("total-time");
 
 	const sendMessageButton = document.getElementById("send-message");
@@ -38,6 +39,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const playPauseButton = document.getElementById("playPauseButton");
 	const skipButton = document.getElementById("skipButton");
 	const backButton = document.getElementById("backButton");
+	const progressBar = document.getElementById("progress");
 
 	var progressInterval;
 	let debounceTimeout;
@@ -128,12 +130,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	});
 
 	socket.on("del_song", function (index) {
-		if (
-			queueContainer &&
-			queueContainer.children &&
-			index >= 0 &&
-			index < queueContainer.children.length
-		) {
+		if (queueContainer && queueContainer.children && index >= 0 && index < queueContainer.children.length) {
 			const item = queueContainer.children[index];
 			queueContainer.removeChild(item);
 		}
@@ -179,19 +176,53 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	});
 
-	socket.on('update_progress', function(started_at,paused_at, song_duration_ms) {
+	socket.on('set_update_progress_bar', function(started_at, paused_at, song_duration) {
 		if (progressInterval) { clearInterval(progressInterval); }
+	
+		// Converti i secondi in millisecondi
+		started_at = parseFloat(started_at) * 1000;
+		paused_at = paused_at ? parseFloat(paused_at) * 1000 : null;
+		song_duration = parseFloat(song_duration);
+	
 		progressInterval = setInterval(function() {
-			var elapsed_time;
+			let elapsed_time;
+			
 			if (paused_at !== null) {
-				elapsed_time = paused_at - started_at
-			}
-			else {
-				elapsed_time = Date.now() - started_at
+				elapsed_time = paused_at - started_at;
+			} else {
+				elapsed_time = Date.now() - started_at;
 			}
 
-			var progress = Math.min((elapsed_time / song_duration_ms) * 100,100)
+			var progress = (elapsed_time / song_duration) * 100;
+
+			// Calcola il progresso e limita al 100%
+			if (progress >= 100) {
+				socket.emit("handle_skip_playback");
+				clearInterval(progressInterval);
+				return;
+			}
+
+			let clampedprogress = Math.min(progress, 100);
+			progressBar.style.width = clampedprogress + '%';
+			
+			// Converti i millisecondi in secondi
+			let totalSeconds = Math.floor(elapsed_time / 1000);
+			let minutes = Math.floor(totalSeconds / 60);
+			let seconds = totalSeconds % 60;
+			minutes = minutes.toString().padStart(2, '0');
+			seconds = seconds.toString().padStart(2, '0');
+
+			currentSongCurrentTime.textContent = `${minutes}:${seconds}`;
 		}, 1000);
+	});
+
+	socket.on('unset_update_progress_bar',function() {
+		if (progressInterval) { clearInterval(progressInterval); }
+	});
+
+	socket.on('reset_progress_bar', function() {
+		progressBar.style.width = '0%';
+		currentSongCurrentTime.textContent = '0:00';
 	});
 
 	function handleSongClick(event) {

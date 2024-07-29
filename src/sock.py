@@ -74,18 +74,25 @@ def handle_room_connect():
             client = get_client(user.token)
             if user.current_device: client.start_playback(device_id=user.current_device.id,uris=[f"spotify:track:{nextsong.id}"])
         else:
-            socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/room',to=user.client_sid)
+            if user.client_sid:
+                socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/room',to=user.client_sid)
 
         socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+    
+    if len(room.queue) > 0:
+        nextsong = room.queue[0]
 
+        socketio.emit('set_update_progress_bar',(room.song_started_at,room.song_paused_at,nextsong.duration_ms), namespace='/room',to=roomid)
+        socketio.emit('set_current_song_details',nextsong.asdict(),namespace='/room',to=roomid)
+    
     if user in room.members: return
 
     user.room = room
     room.members.append(user)
     room.num_members += 1
 
-    socketio.emit('update_member_count',room.asdict(),namespace='/join')
     socketio.emit('member_join',user.asdict(),namespace='/room',to=roomid)
+    socketio.emit('update_member_count',room.asdict(),namespace='/join')
 
     print(f"{user.name} connected to /room namespace")
 
@@ -227,29 +234,23 @@ def handle_room_disconnect():
 
         socketio.emit('del_room',room.id,namespace='/join')
         socketio.emit('del_room',namespace='/room',to=room.id)
-        
-        close_room(room.id)
+
+        #close_room(room.id)
         if room.id in rooms: rooms.pop(room.id)
 
         print(f"Room '{room.name}' created by {room.creator.name} deleted")
-
-        for member in room.members:
-            socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=member.client_sid)
 
         for member in room.members:
             if member.product == 'premium':
                 client = get_client(member.token)
                 if member.current_device: client.pause_playback(device_id=member.current_device.id)
             else:
-                socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=member.client_sid)
+                if member.client_sid:
+                    socketio.emit('syncify-spicetify-deleted-room',namespace='/room',to=member.client_sid)
 
     socketio.start_background_task(room_scheduled_removal,user,room)
-
+    
     print(f"{user.name} disconnected from room '{room.name}' created by {room.creator.name}")
-
-    response = make_response('test')
-    response.set_cookie('room_access_token', '', expires=0)
-    return response
 
 # -------- Room -------- (Spotify Client)
 
@@ -301,6 +302,7 @@ def handle_start_playback():
             socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/room',to=member.client_sid)
         
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+    socketio.emit('set_update_progress_bar',(room.song_started_at,room.song_paused_at,nextsong.duration_ms), namespace='/room',to=roomid)
 
 @socketio.on('handle_stop_playback',namespace='/room')
 def handle_stop_playback():
@@ -325,6 +327,7 @@ def handle_stop_playback():
             socketio.emit('syncify-spicetify-stop', namespace='/room',to=member.client_sid)
 
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+    socketio.emit('unset_update_progress_bar',namespace='/room',to=roomid)
 
 @socketio.on('handle_skip_playback',namespace='/room')
 def handle_skip_playback():
@@ -338,7 +341,7 @@ def handle_skip_playback():
 
     if not user or not room: return
 
-    room.song_started_at = None
+    room.song_started_at = time.time()
     room.song_paused_at = None
 
     if len(room.queue) == 0:             # Se non esistono canzoni nella queue
@@ -364,6 +367,8 @@ def handle_skip_playback():
 
         socketio.emit('update_playpause_button',namespace='/room',to=roomid)
         socketio.emit('set_current_song_details',namespace='/room',to=roomid)
+        socketio.emit('unset_update_progress_bar',namespace='/room',to=roomid)
+        socketio.emit('reset_progress_bar',namespace='/room',to=roomid)
         return
 
     nextsong = room.queue[0]             # Ottengo la prossima canzone presente nella queue
@@ -376,6 +381,8 @@ def handle_skip_playback():
             socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/room',to=member.client_sid)
 
     socketio.emit('set_current_song_details',nextsong.asdict(),namespace='/room',to=roomid)
+    socketio.emit('reset_progress_bar',namespace='/room',to=roomid)
+    socketio.emit('set_update_progress_bar',(room.song_started_at,room.song_paused_at,nextsong.duration_ms), namespace='/room',to=roomid)
 
 @socketio.on('handle_back_playback',namespace='/room')
 def handle_back_playback():
@@ -389,7 +396,7 @@ def handle_back_playback():
 
     if not user or not room: return
 
-    room.song_started_at = None
+    room.song_started_at = time.time()
     room.song_paused_at = None
 
     if len(room.history) == 0:            # Se non esiste una canzone gia' ascoltata ritorna
@@ -404,6 +411,8 @@ def handle_back_playback():
         
         socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
         socketio.emit('set_current_song_details',namespace='/room',to=roomid)
+        socketio.emit('unset_update_progress_bar',namespace='/room',to=roomid)
+        socketio.emit('reset_progress_bar',namespace='/room',to=roomid)
         return
     
     lastplayed = room.history[0]         # Prendo l'ultima canzone ascoltata dalla history ma non la tolgo
@@ -428,3 +437,5 @@ def handle_back_playback():
 
     socketio.emit('set_current_song_details',lastplayed.asdict(),namespace='/room',to=roomid)
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
+    socketio.emit('reset_progress_bar',namespace='/room',to=roomid)
+    socketio.emit('set_update_progress_bar',(room.song_started_at,room.song_paused_at,lastplayed.duration_ms), namespace='/room',to=roomid)
