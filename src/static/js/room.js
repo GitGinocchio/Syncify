@@ -256,12 +256,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	});
 
-	clickableArrow.addEventListener("click", () => {
-		arrows.forEach((arrow) => {
-			arrow.classList.toggle("active");
-		});
-		devicesList.classList.toggle("show");
-	});
+	if (clickableArrow) {
+			clickableArrow.addEventListener("click", () => {
+					arrows.forEach((arrow) => {
+							arrow.classList.toggle("active");
+					});
+					devicesList.classList.toggle("show");
+			});
+	};
 
 	document.getElementById("queue-input").addEventListener("input", function () {
 		var searchingBox = document.querySelector(".searching-box");
