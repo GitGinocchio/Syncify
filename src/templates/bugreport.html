@@ -4,8 +4,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Syncify</title>
     <link rel="stylesheet" href="/static/css/default.css" type="text/css">
-    <link rel="stylesheet" href="/static/css/login.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/bugreport.css" type="text/css">
     <link rel='icon' href="/static/images/icon.png">
+    <script>
+      document.getElementById('bug-file').addEventListener('change', function() {
+        const fileInput = this;
+        const file = fileInput.files[0];
+        const warningMessage = document.getElementById('file-warning');
+        const submitButton = document.getElementById('submit-button');
+
+        if (file && file.size > 25 * 1024 * 1024) { // 25 MB in bytes
+          warningMessage.textContent = 'The file size exceeds 25 MB. Please choose a smaller file.';
+          warningMessage.style.display = 'block';
+          submitButton.disabled = true;
+        } else {
+          warningMessage.textContent = '';
+          warningMessage.style.display = 'none';
+          submitButton.disabled = false;
+        }
+      });
+    </script>
   </head>
   <body>
     <header>
@@ -15,7 +33,6 @@
           <h1>Syncify</h1>
         </div>
       </a>
-
       <div class="account">
         <a href="/login">
           <p class=username> Login </p>
@@ -23,12 +40,26 @@
         </a>
       </div>
     </header>
+    <div class="bug-report-container">
+      <h2>Report a Bug</h2>
+      <form action="/report-bug" method="post" enctype="multipart/form-data">
+        <label for="bug-type">Type of Bug:</label>
+        <select id="bug-type" name="bug-type" required>
+          <option value="functional">Functional</option>
+          <option value="visual">Visual</option>
+        </select>
 
+        <label for="bug-description">Bug Description:</label>
+        <textarea id="bug-description" name="bug-description" rows="4" required></textarea>
+
+        <label for="bug-file">Upload File (Max 25 MB):</label>
+        <input type="file" id="bug-file" name="bug-file" accept="image/*,video/*" multiple required>
+
+        <button type="submit" class="button">Submit</button>
+      </form>
+    </div>
     <footer>
       <p>copyright © 2023 redacted by Giulio & Deniel. The text contents of site are licensed under CC BY 4.0. </p>
-      <div class="contact-container">
-        <a class="button" href="https://github.com/GitGinocchio/Syncify/issues/new/choose" target="_blank";>Contact us</a>
-      </div>
     </footer>
   </body>
 </html>
