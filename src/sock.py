@@ -216,7 +216,8 @@ def handle_room_disconnect():
         client = get_client(user.token)
         if user.current_device: client.pause_playback(device_id=user.current_device.id)
     else:
-        socketio.emit('syncify-spicetify-stop', namespace='/room',to=user.client_sid)
+        if user.client_sid:
+            socketio.emit('syncify-spicetify-stop', namespace='/room',to=user.client_sid)
 
     leave_room(room.id)
     room.members.remove(user)
