@@ -22,8 +22,7 @@ form{
 }
 
 .queue-settings {
-  display: flex; /* Utilizziamo flexbox per allineare gli elementi */
-  align-items: center; /* Allinea gli elementi verticalmente al centro */
+
   margin-top: 10px;
   margin-bottom: 15px;
 }
