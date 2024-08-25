@@ -39,6 +39,6 @@ app.register_blueprint(blueprint)
 socketio.init_app(app)
 jwt.init_app(app)
 
-server = WSGIServer(('127.0.0.1', 5000), app, handler_class=WebSocketHandler)
+server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler)
 
 __all__ = ['server']
