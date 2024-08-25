@@ -6,7 +6,7 @@
     const reconnectionAttempts = 3;
     const Addresses = [
         `http://localhost:5000/room`,
-        `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev:5000/room`
+        `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev:5000/room`,
         `https://syncify-4trj.onrender.com/room`
     ];
 
