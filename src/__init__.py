@@ -2,8 +2,11 @@ from flask_session import Session
 from flask_cors import CORS
 from flask import Flask
 from datetime import timedelta
+from dotenv import load_dotenv
 import tempfile
 import os
+
+load_dotenv('.env')
 
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer
