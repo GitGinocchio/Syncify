@@ -1,3 +1,4 @@
+python-dotenv
 flask
 flask-jwt-extended
 flask-cors
