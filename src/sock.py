@@ -108,7 +108,7 @@ def handle_message(text : str):
 
     message = Message(sender=user,text=text)
     room.chat.append(message)
-    socketio.emit('new_message',message.asdict(),namespace='/room', to=roomid)
+    socketio.emit('new_my_message',message.asdict(),namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
 def handle_search_song(query: str):

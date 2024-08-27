@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const backButton = document.getElementById("backButton");
 	const progressBar = document.getElementById("progress");
 
+	
+
 	var progressInterval;
 	let debounceTimeout;
 
@@ -65,6 +67,55 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	});
 
+	socket.on("new_my_message", function(message) {
+		// Successivamente il messaggio, dopo essere stato elaborato torna al client
+		// Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
+		// Attenzione: Se si riaggiorna la pagina, questo metodo non viene chiamato
+		// per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
+		const messageElement = document.createElement("div");
+		messageElement.classList.add("message");
+		messageElement.classList.add("my-message");
+		messageElement.innerHTML = `
+			<div class="sender">
+				<img src="${message.sender.image}">
+				<p>${message.sender.name}</p>
+			</div>
+			<p class="mess">${message.text}</p>
+		`;
+		messagesContainer.appendChild(messageElement);
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	});
+
+	socket.on("new_others_message", function(message) {
+		const messageElement = document.createElement("div");
+		messageElement.classList.add("message");
+		messageElement.classList.add("other-message");
+		messageElement.innerHTML = `
+			<div class="sender">
+				<img src="${message.sender.image}">
+				<p>${message.sender.name}</p>
+			</div>
+			<p class="mess">${message.text}</p>
+		`;
+		messagesContainer.appendChild(messageElement);
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	});
+
+	socket.on("new_system_message", function(message) {
+		const messageElement = document.createElement("div");
+		messageElement.classList.add("message");
+		messageElement.classList.add("system-message");
+		messageElement.innerHTML = `
+			<div class="sender">
+				<img src="${message.sender.image}">
+				<p>${message.sender.name}</p>
+			</div>
+			<p class="mess">${message.text}</p>
+		`;
+		messagesContainer.appendChild(messageElement);
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	})
+	
 	socket.on("del_room", function (room) {
 		window.location.reload(true);
 	});
@@ -281,6 +332,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		const text = messageInput.value;
 		if (text.trim()) {
 			socket.emit("handle_message", text);
+			
 			messageInput.value = "";
 		}
 	});
