@@ -2,8 +2,11 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
+from src.utils.terminal import getlogger
 from src.utils.classes import *
 from .oauth import *
+
+logger = getlogger()
 
 socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='gevent')
 
@@ -18,8 +21,7 @@ def user_connect():
     if not userid: return # Sostituire con un redirect alla pagina home
 
     user = users.get(userid)
-
-    print(f"{user.name} connected to /user namespace")
+    logger.info(f"User {userid} connected to /user namespace")
 
 @socketio.on('disconnect',namespace='/user')
 def user_disconnect():
@@ -28,7 +30,7 @@ def user_disconnect():
 
     user = users.get(userid)
 
-    print(f"{user.name} disconnected from /user namespace")
+    logger.info(f"{user.name} disconnected from /user namespace")
 
 # -------- Join --------
 
@@ -39,7 +41,7 @@ def handle_join_connect():
 
     user = users.get(userid)
 
-    print(f"{user.name} connected to /join namespace")
+    logger.info(f"{user.name} connected to /join namespace")
 
 @socketio.on('disconnect', namespace='/join')
 def handle_join_disconnect():
@@ -48,7 +50,7 @@ def handle_join_disconnect():
 
     user = users.get(userid)
 
-    print(f"{user.name} disconnected from /join namespace")
+    logger.info(f"{user.name} disconnected from /join namespace")
 
 # -------- Room -------- (Web Client)
 
@@ -94,7 +96,7 @@ def handle_room_connect():
     socketio.emit('member_join',user.asdict(),namespace='/room',to=roomid)
     socketio.emit('update_member_count',room.asdict(),namespace='/join')
 
-    print(f"{user.name} connected to /room namespace")
+    logger.info(f"{user.name} connected to /room namespace")
 
 @socketio.on('handle_message', namespace='/room')
 def handle_message(text : str):
@@ -239,7 +241,7 @@ def handle_room_disconnect():
         #close_room(room.id)
         if room.id in rooms: rooms.pop(room.id)
 
-        print(f"Room '{room.name}' created by {room.creator.name} deleted")
+        logger.info(f"Room '{room.name}' created by {room.creator.name} deleted")
 
         for member in room.members:
             if member.product == 'premium':
@@ -251,7 +253,7 @@ def handle_room_disconnect():
 
     socketio.start_background_task(room_scheduled_removal,user,room)
     
-    print(f"{user.name} disconnected from room '{room.name}' created by {room.creator.name}")
+    logger.info(f"{user.name} disconnected from room '{room.name}' created by {room.creator.name}")
 
 # -------- Room -------- (Spotify Client)
 
