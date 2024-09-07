@@ -1,6 +1,6 @@
 .container {
     display: grid;
-    grid-template-columns: 20% 50% 28%;
+    grid-template-columns: 1fr 2fr 1fr;
     padding-left: 2vh;
     padding-top: 2vh;
     padding-right: 2vh;
@@ -17,7 +17,7 @@
 
 .sidebar-left,
 .main-content,
-.sidebar-right { 
+.sidebar-right {
     height: 100%;
 }
 
@@ -121,7 +121,7 @@
     cursor: pointer;
 }
 
-.arrow::before, 
+.arrow::before,
 .arrow::after {
   content: "";
   position: absolute;
@@ -295,7 +295,7 @@
     border-radius: 5px;
 }
 
-#current-time, 
+#current-time,
 #total-time {
     color: #888;
     font-size: 12px;
@@ -303,7 +303,6 @@
 }
 
 .queue {
-    height: 86vh;
     border-radius: 8px;
     background-color: #2B2B2B;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -345,17 +344,17 @@
 }
 
 .song-elements::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
     border-radius: 10px;
 }
 
 .song-elements::-webkit-scrollbar-thumb {
-    background: #555; 
+    background: #555;
     border-radius: 10px;
 }
 
 .song-elements::-webkit-scrollbar-thumb:hover {
-    background: #888; 
+    background: #888;
 }
 
 .queue-input-div {
@@ -372,7 +371,7 @@
     border-radius: 5px;
     color: white;
     font-size: 16px;
-    
+
 }
 
 #queue-input:hover {
@@ -425,7 +424,7 @@
 }
 
 .song-info:hover {
-    background-color: #748179; 
+    background-color: #748179;
 }
 
 .song-info:clicked {
@@ -608,26 +607,26 @@
 }
 
 .result-search-box::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
     border-radius: 10px;
 }
 
 .result-search-box::-webkit-scrollbar-thumb {
-    background: #555; 
+    background: #555;
     border-radius: 10px;
 }
 
 .result-search-box::-webkit-scrollbar-thumb:hover {
-    background: #888; 
+    background: #888;
 }
 
 
-.current-song-image span, 
-.current-song-title-placeholder, 
-.current-song-artists-placeholder, 
-.album-art-load, 
-.song-title-load, 
-.song-artist-load, 
+.current-song-image span,
+.current-song-title-placeholder,
+.current-song-artists-placeholder,
+.album-art-load,
+.song-title-load,
+.song-artist-load,
 .song-duration-load {
     background-color: #737373;
     animation: colorChange 0.98s infinite; /* 3 secondi per ciclo di animazione */
@@ -675,17 +674,17 @@
 }
 
 .members-container::-webkit-scrollbar-track {
-    background: transparent; 
+    background: transparent;
     border-radius: 10px;
 }
 
 .members-container::-webkit-scrollbar-thumb {
-    background: #555; 
+    background: #555;
     border-radius: 10px;
 }
 
 .members-container::-webkit-scrollbar-thumb:hover {
-    background: #888; 
+    background: #888;
 }
 
 .members-header{
@@ -701,7 +700,7 @@
 .button {
     text-align: center;
     margin: 0;
-    
+
     display: inline-block;
     align-items: center;
 }
@@ -749,6 +748,7 @@ p{
 }
 
 .chat-controls {
+    margin: 10px;
     display: flex;
     padding: 10px;
     gap: 2%;
