@@ -748,6 +748,7 @@ p{
 }
 
 .chat-controls {
+    margin: 10px;
     display: flex;
     padding: 10px;
     gap: 2%;
