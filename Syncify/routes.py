@@ -207,5 +207,7 @@ def logout():
 @blueprint.route('/bugreport')
 def bugreport():
     userid = getuserid()
-    
-    return render_template('bugreport.html')
+
+    user = users.get(userid)
+
+    return render_template('bugreport.html',user=user)
