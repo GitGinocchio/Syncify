@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/static/css/default.css" type="text/css">
     <link rel="stylesheet" href="/static/css/login.css" type="text/css">
     <link rel='icon' href="/static/images/icon.png">
+    <script src="/static/js/default.js"></script>
   </head>
   <body>
     <header>
@@ -15,12 +16,16 @@
           <h1>Syncify</h1>
         </div>
       </a>
-
+    
       <div class="account">
         <a href="/login">
           <p class=username> Login </p>
           <img src="/static/images/account.png" alt="account icon" class="account-icon">
         </a>
+      </div>
+    
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
       </div>
     </header>
 
@@ -31,7 +36,7 @@
         <a href="/auth">Get Started</a>
       </div>
     </div>
-    
+
     <footer>
       <div class="reportbug-container">
         <a class="reportbug" href="/bugreport";>Contact us</a>

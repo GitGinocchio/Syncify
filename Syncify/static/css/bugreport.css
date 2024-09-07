@@ -3,7 +3,7 @@
   background-color: #1c1c1c;
   border-radius: 10px;
   padding: 20px;
-  margin: 20px auto; /* Center the container horizontally */
+  margin: auto;
   color: white;
   width: 45%;
 }

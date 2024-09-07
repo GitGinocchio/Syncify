@@ -27,18 +27,35 @@
   </head>
   <body>
     <header>
-      <a href="../">
+      <a href="/">
         <div class="brand">
           <img src="/static/images/icon.png" alt="account icon" class="account-icon">
           <h1>Syncify</h1>
         </div>
       </a>
       <div class="account">
+        {% if user %}
+        <input type="checkbox" id="toggle-menu" class="toggle-menu">
+        <label for="toggle-menu" class="account-label">
+          <p class="username">{{ user.name }}</p>
+          <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        </label>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="{{ user.url }}" target="_blank">Profile</a>
+          <a href="/logout">Logout</a>
+        </div>
+        {% else %}
         <a href="/login">
           <p class=username> Login </p>
           <img src="/static/images/account.png" alt="account icon" class="account-icon">
         </a>
+        {% endif %}
       </div>
+      <!-- Icona per il cambio del tema -->
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
+      </div>
+    </header>
     </header>
     <div class="bug-report-container">
       <h2>Report a Bug</h2>

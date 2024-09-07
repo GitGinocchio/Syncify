@@ -24,10 +24,27 @@ header {
   background-color: black;
 }
 
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Spazio tra gli elementi */
+}
+
 header h1 {
   font-size: 30px;
   color: #1ed760;
   margin: 0;
+}
+
+.theme-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.theme-icon {
+  width: 24px;
+  height: 24px;
 }
 
 /* Button */
@@ -114,7 +131,6 @@ footer {
   text-align: center;
   padding: 10px 0;
   font-size: 15px;
-  margin-top: auto;
   flex-direction: row-reverse;
 }
 
@@ -127,8 +143,6 @@ footer p {
 footer a {
   color: #fff;
   text-decoration: none;
-  padding: 10px;
-  font-size: 20px;
   margin-right: 20px;
 }
 

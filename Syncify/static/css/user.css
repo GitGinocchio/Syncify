@@ -1,5 +1,5 @@
 .container {
-  margin-top: auto;
+  margin: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -24,10 +24,6 @@
 
 .card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 0px 20px rgba(255, 255, 255, 0.2);
-}
-
-.card:hover .room-container{
   box-shadow: 0 0px 20px rgba(255, 255, 255, 0.2);
 }
 
