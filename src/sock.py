@@ -108,7 +108,7 @@ def handle_message(text : str):
 
     message = Message(sender=user,text=text)
     room.chat.append(message)
-    socketio.emit('new_my_message',message.asdict(),namespace='/room', to=roomid)
+    socketio.emit('new_message',(message.asdict(), request.sid), namespace='/room', to=roomid)
 
 @socketio.on('handle_search_song', namespace='/room')
 def handle_search_song(query: str):
@@ -122,7 +122,7 @@ def handle_search_song(query: str):
     client = get_client(user.token)
     if not client: return
     
-    tracks_info = client.search(query)['tracks']['items']
+    tracks_info : list[dict]= client.search(query)['tracks']['items']
     
     songs = []
     for track in tracks_info:
@@ -142,7 +142,7 @@ def handle_search_song(query: str):
                     duration=duration,
                     duration_ms=track['duration_ms'],
                     artists=track['artists'],
-                    preview_url=track['preview_url']
+                    preview_url=track.get('preview_url') # Key Error, preview url not always present
                    )
         songs.append(song.asdict())
 
@@ -179,7 +179,7 @@ def handle_new_song(songid : str):
         duration_ms=track['duration_ms'],
         duration=duration,
         artists=track['artists'],
-        preview_url=track['preview_url'],
+        preview_url=track.get('preview_url'),   # Key Error, preview url not always present
         addedby=user
        )
     room.queue.append(song)

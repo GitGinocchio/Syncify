@@ -10,40 +10,6 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
 	<script src="/static/js/default.js"></script>
 	<script src="/static/js/room.js"></script>
-	<!--
-	<script>
-		document.addEventListener("DOMContenctLoaded", (event) => {
-			const socket = io("/room");
-
-			const messagesContainer = document.getElementById("chat-messages");
-
-			socket.on("new_message", function (message) {
-				// Successivamente il messaggio, dopo essere stato elaborato torna al client
-				// Il client aggiunge (visivamente) il messaggio alla lista dei messaggi
-				// Attenzione: Se si riaggiorna la pagina, questo metodo non viene chiamato
-				// per ogni messaggio ma i messaggi vengono caricati dinamicamente utilizzando flask
-				const messageElement = document.createElement("div");
-				messageElement.classList.add("message");
-				if (message.sender.id == "{{ user.id }}") {
-					messageElement.classList.add("my-message");
-				} else if (message.sender.name !== "system") {
-					messageElement.classList.add("other-message");
-				} else {
-					messageElement.classList.add("system-message");
-				}
-				messageElement.innerHTML = `
-					<div class="sender">
-						<img src="${message.sender.image}">
-						<p>${message.sender.name}</p>
-					</div>
-					<p class="mess">${message.text}</p>
-				`;
-				messagesContainer.appendChild(messageElement);
-				messagesContainer.scrollTop = messagesContainer.scrollHeight;
-			});
-		});
-	</script>
-	-->
 </head>
 <body>
 	<header>
