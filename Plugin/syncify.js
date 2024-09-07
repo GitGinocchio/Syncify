@@ -52,7 +52,7 @@
                         if (customButton.classList.contains('connected')) {
                             Disconnect();
                         } else {
-                            showRoomIdDialog();
+                            Connect();
                         }
                     });
 
@@ -65,70 +65,6 @@
 
     // Configura l'observer per monitorare le modifiche nel DOM
     observer.observe(document.body, { childList: true, subtree: true });
-
-    // Funzione per mostrare la finestra di dialogo per inserire il roomid
-    function showRoomIdDialog() {
-        const modalContent = document.createElement('div');
-
-        modalContent.style.overflowY = 'hidden';
-
-        // Crea un paragrafo di spiegazione
-        const paragraph = document.createElement('p');
-        paragraph.textContent = 'Please enter the Room ID \nto connect your Spotify client to the room.';
-        paragraph.style.marginBottom = '15px';
-        paragraph.style.fontSize = '16px';
-        paragraph.style.color = '#fff';
-
-        modalContent.appendChild(paragraph);
-
-        // Crea un campo di input per il roomid
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = 'Enter Room ID';
-        input.style.width = '100%';
-        input.style.padding = '10px';
-        input.style.border = '1px solid #ddd';
-        input.style.borderRadius = '4px';
-        input.style.boxSizing = 'border-box';
-        input.style.marginBottom = '15px';
-        input.style.color = '#000000';
-
-        modalContent.appendChild(input);
-
-        // Crea un bottone per confermare l'inserimento
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Connect';
-        submitButton.style.backgroundColor = '#1DB954'; // Colore di sfondo verde Spotify
-        submitButton.style.color = 'white'; // Colore del testo bianco
-        submitButton.style.border = 'none'; // Rimuovi bordi
-        submitButton.style.borderRadius = '4px'; // Angoli arrotondati
-        submitButton.style.padding = '10px 20px'; // Padding
-        submitButton.style.cursor = 'pointer'; // Cambio del cursore su hover
-        submitButton.style.fontSize = '16px'; // Dimensione del font
-        submitButton.style.transition = 'background-color 0.3s'; // Transizione del colore di sfondo
-        submitButton.addEventListener('mouseover', () => {
-            submitButton.style.backgroundColor = '#1ed760'; // Colore di sfondo su hover
-        });
-        submitButton.addEventListener('mouseout', () => {
-            submitButton.style.backgroundColor = '#1DB954'; // Colore di sfondo originale
-        });
-        submitButton.addEventListener('click', () => {
-            const roomid = input.value.trim();
-            if (roomid) {
-                Spicetify.PopupModal.hide();
-                Connect(roomid);
-            }
-        });
-
-        modalContent.appendChild(submitButton);
-
-        // Mostra il modale
-        Spicetify.PopupModal.display({
-            title: 'Enter Room ID',
-            content: modalContent,
-            isLarge: true
-        });
-    }
 
     // Funzione per mostrare una finestra di dialogo personalizzata per gli errori
     function showErrorDialog(message) {
@@ -143,12 +79,12 @@
         });
     }
 
-    function tryConnect(url, roomid) {
+    function tryConnect(url) {
         return new Promise((resolve, reject) => {
             const socket = io(url, { reconnectionAttempts: reconnectionAttempts });
 
             socket.on('connect', () => {
-                socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace, roomid);
+                socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace);
             });
 
             socket.on('syncify-spicetify-registered', (trackid) => {
@@ -187,10 +123,10 @@
         });
     }
 
-    async function ConnectToFirstAvailableWebSocket(urls, roomid) {
+    async function ConnectToFirstAvailableWebSocket(urls) {
         for (const url of urls) {
             try {
-                const socket = await tryConnect(url, roomid);
+                const socket = await tryConnect(url);
                 console.log(`Socket.IO connection established at: ${url}`);
                 return socket;
             } catch (error) {
@@ -202,8 +138,8 @@
 
     let socket = null; // Variabile per memorizzare il socket
 
-    function Connect(roomid) {
-        ConnectToFirstAvailableWebSocket(Addresses, roomid)
+    function Connect() {
+        ConnectToFirstAvailableWebSocket(Addresses)
             .then((s) => {
                 socket = s; // Memorizza il socket
                 const customButton = document.querySelector('.custom-button');

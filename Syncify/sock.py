@@ -258,12 +258,18 @@ def handle_room_disconnect():
 # -------- Room -------- (Spotify Client)
 
 @socketio.on('register_spotify_client',namespace='/room')
-def register_spotify_client(userid: str, roomid: str):
+def register_spotify_client(userid: str):
     user = users.get(userid)
-    room = rooms.get(roomid)
+
+    if not user:
+        socketio.emit('syncify-spicetify-server-error','You must be logged in at Syncify to use this feature.',namespace='/room')
+        return
+    
+    #room = rooms.get(roomid)
+    room = user.room
 
     if not room:
-        socketio.emit('syncify-spicetify-server-error','Invalid Room ID',namespace='/room',to=request.sid)
+        socketio.emit('syncify-spicetify-server-error','You must join a room first.',namespace='/room',to=request.sid)
         return
 
     if len(room.queue) > 0 and room.status == 'playing':
