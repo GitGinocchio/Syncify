@@ -8,3 +8,4 @@ werkzeug
 spotipy
 gevent-websocket
 cachetools
+colorama
