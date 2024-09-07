@@ -1,4 +1,3 @@
-from .utils.terminal import getlogger
 from flask_session import Session
 from flask_cors import CORS
 from flask import Flask
@@ -7,10 +6,12 @@ from dotenv import load_dotenv
 import tempfile
 import os
 
+from Syncify.utils.terminal import getlogger
+
 logger = getlogger()
 
 logger.info("Loading environment variables")
-load_dotenv('src/config/.env')
+load_dotenv('Syncify/config/.env')
 
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer

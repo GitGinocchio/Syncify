@@ -1,9 +1,9 @@
-from src import server
+from Syncify import server
 
-from src.utils.terminal import getlogger
+from Syncify.utils.terminal import getlogger
 
 logger = getlogger()
 
 if __name__ == '__main__':
-    logger.info("Server started")
+    logger.info(f"Server started at: http://localhost:{server.address[1]}")
     server.serve_forever()

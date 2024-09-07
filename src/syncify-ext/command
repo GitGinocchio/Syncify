@@ -1,1 +1,0 @@
-iwr -useb https://raw.githubusercontent.com/GitGinocchio/Syncify/main/src/syncify-ext/install.ps1 | iex

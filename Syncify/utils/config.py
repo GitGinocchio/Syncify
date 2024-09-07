@@ -1,6 +1,6 @@
 from .jsonfile import JsonFile
 
-config = JsonFile('./src/config/config.jsonc')
+config = JsonFile('Syncify/config/config.jsonc')
 
 
 def reload():

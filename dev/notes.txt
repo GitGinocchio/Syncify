@@ -1,12 +1,12 @@
 PYTHON
-- Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
+✔ Creare un logger migliore di quello di gevent.WSGIServer simile a quello di Flask
 - Se Aggiungo piu' canzoni uguali devono riprodursi e non schippare solo perche' e' gia in riproduzione quella canzone
-- Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
-- Una volta che l'ultima canzone viene schippata, deve essere rimossa dalla queue
+✔ Non far uscire il creatore della stanza quando riaggiorna la pagina ma piuttosto fare in un'altro modo
+✔ Una volta che l'ultima canzone viene schippata, deve essere rimossa dalla queue
 - Sincronizzare la canzone con gli altri, falla partire e riprendere nella stessa posizione degli altri
 ✔ Quando uno abbandona deve stopparsi la musica solo per chi abbandona
 ✔ Non far entrare qualcuno quando la stanza e' gia' piena
-- Cercare di capire perche' a volte si duplicano i membri presenti
+? Cercare di capire perche' a volte si duplicano i membri presenti
 - spotipy.oauth2.SpotifyOauthError: error: invalid_grant, error_description: Invalid authorization code
 - Provare a rimuovere il roomid dall'estensione Syncify e provare ad ottenere il roomid tramite server
 ✔ Cercare di spostare tutti gli script javascript dai file .html ai file .js (quando possibile)

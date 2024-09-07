@@ -2,8 +2,8 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
-from src.utils.terminal import getlogger
-from src.utils.classes import *
+from Syncify.utils.terminal import getlogger
+from Syncify.utils.classes import *
 from .oauth import *
 
 logger = getlogger()
