@@ -748,7 +748,7 @@ p{
 }
 
 .chat-controls {
-    margin: 10px;
+    margin-top: 10px;
     display: flex;
     padding: 10px;
     gap: 2%;
@@ -859,7 +859,7 @@ input{
 
 @media (max-width: 1200px) {
     .container {
-        display: inline;
+        display: block; /* Cambia inline in block per mantenere i blocchi uno sotto l'altro */
         grid-template-columns: 100%;
         padding-left: 1%;
         padding-top: 1%;
@@ -872,7 +872,7 @@ input{
         height: fit-content;
         padding: 10px;
     }
-    
+
     .chat {
         min-height: 35vh;
     }
@@ -884,5 +884,99 @@ input{
     .members {
         margin-bottom: 10px;
     }
+}
 
+@media (max-width: 768px) {
+    .container {
+        display: block; /* Mantiene il layout in un'unica colonna */
+        grid-template-columns: 100%;
+        padding-left: 1%;
+        padding-right: 1%;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+        height: fit-content;
+        padding: 8px; /* Riduce il padding su tablet */
+    }
+
+    .main-content {
+        order: 2; /* Sposta il contenuto principale sotto la sidebar */
+    }
+
+    .sidebar-left {
+        order: 1; /* Sidebar sinistra sopra il contenuto principale */
+    }
+
+    .sidebar-right {
+        order: 3; /* Sidebar destra sotto il contenuto principale */
+    }
+
+    .chat {
+        min-height: 30vh; /* Riduce l'altezza minima per la chat */
+    }
+
+    .chat-messages {
+        max-height: 300px; /* Riduce la massima altezza dei messaggi della chat */
+    }
+
+    .queue-elements {
+        max-height: 50vh; /* Limita l'altezza massima della lista queue su tablet */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        display: block; /* Mantiene un layout verticale */
+        grid-template-columns: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+        padding: 5px; /* Riduce il padding su schermi molto piccoli */
+        margin-bottom: 10px;
+    }
+
+    .chat {
+        min-height: 25vh; /* Ancora più compatto per la chat su smartphone */
+    }
+
+    .chat-messages {
+        max-height: 250px; /* Riduce ulteriormente la massima altezza dei messaggi della chat */
+    }
+
+    .current-song-image img {
+        width: 120px; /* Riduce la dimensione dell'immagine del brano corrente */
+        height: 120px;
+    }
+
+    .song-title {
+        font-size: 14px; /* Riduce la dimensione del font dei titoli delle canzoni */
+    }
+
+    .queue-elements {
+        max-height: 45vh; /* Riduce l'altezza massima per la lista delle canzoni in coda */
+    }
+
+    .queue-input-div {
+        flex-direction: column; /* Cambia la disposizione della input div per occupare tutta la larghezza */
+    }
+
+    .chat-controls, .queue-input-div {
+        flex-direction: column;
+        gap: 5px; /* Riduce il gap tra input e controlli */
+    }
+
+    #queue-input, #message-input {
+        width: 100%;
+        padding: 8px; /* Riduce il padding degli input */
+    }
+
+    .members ul {
+        max-height: 150px; /* Limita l'altezza della lista dei membri su schermi piccoli */
+    }
 }
