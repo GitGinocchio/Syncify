@@ -2,7 +2,7 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
-from .utils import *
+from src.utils.classes import *
 from .oauth import *
 
 socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='gevent')

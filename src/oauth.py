@@ -4,7 +4,7 @@ from functools import wraps
 import spotipy
 import os
 
-from .utils import Token
+from src.utils.classes import Token
 
 SCOPE = os.environ['SPOTIPY_SCOPE']
 

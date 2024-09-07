@@ -1,0 +1,9 @@
+{
+    // Logger settings
+    "logger" : {
+        "level" : "INFO",
+        "dir" : "./src/logs",
+        "tofile" : false,
+        "datefmt" : "%H:%M:%S"
+    }
+}

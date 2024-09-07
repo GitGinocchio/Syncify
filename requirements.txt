@@ -7,3 +7,4 @@ Flask-Session
 werkzeug
 spotipy
 gevent-websocket
+cachetools
