@@ -320,11 +320,12 @@
 
 
 .song-elements {
-    flex: 1; /* Occupa lo spazio disponibile sopra il footer */
-    overflow-y: auto; /* Aggiungi lo scroll se necessario */
+    flex: 1;
+    overflow-y: auto;
     transition: opacity 0.3s;
     max-height: 100vh;
     min-height: 40vh;
+    padding: 10px;
 }
 
 .queue-elements li{
@@ -442,11 +443,35 @@
 }
 
 .song-info {
-    padding: 10px;
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    border-radius: 5px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    transition: all 0.3s;
+}
+
+.song-info .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.song-info .song-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.song-info .song-artists {
+    font-size: 14px;
+    color: #fff;
+}
+
+.song-info .song-duration {
+    font-size: 14px;
+    color: #fff;
+    margin-top: 5px; /* Spazio tra autore e minutaggio */
 }
 
 .album-art-load, .album-art {
@@ -531,8 +556,6 @@
     flex-direction: column;
 }
 
-
-
 .searching-box {
     display: none;
     margin-left: 10px;
@@ -593,7 +616,6 @@
 
 .searching-box.show {
     display: block;
-    /*max-height: 500px; /* Adjust based on the expected height */
     opacity: 1;
 }
 
@@ -745,13 +767,18 @@ p{
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    position: relative; /* Assicurati che il contenitore abbia position: relative */
 }
 
 .chat-controls {
-    margin-top: 10px;
+    margin-top: auto; /* Spinge il controllo verso il basso */
     display: flex;
     padding: 10px;
     gap: 2%;
+    position: sticky; /* Mantiene la posizione della chat-controls */
+    bottom: 0; /* Assicura che sia posizionato in basso */
+    background-color: #2B2B2B; /* Colore di sfondo per evitare trasparenze */
+    z-index: 1; /* Mantiene i controlli sopra altri elementi */
 }
 
 .chat-messages {
@@ -882,6 +909,7 @@ input{
     }
 
     .members {
+        height: 430px;
         margin-bottom: 10px;
     }
 }
@@ -913,6 +941,30 @@ input{
         order: 3; /* Sidebar destra sotto il contenuto principale */
     }
 
+    .song-info {
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
+    .song-info img.album-art {
+        width: 40px; /* Riduci la dimensione dell'immagine dell'album */
+        height: 40px;
+    }
+
+    .song-info .details {
+        flex: 1;
+        margin-left: 10px;
+    }
+
+    .song-info .addedby-user {
+        display: flex;
+        align-items: center;
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
+    .song-info .song-duration {
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
     .chat {
         min-height: 30vh; /* Riduce l'altezza minima per la chat */
     }
@@ -941,12 +993,42 @@ input{
         margin-bottom: 10px;
     }
 
+    .sidebar-left{
+        height: 430px;
+    }
+
     .chat {
+        height: 430px;
         min-height: 25vh; /* Ancora più compatto per la chat su smartphone */
     }
 
     .chat-messages {
+        margin-top: 10px;
         max-height: 250px; /* Riduce ulteriormente la massima altezza dei messaggi della chat */
+    }
+
+    .song-info {
+        flex-direction: column; /* Cambia la disposizione in colonna su schermi molto piccoli */
+        align-items: flex-start;
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
+    }
+
+    .song-info img.album-art {
+        width: 30px; /* Riduci ulteriormente la dimensione dell'immagine dell'album */
+        height: 30px;
+    }
+
+    .song-info .details {
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+
+    .song-info .addedby-user {
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
+    }
+
+    .song-info .song-duration {
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
     }
 
     .current-song-image img {
@@ -972,6 +1054,7 @@ input{
     }
 
     #queue-input, #message-input {
+        margin-bottom: 8px;
         width: 100%;
         padding: 8px; /* Riduce il padding degli input */
     }
