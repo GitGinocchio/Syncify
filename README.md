@@ -27,7 +27,7 @@
 ## Usage
 
 1. **Access the website**:
-   - Go to Syncify's website: [**https://syncify-0b6dc00d11b0.herokuapp.com**](https://syncify-0b6dc00d11b0.herokuapp.com).
+   - Go to Syncify's website: [**https://syncify.replit.app**](https://syncify.replit.app).
 2. **Sign in with Spotify**:
    - Click on "Get Started" and authorize the application to access your Spotify account. No additional registration is required!
      (**No personal data will be requested**, and all your data are temporary!)
