@@ -44,7 +44,7 @@ class _JsonList(list):
     def remove(self, value):
         super().remove(value)
         if self.file.autosave: self.file.save()
-        
+
 class CustomDecoder(json.JSONDecoder):
     def __init__(self, file : 'JsonFile'):
         super().__init__()

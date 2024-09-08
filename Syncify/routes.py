@@ -177,6 +177,11 @@ def leave():
     response.set_cookie('room_access_token', '',expires=0)
     return response
 
+@blueprint.route("/client")
+def client():
+    print(request.headers)
+    return "Hello World"
+
 @blueprint.route('/logout')
 @useridrequired
 def logout():
