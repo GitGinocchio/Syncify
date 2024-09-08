@@ -96,8 +96,8 @@
                     if (Spicetify.Player.isPlaying) { Spicetify.Player.pause(); }
                     resolve(socket); return; 
                 }
-            
-                console.log('Play request received');
+
+                console.log(`Play request received with trackid: ${trackid} and seektime: ${seekTime}`);
             
                 const trackUri = `spotify:track:${trackid}`;
                 const currentTrackUri = Spicetify.Player.data?.item.uri;
@@ -156,7 +156,7 @@
                 customButton.classList.add('connected')
 
                 socket.on('syncify-spicetify-play', (trackid, seekTime) => {
-                    console.log('Play request received');
+                    console.log(`Play request received with trackid: ${trackid} and seektime: ${seekTime}`);
 
                     const trackUri = `spotify:track:${trackid}`;
                     const currentTrackUri = Spicetify.Player.data?.item.uri;
