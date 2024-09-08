@@ -85,10 +85,6 @@
             let registered = false;
 
             socket.on('connect', () => {
-                const customButton = document.querySelector('.custom-button');
-                customButton.textContent = 'Disconnect';
-                customButton.style.backgroundColor = '#ff0000';
-                customButton.classList.add('connected')
                 if (!registered) {
                     socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace);
                     registered = true;
@@ -154,6 +150,10 @@
         ConnectToFirstAvailableWebSocket(Addresses)
             .then((s) => {
                 socket = s; // Memorizza il socket;
+                const customButton = document.querySelector('.custom-button');
+                customButton.textContent = 'Disconnect';
+                customButton.style.backgroundColor = '#ff0000';
+                customButton.classList.add('connected')
 
                 socket.on('syncify-spicetify-play', (trackid, seekTime) => {
                     console.log('Play request received');
