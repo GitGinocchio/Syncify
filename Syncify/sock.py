@@ -77,7 +77,7 @@ def handle_room_connect():
             if user.current_device: client.start_playback(device_id=user.current_device.id,uris=[f"spotify:track:{nextsong.id}"])
         else:
             if user.client_sid:
-                socketio.emit('syncify-spicetify-play',(nextsong.id,(time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)) // 60), namespace='/client',to=user.client_sid)
+                socketio.emit('syncify-spicetify-play',(nextsong.id,time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)), namespace='/client',to=user.client_sid)
 
         socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
     
@@ -273,7 +273,7 @@ def register_spotify_client(userid: str):
 
     if room and len(room.queue) > 0 and room.status == 'playing':
         nextsong = room.queue[0]
-        socketio.emit('syncify-spicetify-registered',(nextsong.id,(time.time() - room.song_started_at) // 60), namespace='/client',to=request.sid)
+        socketio.emit('syncify-spicetify-registered',(nextsong.id,time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)), namespace='/client',to=request.sid)
     else:
         socketio.emit('syncify-spicetify-registered', namespace='/client',to=request.sid)
     
@@ -308,7 +308,7 @@ def handle_start_playback():
             if member.current_device: client.start_playback(device_id=member.current_device.id,uris=[f"spotify:track:{nextsong.id}"])
         else:
             if not member.client_sid: continue
-            socketio.emit('syncify-spicetify-play',(nextsong.id,(time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)) // 60), namespace='/client',to=member.client_sid)
+            socketio.emit('syncify-spicetify-play',(nextsong.id,time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)), namespace='/client',to=member.client_sid)
         
     socketio.emit('update_playpause_button',room.status,namespace='/room',to=roomid)
     socketio.emit('set_update_progress_bar',(room.song_started_at,room.song_paused_at,nextsong.duration_ms), namespace='/room',to=roomid)
