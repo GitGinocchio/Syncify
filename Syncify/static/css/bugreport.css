@@ -69,6 +69,56 @@
   background-color: #169c46;
 }
 
+.light-mode .bug-report-container {
+  background-color: #ffffff; /* Sfondo chiaro per il contenitore del report */
+  color: #333; /* Colore del testo del contenitore */
+  border: 1px solid #ddd; /* Bordo chiaro per il contenitore */
+  padding: 20px;
+  border-radius: 7px; /* Bordo arrotondato per il contenitore */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra leggera */
+}
+
+.light-mode .bug-report-container h2 {
+  color: #1db954; /* Colore del testo del titolo */
+}
+
+.light-mode form {
+  background-color: #ffffff; /* Sfondo chiaro per il modulo */
+  color: #333; /* Colore del testo del modulo */
+  border: 1px solid #ddd; /* Bordo chiaro per il modulo */
+  padding: 20px;
+  border-radius: 7px; /* Bordo arrotondato per il modulo */
+}
+
+.light-mode label {
+  color: #333; /* Colore del testo delle etichette */
+}
+
+.light-mode input[type="text"],
+.light-mode input[type="number"],
+.light-mode select,
+.light-mode textarea {
+  background-color: #ffffff; /* Sfondo chiaro per gli input e textarea */
+  color: #333; /* Colore del testo degli input e textarea */
+  border: 1px solid #ccc; /* Bordo chiaro per gli input e textarea */
+  padding: 10px;
+  border-radius: 5px; /* Bordo arrotondato per gli input e textarea */
+}
+
+.light-mode button[type="submit"] {
+  background-color: #1db954; /* Colore di sfondo del bottone */
+  color: #ffffff; /* Colore del testo del bottone */
+  border: none; /* Nessun bordo per il bottone */
+  padding: 10px 20px; /* Spaziatura interna per il bottone */
+  border-radius: 5px; /* Bordo arrotondato per il bottone */
+  cursor: pointer; /* Cambia il cursore per indicare che è cliccabile */
+  font-size: 16px; /* Dimensione del testo del bottone */
+}
+
+.light-mode button[type="submit"]:hover {
+  background-color: #169c3e; /* Colore di sfondo del bottone al passaggio del mouse */
+}
+
 /* Responsive adjustments */
 @media only screen and (max-width: 768px) {
   .bug-report-container {
