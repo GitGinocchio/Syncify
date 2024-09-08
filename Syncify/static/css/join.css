@@ -1,9 +1,9 @@
 section {
-  margin-top: 150px;
+  margin: auto;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px; /* Spazio tra i due blocchi */
+  gap: 20px;
 }
 
 .join-private-session {

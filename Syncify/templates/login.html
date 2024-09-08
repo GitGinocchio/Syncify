@@ -18,15 +18,18 @@
       </a>
     
       <div class="account">
-        <a href="/login">
-          <p class=username> Login </p>
+        <input type="checkbox" id="toggle-menu" class="toggle-menu">
+        <label for="toggle-menu" class="account-label">
           <img src="/static/images/account.png" alt="account icon" class="account-icon">
-        </a>
+        </label>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="/auth"> Login </a>
+          <div class="theme-toggle" onclick="toggleTheme()">
+            <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
+          </div>
+        </div>
       </div>
-    
-      <div class="theme-toggle" onclick="toggleTheme()">
-        <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
-      </div>
+      
     </header>
 
     <div class="container">
@@ -44,4 +47,3 @@
     </footer>
   </body>
 </html>
-

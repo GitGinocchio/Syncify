@@ -6,24 +6,8 @@
     <link rel="stylesheet" href="/static/css/default.css" type="text/css">
     <link rel="stylesheet" href="/static/css/bugreport.css" type="text/css">
     <link rel='icon' href="/static/images/icon.png">
-    <script>
-      document.getElementById('bug-file').addEventListener('change', function() {
-        const fileInput = this;
-        const file = fileInput.files[0];
-        const warningMessage = document.getElementById('file-warning');
-        const submitButton = document.getElementById('submit-button');
-
-        if (file && file.size > 25 * 1024 * 1024) { // 25 MB in bytes
-          warningMessage.textContent = 'The file size exceeds 25 MB. Please choose a smaller file.';
-          warningMessage.style.display = 'block';
-          submitButton.disabled = true;
-        } else {
-          warningMessage.textContent = '';
-          warningMessage.style.display = 'none';
-          submitButton.disabled = false;
-        }
-      });
-    </script>
+    <script src="/static/js/default.js"></script>
+    <script src="/static/js/bugreport.js"></script>
   </head>
   <body>
     <header>
@@ -43,19 +27,14 @@
         <div class="dropdown-menu" id="dropdown-menu">
           <a href="{{ user.url }}" target="_blank">Profile</a>
           <a href="/logout">Logout</a>
+          <div class="theme-toggle" onclick="toggleTheme()">
+            <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
+          </div>
         </div>
         {% else %}
-        <a href="/login">
-          <p class=username> Login </p>
           <img src="/static/images/account.png" alt="account icon" class="account-icon">
-        </a>
         {% endif %}
       </div>
-      <!-- Icona per il cambio del tema -->
-      <div class="theme-toggle" onclick="toggleTheme()">
-        <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
-      </div>
-    </header>
     </header>
     <div class="bug-report-container">
       <h2>Report a Bug</h2>
