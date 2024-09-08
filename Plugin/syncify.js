@@ -168,6 +168,7 @@
                     if (currentTrackUri === trackUri) {
                         // Se la canzone è già in corso, vai al minutaggio specificato
                         const seekTimeSeconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
+                        console.log(seekTimeSeconds);
                         Spicetify.Player.playUri(trackUri);
                         Spicetify.Player.seek(seekTimeSeconds);
                     } else {
