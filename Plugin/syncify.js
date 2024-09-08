@@ -5,10 +5,10 @@
 
     const reconnectionAttempts = 3;
     const Addresses = [
-        `http://localhost:5000/room`,
-        `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev:5000/room`,
-        `https://syncify-4trj.onrender.com/room`,
-        `syncify.replit.app/room`
+        `http://localhost:5000/client`,
+        `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev:5000/client`,
+        `https://syncify-4trj.onrender.com/client`,
+        `https://syncify.replit.app/client`
     ];
 
     // Usa un MutationObserver per rilevare quando il DOM è pronto
@@ -82,32 +82,40 @@
     function tryConnect(url) {
         return new Promise((resolve, reject) => {
             const socket = io(url, { reconnectionAttempts: reconnectionAttempts });
+            let registered = false;
 
             socket.on('connect', () => {
-                socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace);
+                if (!registered) {
+                    socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace);
+                    registered = true;
+                }
             });
 
-            socket.on('syncify-spicetify-registered', (trackid) => {
+            socket.on('syncify-spicetify-registered', (trackid, seekTime) => {
                 if (trackid === undefined) {
                     if (Spicetify.Player.isPlaying) { Spicetify.Player.pause(); }
                     resolve(socket); return; 
                 }
-
+            
                 console.log('Play request received');
-
+            
                 const trackUri = `spotify:track:${trackid}`;
                 const currentTrackUri = Spicetify.Player.data?.item.uri;
-
+            
                 if (Spicetify.Player.isPlaying) {
                     Spicetify.Player.pause();
                 }
-
+            
                 if (currentTrackUri === trackUri) {
+                    // Se la canzone è già in corso, vai al minutaggio specificato
+                    const seekTimeSeconds = parseInt(seekTime) * 60; // Converti il minutaggio in secondi
                     Spicetify.Player.play();
+                    Spicetify.Player.seek(seekTimeSeconds);
                 } else {
+                    // Altrimenti, riprova la canzone dal principio
                     Spicetify.Player.playUri(trackUri);
                 } 
-
+            
                 resolve(socket);
             });
 
@@ -141,13 +149,13 @@
     function Connect() {
         ConnectToFirstAvailableWebSocket(Addresses)
             .then((s) => {
-                socket = s; // Memorizza il socket
+                socket = s; // Memorizza il socket;
                 const customButton = document.querySelector('.custom-button');
                 customButton.textContent = 'Disconnect';
                 customButton.style.backgroundColor = '#ff0000';
-                customButton.classList.add('connected');
+                customButton.classList.add('connected')
 
-                socket.on('syncify-spicetify-play', (trackid) => {
+                socket.on('syncify-spicetify-play', (trackid, seekTime) => {
                     console.log('Play request received');
 
                     const trackUri = `spotify:track:${trackid}`;
@@ -158,8 +166,12 @@
                     }
 
                     if (currentTrackUri === trackUri) {
+                        // Se la canzone è già in corso, vai al minutaggio specificato
+                        const seekTimeSeconds = parseInt(seekTime) * 60; // Converti il minutaggio in secondi
                         Spicetify.Player.play();
+                        Spicetify.Player.seek(seekTimeSeconds);
                     } else {
+                        // Altrimenti, riprova la canzone dal principio
                         Spicetify.Player.playUri(trackUri);
                     }
                 });

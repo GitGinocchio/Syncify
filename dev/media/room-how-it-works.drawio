@@ -1,111 +1,114 @@
-<mxfile host="app.diagrams.net" modified="2024-07-21T07:52:56.677Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36" etag="UrYyvl197sTPl4W9U78s" version="24.7.2" type="device">
-  <diagram name="Pagina-1" id="Wln8g-hPv7s8qqI7dBF5">
-    <mxGraphModel dx="1675" dy="2243" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-1" target="Y2fDLJdDOBYX_rJT8Nb1-5">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="330" y="240" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-1" value="[web client]&lt;div&gt;on connect&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="60" y="210" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-5" value="server" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="450" y="210" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-6" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;emit&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(userid, roomid)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(Piu&#39; sicuro rispetto alle query string in quanto utilizza https)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="224" y="220" width="190" height="70" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-8" value="Il server trova l&#39;utente in base allo userid e lo inserisce nella stanza in base al roomid" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="390" y="140" width="240" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-9" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="650" y="150" width="20" height="120" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-10" value="Tutta questa procedura non tanto per lo userid, in quanto e&#39; quello pubblico fornito da spotify, ma piu&#39; che altro per il roomid, un id univoco per ogni stanza, che deve essere passato sempre in modo sicuro." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="680" y="165" width="250" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-17" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Login&lt;/h1&gt;&lt;div&gt;In questa route l&#39;utente viene reindirizzato alla pagina di accesso di spotify, che restituisce un &quot;code&quot; con il quale poter ottenere un token temporaneo con il quale poter accedere a tutte le funzionalita&#39; disponibili dall&#39;api di spotify&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="60" y="-410" width="180" height="170" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-20" value="user (class: User)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="250" y="-360" width="440" height="360" as="geometry">
-            <mxRectangle x="240" y="-704" width="130" height="30" as="alternateBounds" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-21" value="name" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-20">
-          <mxGeometry y="30" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-23" value="id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-20">
-          <mxGeometry y="60" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-30" value="url (spotify profile url)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-20">
-          <mxGeometry y="90" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-32" value="image (spotify profile image)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-20">
-          <mxGeometry y="120" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-26" value="token (class: Token)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-20">
-          <mxGeometry y="150" width="440" height="210" as="geometry">
-            <mxRectangle y="150" width="440" height="30" as="alternateBounds" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-27" value="access_token" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="30" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-28" value="refresh_token" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="60" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-29" value="token_type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="90" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-33" value="expires_at" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="120" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-34" value="expires_in" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="150" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-35" value="scope" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="Y2fDLJdDOBYX_rJT8Nb1-26">
-          <mxGeometry y="180" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-24" value="Dopo che l&#39;utente ha eseguito l&#39;accesso il server otterra&#39; queste informazioni:&amp;nbsp;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="250" y="-396" width="440" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-36" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Room&lt;/h1&gt;&lt;div&gt;In questa route l&#39;utente puo&#39; collegarsi per ascoltare musica in modo sincronizzato insieme ad altri utenti.&lt;br&gt;Appena collegato il client inviera&#39;&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;l&#39;id della stanza e l&#39;id dell&#39;utente al server, al fine di aggiungere l&#39;utente alla stanza e sincronizzare alcune azioni tra piu&#39; utenti&lt;/span&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="60" y="30" width="630" height="110" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-44" target="Y2fDLJdDOBYX_rJT8Nb1-45">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-44" value="[web client]&lt;div&gt;on disconnect&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="59.25" y="330" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-93" target="Y2fDLJdDOBYX_rJT8Nb1-66">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="509.25" y="425" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-45" value="server" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="449.25" y="330" width="120" height="60" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-47" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;emit&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(userid)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;(viene inviato solo lo userid perche&#39; si assume che l&#39;utente sia stato all&#39;interno della stanza)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="192.25" y="330" width="252" height="90" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-66" value="Viene avviata una &lt;i&gt;&lt;b&gt;socketio background task&lt;/b&gt;&lt;/i&gt; che aspetta 10 secondi&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;S&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;e il creatore della stanza non si e&#39; riconnesso la stanza eliminata&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="318.88" y="500" width="382.23" height="50" as="geometry" />
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-94" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-45" target="Y2fDLJdDOBYX_rJT8Nb1-93">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="509.25" y="500" as="targetPoint" />
-            <mxPoint x="509.25" y="390" as="sourcePoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-93" value="Se la stanza appartiene all&#39;utente" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="419.25" y="429" width="180" height="30.5" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
+<mxfile host="65bd71144e">
+    <diagram name="Pagina-1" id="Wln8g-hPv7s8qqI7dBF5">
+        <mxGraphModel dx="780" dy="1857" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-1" target="Y2fDLJdDOBYX_rJT8Nb1-5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="330" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-1" value="[web client]&lt;div&gt;on connect&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="210" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-5" value="server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="450" y="210" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-6" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;emit&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(userid, roomid)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(Piu' sicuro rispetto alle query string in quanto utilizza https)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="229.25" y="220" width="190" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-8" value="Il server trova l'utente in base allo userid e lo inserisce nella stanza in base al roomid" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="140" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-9" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;labelPosition=right;verticalLabelPosition=middle;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="650" y="150" width="20" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-10" value="Tutta questa procedura non tanto per lo userid, in quanto e' quello pubblico fornito da spotify, ma piu' che altro per il roomid, un id univoco per ogni stanza, che deve essere passato sempre in modo sicuro." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="165" width="250" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-17" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Login&lt;/h1&gt;&lt;div&gt;In questa route l'utente viene reindirizzato alla pagina di accesso di spotify, che restituisce un &quot;code&quot; con il quale poter ottenere un token temporaneo con il quale poter accedere a tutte le funzionalita' disponibili dall'api di spotify&lt;br&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="-410" width="180" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-20" value="user (class: User)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="-360" width="440" height="360" as="geometry">
+                        <mxRectangle x="240" y="-704" width="130" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-21" value="name" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-20" vertex="1">
+                    <mxGeometry y="30" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-23" value="id" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-20" vertex="1">
+                    <mxGeometry y="60" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-30" value="url (spotify profile url)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-20" vertex="1">
+                    <mxGeometry y="90" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-32" value="image (spotify profile image)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-20" vertex="1">
+                    <mxGeometry y="120" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-26" value="token (class: Token)" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-20" vertex="1">
+                    <mxGeometry y="150" width="440" height="210" as="geometry">
+                        <mxRectangle y="150" width="440" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-27" value="access_token" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="30" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-28" value="refresh_token" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="60" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-29" value="token_type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="90" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-33" value="expires_at" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="120" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-34" value="expires_in" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="150" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-35" value="scope" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="Y2fDLJdDOBYX_rJT8Nb1-26" vertex="1">
+                    <mxGeometry y="180" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-24" value="Dopo che l'utente ha eseguito l'accesso il server otterra' queste informazioni:&amp;nbsp;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="250" y="-396" width="440" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-36" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Room&lt;/h1&gt;&lt;div&gt;In questa route l'utente puo' collegarsi per ascoltare musica in modo sincronizzato insieme ad altri utenti.&lt;br&gt;Appena collegato il client inviera'&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;l'id della stanza e l'id dell'utente al server, al fine di aggiungere l'utente alla stanza e sincronizzare alcune azioni tra piu' utenti&lt;/span&gt;&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="30" width="630" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-44" target="Y2fDLJdDOBYX_rJT8Nb1-45" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-44" value="[web client]&lt;div&gt;on disconnect&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="59.25" y="330" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-93" target="Y2fDLJdDOBYX_rJT8Nb1-66" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="509.25" y="425" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-45" value="server" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="449.25" y="330" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-47" value="&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;emit&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;(userid)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;(viene inviato solo lo userid perche' si assume che l'utente sia stato all'interno della stanza)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="192.25" y="330" width="252" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-66" value="Viene avviata una &lt;i&gt;&lt;b&gt;socketio background task&lt;/b&gt;&lt;/i&gt; che aspetta 10 secondi&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;S&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;e il creatore della stanza non si e' riconnesso la stanza eliminata&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="318.88" y="500" width="382.23" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-94" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="Y2fDLJdDOBYX_rJT8Nb1-45" target="Y2fDLJdDOBYX_rJT8Nb1-93" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="509.25" y="500" as="targetPoint"/>
+                        <mxPoint x="509.25" y="390" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="Y2fDLJdDOBYX_rJT8Nb1-93" value="Se la stanza appartiene all'utente" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="419.25" y="429" width="180" height="30.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="59.25" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
 </mxfile>
