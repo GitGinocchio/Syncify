@@ -8,7 +8,7 @@ from .oauth import *
 
 logger = getlogger()
 
-socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='gevent')
+socketio = SocketIO(cors_allowed_origins="*", engineio_logger=logger,async_mode='gevent')
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
@@ -372,7 +372,7 @@ def handle_skip_playback():
                 client = get_client(member.token)
                 if member.current_device: client.pause_playback(device_id=member.current_device.id)
             else:
-                socketio.emit('syncify-spicetify-stop', namespace='/room',to=member.client_sid)
+                socketio.emit('syncify-spicetify-stop', namespace='/client',to=member.client_sid)
 
         socketio.emit('update_playpause_button',namespace='/room',to=roomid)
         socketio.emit('set_current_song_details',namespace='/room',to=roomid)

@@ -19,13 +19,15 @@
 2. [Usage](#Usage)
 3. [Functionality](#Functionality)
 ------
-## Introduction 
+## Introduction
+
 **Syncify** is designed to improve the musical experience offered by Spotify, allowing you to synchronize music playback across multiple devices, enabling you and your friends to listen to the same songs at the same time. Perfect for virtual parties, friend gatherings, or simply sharing your favorite tracks in real-time. Syncify is **easy** to use and rich in features. Whether you're creating a new session or joining an existing one, the application provides an **intuitive interface** for managing and controlling music playback. Moreover, precise synchronization ensures that all participants listen to the music at the same time, creating a truly shared listening experience.
+
 ------
 ## Usage
 
 1. **Access the website**:
-   - Go to Syncify's website: [**https://syncify-0b6dc00d11b0.herokuapp.com**](https://syncify-0b6dc00d11b0.herokuapp.com).
+   - Go to Syncify's website: [**https://syncify.replit.app**](https://syncify.replit.app).
 2. **Sign in with Spotify**:
    - Click on "Get Started" and authorize the application to access your Spotify account. No additional registration is required!
      (**No personal data will be requested**, and all your data are temporary!)
