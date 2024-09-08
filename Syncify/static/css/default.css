@@ -56,15 +56,29 @@ body.light-mode {
   color: #333;
 }
 
-header.light-mode {
+.light-mode header {
   background-color: #fff;
   color: #1ed760;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-header.light-mode h1 {
+.light-mode header h1 {
   color: #1ed760;
 }
+
+.light-mode .dropdown-menu{
+  background-color: #fff;
+}
+
+.light-mode .dropdown-menu a{
+  color: #333;
+  font-weight: bold;
+}
+
+.light-mode .dropdown-menu a:hover{
+  color: white;
+}
+
 
 .button.light-mode {
   background-color: #1ed760;
@@ -76,16 +90,16 @@ header.light-mode h1 {
 }
 
 .button.light-mode:active {
-  background-color: #169c46;
+  background-color: #169c46 !important;
 }
 
 .account.light-mode .username {
-  color: #1ed760;
+  color: #1ed760 !important; 
 }
 
 footer.light-mode {
   background-color: #f0f0f5;
-  color: #333;
+  color: #333;  
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -106,6 +120,14 @@ footer.light-mode a {
 .dropdown-menu.light-mode a:hover {
   background-color: #1ed760;
   color: white;
+}
+
+.light-mode .theme-icon {
+  filter: invert(1);
+}
+
+.light-mode .dropdown-menu .theme-toggle::before{
+  filter: invert(1);
 }
 
 /* Button */
@@ -233,6 +255,7 @@ footer a {
 
 .dropdown-menu a {
   color: white;
+  font-weight: bold;
   padding: 14px 20px;
   text-decoration: none;
   display: block;

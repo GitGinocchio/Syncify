@@ -44,6 +44,8 @@
     margin-bottom: 5px;
 }
 
+
+
 .sidebar-left .controls button {
     padding: 0;
     margin: 0 5px;
@@ -884,6 +886,87 @@ input{
     background: transparent;
 }
 
+/* Light Mode */
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+body.light-mode .sidebar-left,
+body.light-mode .sidebar-right,
+body.light-mode .queue,
+body.light-mode .members,
+body.light-mode .chat {
+    background-color: #f0f0f0;
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .queue h2,
+body.light-mode .sidebar-left h2,
+body.light-mode .members h2,
+body.light-mode .devices-container h2 {
+    color: #1DB954; /* Spotify green for headings */
+}
+
+body.light-mode .member-name,
+body.light-mode #queue-input,
+body.light-mode .song-artists a,
+body.light-mode .addedby-user a,
+body.light-mode .song-info,
+body.light-mode .song-artists,
+body.light-mode .song-title,
+body.light-mode .message p,
+body.light-mode .song-duration{
+    color: #000000;
+}
+
+body.light-mode .searching-box{
+    background: transparent;
+}
+
+/* Pulsanti e controlli */
+body.light-mode .controls button {
+    background-color: #f0f0f0;
+}
+
+body.light-mode .controls button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Elementi specifici della chat */
+body.light-mode .chat-controls {
+    background-color: #f0f0f0;
+}
+
+body.light-mode .my-message {
+background-color: #e0e0e0;
+    color: #000000;
+}
+
+body.light-mode .other-message {
+    background-color: #d0d0d0;
+    color: #000000;
+}
+
+/* Scorrimento personalizzato */
+body.light-mode .song-elements::-webkit-scrollbar-thumb,
+body.light-mode .chat-messages::-webkit-scrollbar-thumb,
+body.light-mode .result-search-box::-webkit-scrollbar-thumb,
+body.light-mode .members-container::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+}
+
+/* Progress bar */
+body.light-mode #bar {
+    background-color: #cccccc;
+}
+
+body.light-mode #progress {
+    background-color: #1DB954;
+}
+  
+
 @media (max-width: 1200px) {
     .container {
         display: block; /* Cambia inline in block per mantenere i blocchi uno sotto l'altro */
@@ -897,7 +980,7 @@ input{
     .main-content,
     .sidebar-right {
         height: fit-content;
-        padding: 10px;
+        margin: 10px;
     }
 
     .chat {
@@ -975,6 +1058,14 @@ input{
 
     .queue-elements {
         max-height: 50vh; /* Limita l'altezza massima della lista queue su tablet */
+    }
+
+    header.light-mode {
+        background-color: #ffffff;
+      }
+    
+    .sidebar-left.light-mode, .sidebar-right.light-mode, .main-content.light-mode {
+        background-color: #ffffff;
     }
 }
 

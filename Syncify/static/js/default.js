@@ -1,4 +1,15 @@
-function toggleTheme() {
+document.addEventListener('DOMContentLoaded', (event) => {
+  const profileIcon = document.getElementById('profile-icon');
+  const dropdownMenu = document.getElementById('dropdown-menu');
+
+  if (profileIcon) {
+    profileIcon.addEventListener('click', function(event) {
+      event.stopPropagation(); // Impedisce la propagazione dell'evento al document
+      dropdownMenu.classList.toggle('show');
+    });
+  }
+
+  function toggleTheme(event) {
     const body = document.body;
     const themeIcon = document.getElementById('theme-icon');
     const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
@@ -22,8 +33,8 @@ function toggleTheme() {
     document.body.classList.add(savedTheme + '-mode');
     const themeIcon = document.getElementById('theme-icon');
     themeIcon.src = savedTheme === 'dark'
-        ? 'https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png' // Icona Dark Mode
-        : 'https://img.icons8.com/material-outlined/24/ffffff/sun--v1.png'; // Icona Light Mode
+      ? 'https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png' // Icona Dark Mode
+      : 'https://img.icons8.com/material-outlined/24/ffffff/sun--v1.png'; // Icona Light Mode
   }
 
   // Aggiungi l'evento di click per l'icona del tema
@@ -31,3 +42,4 @@ function toggleTheme() {
   if (themeToggle) {
     themeToggle.addEventListener('click', toggleTheme);
   }
+});

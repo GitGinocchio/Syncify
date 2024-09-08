@@ -67,3 +67,41 @@ button[type="submit"]:hover {
   background-color: #169c3e;
 }
 
+.light-mode {
+  background-color: #f7f7f7; /* colore di sfondo leggero */
+  color: #333; /* colore di testo scuro */
+} 
+
+.light-mode .card {
+  background-color: #ffffff; /* Sfondo chiaro per le card */
+  color: #333; /* Colore del testo delle card */
+  border: 1px solid #ddd; /* Bordo chiaro per le card */
+}
+
+.light-mode .card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombra chiara al passaggio del mouse */
+}
+
+.light-mode form {
+  background-color: #ffffff; /* Sfondo chiaro per il modulo */
+  color: #333; /* Colore del testo del modulo */
+  border: 1px solid #ddd; /* Bordo chiaro per il modulo */
+}
+
+.light-mode input[type="text"],
+.light-mode input[type="number"],
+.light-mode select {
+  background-color: #ffffff; /* Sfondo chiaro per gli input */
+  color: #333; /* Colore del testo degli input */
+  border: 1px solid #ccc; /* Bordo chiaro per gli input */
+}
+
+.light-mode button[type="submit"] {
+  background-color: #1db954; /* Colore di sfondo del bottone */
+  color: #ffffff; /* Colore del testo del bottone */
+  border: 1px solid #1db954; /* Bordo del bottone per la light-mode */
+}
+
+.light-mode button[type="submit"]:hover {
+  background-color: #169c3e; /* Colore di sfondo del bottone al passaggio del mouse */
+}

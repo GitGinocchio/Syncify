@@ -7,6 +7,7 @@ section {
 }
 
 .join-private-session {
+  width: 700px;
   background-color: #121212;
   padding: 20px;
   border-radius: 7px;
@@ -21,7 +22,7 @@ section {
 }
 
 .public-sessions {
-  width: 50%; /* Puoi regolare la larghezza come preferisci */
+  width: 600px;
   padding: 20px;
   border: 1px solid #1b1e1f;
   border-radius: 10px;
@@ -32,6 +33,7 @@ section {
 
 .public-sessions .session-name{
   font-size: 27px;
+  padding: 10px;
 }
 
 .session-name {
@@ -62,11 +64,13 @@ section {
 }
 .infoplusS p {
     margin: 0 0 10px 0; /* Aggiunge margine inferiore per spaziatura tra i paragrafi */
+    padding: 10px;
 }
 
 .footerS{
   display: flex;
   gap: 20px;
+  padding: 10px;
 }
 
 .footerS p{
