@@ -106,16 +106,19 @@
                     Spicetify.Player.pause();
                 }
             
+                const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
+
                 if (currentTrackUri === trackUri) {
                     // Se la canzone è già in corso, vai al minutaggio specificato
-                    const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
-                    console.log(seekTimeMilliseconds)
                     Spicetify.Player.play();
                     Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
                 } else {
                     // Altrimenti, riprova la canzone dal principio
                     Spicetify.Player.playUri(trackUri);
-                } 
+                    Spicetify.Player.pause();
+                    Spicetify.Player.play();
+                    Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
+                }
             
                 resolve(socket);
             });
@@ -166,15 +169,18 @@
                         Spicetify.Player.pause();
                     }
 
+                    const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
+
                     if (currentTrackUri === trackUri) {
                         // Se la canzone è già in corso, vai al minutaggio specificato
-                        const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
-                        console.log(seekTimeMilliseconds);
                         Spicetify.Player.play();
                         Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
                     } else {
                         // Altrimenti, riprova la canzone dal principio
                         Spicetify.Player.playUri(trackUri);
+                        Spicetify.Player.pause();
+                        Spicetify.Player.play();
+                        Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
                     }
                 });
 
