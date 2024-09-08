@@ -110,7 +110,7 @@
                     // Se la canzone è già in corso, vai al minutaggio specificato
                     const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
                     console.log(seekTimeMilliseconds)
-                    Spicetify.Player.playUri(trackUri);
+                    Spicetify.Player.play();
                     Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
                 } else {
                     // Altrimenti, riprova la canzone dal principio
@@ -170,7 +170,7 @@
                         // Se la canzone è già in corso, vai al minutaggio specificato
                         const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
                         console.log(seekTimeMilliseconds);
-                        Spicetify.Player.playUri(trackUri);
+                        Spicetify.Player.play();
                         Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
                     } else {
                         // Altrimenti, riprova la canzone dal principio
