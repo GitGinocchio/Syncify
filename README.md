@@ -19,8 +19,10 @@
 2. [Usage](#Usage)
 3. [Functionality](#Functionality)
 ------
-## Introduction 
+## Introduction
+
 **Syncify** is designed to improve the musical experience offered by Spotify, allowing you to synchronize music playback across multiple devices, enabling you and your friends to listen to the same songs at the same time. Perfect for virtual parties, friend gatherings, or simply sharing your favorite tracks in real-time. Syncify is **easy** to use and rich in features. Whether you're creating a new session or joining an existing one, the application provides an **intuitive interface** for managing and controlling music playback. Moreover, precise synchronization ensures that all participants listen to the music at the same time, creating a truly shared listening experience.
+
 ------
 ## Usage
 
