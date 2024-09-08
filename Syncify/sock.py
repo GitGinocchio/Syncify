@@ -387,7 +387,7 @@ def handle_skip_playback():
             client = get_client(member.token)
             if member.current_device: client.start_playback(device_id=member.current_device.id,uris=[f"spotify:track:{nextsong.id}"])
         else:
-            socketio.emit('syncify-spicetify-play',nextsong.id, namespace='/client',to=member.client_sid)
+            socketio.emit('syncify-spicetify-play',(nextsong.id,0), namespace='/client',to=member.client_sid)
 
     socketio.emit('set_current_song_details',nextsong.asdict(),namespace='/room',to=roomid)
     socketio.emit('reset_progress_bar',namespace='/room',to=roomid)
