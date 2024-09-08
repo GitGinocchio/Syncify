@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	const backButton = document.getElementById("backButton");
 	const progressBar = document.getElementById("progress");
 
-	
+	messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
 	var progressInterval;
 	let debounceTimeout;
