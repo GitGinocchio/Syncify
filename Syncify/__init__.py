@@ -1,11 +1,13 @@
 from flask_session import Session
 from flask_cors import CORS
 from flask import Flask
+from werkzeug import wsgi
 from datetime import timedelta
 from dotenv import load_dotenv
 import tempfile
 import os
 
+from Syncify.utils.config import config
 from Syncify.utils.terminal import getlogger
 
 logger = getlogger()
@@ -50,6 +52,9 @@ logger.info("Setting up Flask JWT")
 jwt.init_app(app)
 
 logger.info("Initializing WSGI server on address 0.0.0.0 and port 5000")
-server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler)
+if config['debug-mode']:
+    server = socketio.run(app, host='0.0.0.0',port=5000, debug=True, use_reloader=True)
+else:
+    server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler, log=logger)
 
 __all__ = ['server']

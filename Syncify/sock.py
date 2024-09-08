@@ -8,7 +8,7 @@ from .oauth import *
 
 logger = getlogger()
 
-socketio = SocketIO(cors_allowed_origins="*", engineio_logger=False,async_mode='gevent')
+socketio = SocketIO(cors_allowed_origins="*", engineio_logger=logger,async_mode='gevent')
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
