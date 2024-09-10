@@ -50,7 +50,7 @@
 .bug-report-container .button {
   display: block;
   width: calc(100% - 20px); /* Adjust width to account for padding */
-  margin: 0 auto; /* Center the button horizontally */
+  margin: 1;
   background-color: #1ed760;
   border: none;
   color: white;
@@ -85,8 +85,6 @@
 .light-mode form {
   background-color: #ffffff; /* Sfondo chiaro per il modulo */
   color: #333; /* Colore del testo del modulo */
-  border: 1px solid #ddd; /* Bordo chiaro per il modulo */
-  padding: 20px;
   border-radius: 7px; /* Bordo arrotondato per il modulo */
 }
 
@@ -112,12 +110,16 @@
   padding: 10px 20px; /* Spaziatura interna per il bottone */
   border-radius: 5px; /* Bordo arrotondato per il bottone */
   cursor: pointer; /* Cambia il cursore per indicare che è cliccabile */
-  font-size: 16px; /* Dimensione del testo del bottone */
 }
 
 .light-mode button[type="submit"]:hover {
   background-color: #169c3e; /* Colore di sfondo del bottone al passaggio del mouse */
 }
+
+.light-mode .bug-report-container input[type="file"]{
+  filter: invert(1);
+}
+
 
 /* Responsive adjustments */
 @media only screen and (max-width: 768px) {

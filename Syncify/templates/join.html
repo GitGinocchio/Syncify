@@ -38,13 +38,13 @@
   <section>
   <div class="join-private-session">
     <form action="/join" method="post" id="join-form">
-      <h2 class="priv-session-title">Join a private session</h2>
+      <h2 class="priv-session-title">Join a private room</h2>
       <input type="text" name="roomid" id="roomidInput" placeholder="Room ID" required>
       <button type="submit">Join</button>
     </form>
   </div>
   <div class="public-sessions" id="public-sessions">
-      <h2>Public Sessions</h2>
+      <h2>Public Rooms</h2>
       {% if rooms %}
         {% for key, room in rooms.items() %}
           <div class="session" id="{{ room.id }}">

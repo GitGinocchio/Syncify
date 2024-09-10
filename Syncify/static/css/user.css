@@ -94,11 +94,6 @@
   color: #000000;
 }
 
-.light-mode .brand h1 {
-  color: #1e1e1e;
-}
-
-
 /* Light Mode for Footer */
 .light-mode footer {
   background-color: #ffffff;
@@ -107,7 +102,6 @@
 .light-mode .reportbug {
   color: #1e1e1e;
 }
-
 
 
 /* Mobile Styles */
