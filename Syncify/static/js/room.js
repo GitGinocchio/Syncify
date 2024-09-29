@@ -14,16 +14,16 @@ function copyurl(roomid) {
 	});
 }
 
+window.onload = function() {
+    document.getElementById("popup").style.display = "flex";
+};
+
 function saveUsername() {
     const username = document.getElementById("username").value;
-    
-    if (username) {
-        // Puoi salvare il nome utente nel localStorage o utilizzarlo per altre funzioni
-        localStorage.setItem('username', username);
-        alert('Ciao, ' + username + '!');
 
-        // Nascondi il popup
-        document.getElementById("popup").classList.add("hidden");
+    if (username) {
+        // Chiudi il popup
+        document.getElementById("popup").style.display = "none";
     } else {
         alert('Per favore, inserisci un nome utente.');
     }
