@@ -14,6 +14,22 @@ function copyurl(roomid) {
 	});
 }
 
+function saveUsername() {
+    const username = document.getElementById("username").value;
+    
+    if (username) {
+        // Puoi salvare il nome utente nel localStorage o utilizzarlo per altre funzioni
+        localStorage.setItem('username', username);
+        alert('Ciao, ' + username + '!');
+
+        // Nascondi il popup
+        document.getElementById("popup").classList.add("hidden");
+    } else {
+        alert('Per favore, inserisci un nome utente.');
+    }
+}
+
+
 document.addEventListener("DOMContentLoaded", (event) => {
 	const socket = io("/room");
 
