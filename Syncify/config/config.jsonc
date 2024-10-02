@@ -1,6 +1,8 @@
 {
-    "debug-mode" : true,       // If Enabled will be used Flask WSGI Server (only for development) instead of gevent WSGI Server
-    
+    "debug-mode" : false,       // If Enabled will be used Flask WSGI Server (only for development) instead of gevent WSGI Server
+    "address" : "0.0.0.0",
+    "port" : 8000,
+
     // Logger settings
     "logger" : {
         "level" : "INFO",

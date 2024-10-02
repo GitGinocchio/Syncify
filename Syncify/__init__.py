@@ -1,7 +1,6 @@
 from flask_session import Session
 from flask_cors import CORS
 from flask import Flask
-from werkzeug import wsgi
 from datetime import timedelta
 from dotenv import load_dotenv
 import tempfile
@@ -51,10 +50,10 @@ socketio.init_app(app)
 logger.info("Setting up Flask JWT")
 jwt.init_app(app)
 
-logger.info("Initializing WSGI server on address 0.0.0.0 and port 5000")
+logger.info(f"Initializing WSGI server on: {config['address']}:{config['port']}")
 if config['debug-mode']:
-    server = socketio.run(app, host='0.0.0.0',port=5000, debug=True, use_reloader=True)
+    server = socketio.run(app, host=config['address'],port=config['port'], debug=True, use_reloader=True)
 else:
-    server = WSGIServer(('0.0.0.0', 5000), app, handler_class=WebSocketHandler, log=logger)
+    server = WSGIServer((config['address'], config['port']), app, handler_class=WebSocketHandler, log=logger)
 
 __all__ = ['server']
