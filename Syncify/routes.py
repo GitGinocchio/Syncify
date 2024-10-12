@@ -7,6 +7,10 @@ from .sock import users, rooms, socketio
 
 blueprint = Blueprint("blueprint", __name__)
 
+@blueprint.route('/onboard')
+def onboard():
+    return render_template('onboard.html', user=users[session['userid']])
+
 @blueprint.route('/')
 def index():
     if hasuserid():
