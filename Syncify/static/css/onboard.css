@@ -1,6 +1,27 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #181818;
+    color: white;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.onboard-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 65px;
+}
+
 .container {
-    margin: 0 auto;
-    background-color: #1DB954;
+    display: flex;
+    height: auto;
+    background-color: #1e1e1e;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -8,53 +29,133 @@
 
 .main-content {
     display: flex;
+    margin: 100px;
+    flex-direction: column;
     justify-content: center;
-    height: calc(80vh - 36px); /* Adjust <header-height> to the actual height of your header */
-    margin-top: 36px; /* Same as above */
+    margin-top: 120px; /* Same as <header-height> */
+    margin-bottom: 60px; /* Same as <footer-height> */
 }
 
-.container p{
+.container p {
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 18px;
+    font-size: 17px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
-.container h1 {
-    margin-bottom: 15px;
-    font-size: 42px;
+.onboard-list {
+    max-height: 565px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #2d2d2d;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.onboard-list li {
+    margin-bottom: 10px;
+}
+
+.onboard-list li a {
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    color: rgb(244, 244, 244);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.onboard-list li a:hover, 
+.onboard-list li a:focus, 
+.onboard-list li a.active {
+    background-color: #1DB954;
+    color: white;
+}
+
+a {
+    text-decoration: none;
+    color: rgb(244, 244, 244);
+}
+
+.onboard-list li ul {
+    list-style: none;
+    margin: 14px;
+    border-radius: 8px;
+    background-color: #3a3f47;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.onboard-list li ul h4 {
+    padding: 5px;
+}
+
+.onboard-details {
+    background-color: #2b2f36;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 0 0 20px rgba(29, 185, 84, 0.4); /* Glow luminoso */
+    border: 1px solid #1DB954; /* Bordo brillante */
+    width: fit-content;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 8px;
+}
+
+.onboard-details p {
+    font-size: 18px; /* Font leggermente più grande */
+    line-height: 1.6; /* Maggiore spaziatura tra le righe */
+    color: #e0e0e0; /* Colore testo più chiaro */
+    margin-top: 10px;
+}
+
+.onboard-details h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+    color: #1DB954; /* Colore dei titoli per risaltare */
+}
+
+.indented {
+    margin-left: 20px;
+}
+
+.indented-more{
+    margin: 10px 10px 20px 50px;
 }
 
 .command-box {
-    background-color: #282c34;
-    color: #61dafb;
-    padding: 15px;
+    background-color: #1f1f1f;
+    color: #1DB954;
+    padding: 20px;
     border-radius: 8px;
-    margin-top: 20px;
-    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 code {
-    font-size: 12px;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+    font-size: 14px;
+    margin: 10px;
 }
 
 button {
-    padding: 5px 5px;
-    font-size: 14px;
+    padding: 10px 15px;
     cursor: pointer;
     border: none;
     background: none;
     border-radius: 20px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #4ea6c2;
+    background-color: #1DB954;
 }
 
-.copy-icon{
+.copy-icon {
     width: 20px;
     height: 20px;
 }
@@ -64,23 +165,41 @@ button:hover {
     bottom: 20px;
     right: 20px;
     background-color: #1DB954;
-    padding: 10px 20px;
+    padding: 15px 30px;
     border-radius: 50px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
+    transition: opacity 0.3s ease;
 }
 
 #spotify-button.hidden {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 #spotify-button button {
     background-color: transparent;
     color: white;
     font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 #spotify-button button:hover {
     opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+
+    .onboard-title {
+        font-size: 36px;
+    }
+
+    .command-box {
+        padding: 15px;
+    }
 }

@@ -35,18 +35,55 @@
 		</div>
 	</header>
 	<div class="main-content">
+		<h1 class="onboard-title">Welcome to Syncify</h1>
 		<div class="container">
-			<h1>Benvenuto su Syncify Onboard</h1>
-			<p>Se ti trovi qui è perché vuoi usufruire della nostra estensione per ascoltare musica con i tuoi amici. <br>
-				Per installare il plugin, esegui il seguente comando in PowerShell:</p>
-			<div class="command-box">
-				<code>iwr -useb https://raw.githubusercontent.com/GitGinocchio/Syncify/main/Plugin/install.ps1 | iex</code>
-				<button id="copyButton">
-					<img src="/static/images/copycommand.png" alt="copy command icon" class="copy-icon"></img>
-				</button>
+			<ul class="onboard-list">
+				<li><a href="#what-is-syncify"><h3>1. What is Syncify?</h3></a></li>
+				<li><a href="#how-syncify-works"><h3>2. How does Syncify work?</h3></a></li>
+				<li><a href="#install-use-plugin"><h3>3. How to install and use the Syncify plugin?</h3></a>
+					<ul>
+						<li><a href="#install-plugin"><h4>3.1. Installing the plugin</h4></a></li>
+						<li><a href="#use-plugin"><h4>3.2. Using the plugin</h4></a></li>
+					</ul>
+				</li>
+				<li><a href="#create-join-room"><h3>4. How to create or join a room</h3></a>
+					<ul>
+						<li><a href="#create-room"><h4>4.1. Creating a room</h4></a></li>
+						<li><a href="#join-room"><h4>4.2. Joining a room</h4></a></li>
+					</ul>
+				</li>
+			</ul>
+			<div class="onboard-details">
+				<h2 id="what-is-syncify">1. What is Syncify?</h2>
+				<p class="indented">Syncify is an innovative application that allows you to listen to music in a synchronized manner with your friends using Spotify APIs. 
+					You can create shared listening sessions and join existing ones, offering a collaborative and interactive musical experience. 
+					The application provides an intuitive interface for managing and controlling music playback, ensuring precise synchronization for a truly shared listening experience. 
+					Syncify is completely web-based, so you won't need to install anything! Just access the website, create a session or join an existing one, and start sharing music!</p>
+		
+				<h2 id="how-syncify-works">2. How does Syncify work?</h2>
+				<p class="indented">Syncify utilizes the Spotify Web API to access and control music playback. When you create a session or join an existing one, Syncify establishes a connection between your Spotify account and the session.</p>
+		
+				<h2 id="install-use-plugin">3. How to install and use the Syncify plugin?</h2>
+				<h4 id="install-plugin" class="indented">3.1. Installing the plugin</h4>
+				<p class="indented-more">To install the Syncify plugin, you need to open your PowerShell as an administrator and run the following command:</p>
+				<div class="command-box indented-more">
+					<code>iwr -useb https://raw.githubusercontent.com/GitGinocchio/Syncify/main/Plugin/install.ps1 | iex</code>
+					<button id="copyButton">
+						<img src="/static/images/copycommand.png" alt="copy command icon" class="copy-icon"></img>
+					</button>
+				</div>
+		
+				<h4 id="use-plugin" class="indented">3.2. Using the plugin</h4>
+				<p class="indented-more">This command will download and run the installation script for the Syncify plugin. After the installation is complete, you can access the plugin by clicking on the Syncify icon in your Spotify application.</p>
+		
+				<h2 id="create-join-room">4. How to create or join a room</h2>
+				<h4 id="create-room" class="indented">4.1. Creating a room</h4>
+				<p class="indented-more">To create a room, simply click on the "Create Room" button on the homepage. You will be redirected to a new page where you can enter a room name and set the maximum number of participants. Once you've filled in the details, click on the "Create" button to create the room.</p>
+		
+				<h4 id="join-room" class="indented">4.2. Joining a room</h4>
+				<p class="indented-more">To join a room, click on the "Join Room" button on the homepage. You will be redirected to a new page where you can enter the room code. Click on the "Join" button to join the room.</p>
 			</div>
-			<p>Dopo aver installato il plugin, clicca sul bottone in basso a destra su Spotify per connetterti al sito.</p>
-		</div>
+		</div>		
 	</div>
 	<!--
 	<footer>
