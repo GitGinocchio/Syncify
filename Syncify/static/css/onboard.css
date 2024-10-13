@@ -32,8 +32,7 @@ body {
     margin: 100px;
     flex-direction: column;
     justify-content: center;
-    margin-top: 120px; /* Same as <header-height> */
-    margin-bottom: 60px; /* Same as <footer-height> */
+    margin-top: 120px;
 }
 
 .container p {
@@ -64,7 +63,7 @@ body {
 
 .onboard-list li a {
     display: block;
-    padding: 10px;
+    padding: 7px;
     border-radius: 5px;
     color: rgb(244, 244, 244);
     transition: background-color 0.3s, color 0.3s;
@@ -142,7 +141,33 @@ code {
     margin: 10px;
 }
 
+.tooltip {
+    width: 130px;
+    visibility: hidden;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 5px;
+    position: absolute; /* Tooltip posizionato rispetto al pulsante */
+    z-index: 1;
+    bottom: -35px; /* Posizionato sotto l'icona */
+    left: 50%;
+    transform: translateX(-50%); /* Centrato orizzontalmente sotto l'icona */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 12px;
+}
+
+
+.tooltip.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+
 button {
+    position: relative; /* Posizionamento relativo per far sì che il tooltip sia posizionato rispetto al pulsante */
     padding: 10px 15px;
     cursor: pointer;
     border: none;
