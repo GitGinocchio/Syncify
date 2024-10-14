@@ -260,7 +260,7 @@ def register_spotify_client(userid: str, access_token : str, exp : str):
             name=user_info['display_name'],
             id=user_info['id'],
             url=user_info['external_urls']['spotify'],
-            image=user_info['images'][0]['url'],
+            image=user_info['images'][1]['url'],
             token=Token
         )
 

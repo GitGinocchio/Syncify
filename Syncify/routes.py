@@ -140,7 +140,7 @@ def leave():
 
 @blueprint.route("/spotifyclient")
 def spotifyclient():
-    return "200"
+    return redirect('/')
 
 @blueprint.route("/challenge")
 def challenge():
