@@ -24,7 +24,7 @@ from .sock import socketio
 from .oauth import jwt
 
 app = Flask(__name__)
-logger.info("Setting up Cross Origin Resource Sharing for the application")
+logger.info("Setting up Cross Origin Resource Sharing")
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['SESSION_COOKIE_NAME'] = 'Syncify Cookies'
@@ -49,11 +49,3 @@ logger.info("Setting up Flask SocketIO")
 socketio.init_app(app)
 logger.info("Setting up Flask JWT")
 jwt.init_app(app)
-
-logger.info(f"Initializing WSGI server on: {config['address']}:{config['port']}")
-if config['debug-mode']:
-    server = socketio.run(app, host=config['address'],port=config['port'], debug=True, use_reloader=True)
-else:
-    server = WSGIServer((config['address'], config['port']), app, handler_class=WebSocketHandler, log=logger)
-
-__all__ = ['server']

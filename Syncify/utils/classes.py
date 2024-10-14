@@ -1,6 +1,13 @@
 from dataclasses import dataclass, field, asdict
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 import uuid
+
+@dataclass
+class Challenge:
+	id : uuid.UUID = field(default_factory=uuid.uuid4, init=False)
+	exp : datetime = field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(seconds=30), init=False)
+	status : Literal['pending', 'accepted', 'refused'] = field(default_factory=lambda: 'pending',init=False)
 
 @dataclass
 class Song:
@@ -29,14 +36,10 @@ class Song:
 			'addedby' : self.addedby.asdict() if self.addedby else None
 		}
 
-@dataclass
+@dataclass(frozen=True)
 class Token:
 	access_token: str
-	refresh_token: str
-	token_type: str
 	expires_at: int
-	expires_in: int
-	scope: str
 
 	def asdict(self): return asdict(self)
 
@@ -46,10 +49,10 @@ class Room:
 	userlimit: int = 5
 	num_members: int = 0
 	creator: 'User' = None
-	visibility: str = 'public'
 	editablequeue: bool = False
 	song_started_at : float = None
 	song_paused_at : float = None
+	visibility: Literal['public','private'] = 'public'
 	status : Literal['idle','playing'] = 'idle'
 	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
@@ -81,51 +84,36 @@ class Message:
 
 	def asdict(self): 
 		return {
-			'sender' : self.sender.asdict(exclude_devices=True),
+			'sender' : self.sender.asdict(),
 			'text' : self.text
 		}
 
 @dataclass
+class Client:
+	sid : str = field(init=True)
+	challenge : Challenge = field(init=False, default_factory=lambda: Challenge())
+	connected_at : datetime = field(default_factory=lambda: datetime.now(timezone.utc), init=False)
+
+	def __eq__(self, other):
+		return self.sid == other.sid
+
+@dataclass
 class User:
-	name: str = field(default_factory=str,init=False)
-	url: str = field(default_factory=str,init=False)
-	image: str = field(default_factory=str,init=False)
-	id: str = field(default_factory=str,init=False)
-	devices: list['Device'] = field(default_factory=list,init=False)
-	current_device: 'Device' = None
-	product: Literal['premium','free'] = None
-	client_sid: str = None
+	name: str = field(default_factory=str,init=True)
+	url: str = field(default_factory=str,init=True)
+	image: str = field(default_factory=str,init=True)
+	id: str = field(default_factory=str,init=True)
+	clients : dict[str, Client] = field(default_factory=dict, init=False)
 	token: Token = None
 	room: Room = None
 
 	def __eq__(self, other):
 		return self.id == other.id
 
-	def asdict(self,*, exclude_devices : bool = False):
-		_dict = {
+	def asdict(self):
+		return {
 			'name' : self.name,
 			'url' : self.url,
 			'image' : self.image,
-			'id' : self.id,
-			'product' : self.product,
+			'id' : self.id
 		}
-		if not exclude_devices:
-			if self.product == 'premium':
-				_dict['devices'] = [device.asdict() for device in self.devices]
-				_dict['current_device'] = self.current_device.asdict() if self.current_device else None
-			else:
-				_dict['client_sid'] = self.client_sid
-		return _dict
-
-@dataclass
-class Device:
-	id : str
-	name : str
-	type : str
-	supports_volume : bool
-	volume_percent : int
-	is_active : bool
-	is_private_session : bool
-	is_restricted : bool
-
-	def asdict(self): return asdict(self)

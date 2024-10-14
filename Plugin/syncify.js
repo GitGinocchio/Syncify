@@ -5,10 +5,8 @@
 
     const reconnectionAttempts = 3;
     const Addresses = [
-        `http://localhost:5000/client`,
-        `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev:5000/client`,
-        `https://syncify-4trj.onrender.com/client`,
-        `https://syncify.replit.app/client`
+        `http://localhost:5000`,
+        `https://syncify.replit.app`
     ];
 
     // Usa un MutationObserver per rilevare quando il DOM è pronto
@@ -81,17 +79,25 @@
 
     function tryConnect(url) {
         return new Promise((resolve, reject) => {
-            const socket = io(url, { reconnectionAttempts: reconnectionAttempts });
+            const socket = io(url + '/spotifyclient', { reconnectionAttempts: reconnectionAttempts });
             let registered = false;
 
             socket.on('connect', () => {
                 if (!registered) {
-                    socket.emit('register_spotify_client',Spicetify.Platform.LocalStorageAPI.namespace);
-                    registered = true;
+                    socket.emit('register_spotify_client',
+                        Spicetify.Platform.LocalStorageAPI.namespace,
+                        Spicetify.Platform.Session.accessToken,
+                        Spicetify.Platform.Session.accessTokenExpirationTimestampMs
+                    );
                 }
             });
 
+            socket.on('syncify-spicetify-send-challenge', (userid, challengeid) => {
+                window.open(url + '/challenge?userid=' + userid + '&code=' + challengeid , '_blank');
+            });
+
             socket.on('syncify-spicetify-registered', (trackid, seekTime) => {
+                registered = true;
                 if (trackid === undefined) {
                     if (Spicetify.Player.isPlaying) { Spicetify.Player.pause(); }
                     resolve(socket); return; 

@@ -162,3 +162,4 @@ cython_debug/
 replit.nix
 /flask_session/*
 /.syncify-venv
+/Syncify/config

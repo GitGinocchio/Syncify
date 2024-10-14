@@ -1,9 +1,15 @@
-from Syncify import server
-
+from Syncify import app, config, socketio, WebSocketHandler, WSGIServer
 from Syncify.utils.terminal import getlogger
 
 logger = getlogger()
 
+
+
 if __name__ == '__main__':
-    logger.info(f"Server started at: {server.address[0]}:{server.address[1]}")
-    server.serve_forever()
+    logger.info(f"Server started at: http://{config['address']}:{config['port']}")
+    
+    if config['debug-mode']:
+        socketio.run(app, host=config['address'],port=config['port'], debug=True, use_reloader=True)
+    else:
+        server = WSGIServer((config['address'], config['port']), app, handler_class=WebSocketHandler, log=logger)
+        server.serve_forever()

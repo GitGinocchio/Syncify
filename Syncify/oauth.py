@@ -6,11 +6,22 @@ import os
 
 from Syncify.utils.classes import Token
 
-SCOPE = os.environ['SPOTIPY_SCOPE']
+class CacheHandler(spotipy.CacheHandler):
+    def __init__(self):
+        spotipy.CacheHandler.__init__(self)
+        self.token_info = {}
 
-cache_handler = spotipy.CacheFileHandler(os.devnull)
+    def get_cached_token(self) -> dict | None:
+        if self.token_info: return self.token_info
+    
+    def save_token_to_cache(self, token_info) -> None: 
+        self.token_info = token_info
 
-Oauth = spotipy.SpotifyOAuth(scope=SCOPE, cache_handler=cache_handler)
+credentials = spotipy.SpotifyClientCredentials(
+    #cache_handler=CacheHandler()
+)
+
+spotify = spotipy.Spotify(client_credentials_manager=credentials)
 
 jwt = JWTManager()
 
@@ -76,8 +87,12 @@ def roomidrequired(f):
         return f(*args, **kwargs)
     return wrapper
 
-# Token
+# Token related
 
+def get_client(token : Token):
+    return spotipy.Spotify(auth=token.access_token,client_credentials_manager=credentials)
+
+"""
 def get_token(code : str):
     response = Oauth.get_access_token(code,check_cache=False)
     return Token(**response)
@@ -92,3 +107,4 @@ def get_client(token : Token):
     client = spotipy.Spotify(auth=token.access_token,oauth_manager=Oauth)
     
     return client
+"""

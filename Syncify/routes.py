@@ -7,10 +7,6 @@ from .sock import users, rooms, socketio
 
 blueprint = Blueprint("blueprint", __name__)
 
-@blueprint.route('/onboard')
-def onboard():
-    return render_template('onboard.html', user=users[session['userid']])
-
 @blueprint.route('/')
 def index():
     if hasuserid():
@@ -18,58 +14,19 @@ def index():
     else:
         return redirect('/login')
 
+@blueprint.route('/onboard')
+def onboard():
+    return render_template('onboard.html', user=None)
+
 @blueprint.route('/login')
 def login():
     return render_template('login.html')
-
-@blueprint.route('/auth')
-def auth(): 
-    return redirect(Oauth.get_authorize_url())
-
-@blueprint.route('/api/spotify/v1/endpoint')
-def callback():
-    code = request.args.get("code")
-    token = get_token(code)
-    client = get_client(token)
-    current_user = client.current_user()
-
-    if not current_user: return redirect('/')
-
-    if current_user['id'] not in users:
-        user = User()
-        user.token = token
-        user.product = current_user['product']
-        user.id = current_user['id']
-        user.name = current_user['display_name']
-        user.url = current_user['external_urls']['spotify']
-
-        if user.product == 'premium':
-            active_devices = list(filter(lambda device: device['is_active'],client.devices()['devices']))
-            user.devices = [Device(**device_info) for device_info in active_devices]
-            user.current_device = user.devices[0] if len(user.devices) > 0 else None
-        else:
-            user.client_sid = None
-
-        if not len(current_user['images']) > 0:
-            user.image = f"https://ui-avatars.com/api/?name={user.name}&length=1&color=000000&background=1ed760&bold=true"
-        else:
-            user.image = current_user['images'][0]['url']
-
-        users[user.id] = user
-        session['userid'] = user.id
-    else:
-        session['userid'] = current_user['id']
-    
-    user_access_token = create_access_token(identity=current_user['id'])
-    response = make_response(redirect('/user'))
-    response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
-    return response
 
 @blueprint.route("/user")
 @useridrequired
 def user():
     return render_template('user.html',
-                           user=users[session['userid']], 
+                           user=users[session['userid']],
                            num_rooms=len(rooms),
                            num_public_rooms=len(dict(filter(lambda item: item[1].visibility == 'public', rooms.items()))))
 
@@ -181,10 +138,35 @@ def leave():
     response.set_cookie('room_access_token', '',expires=0)
     return response
 
-@blueprint.route("/client")
-def client():
-    print(request.headers)
-    return "Hello World"
+@blueprint.route("/spotifyclient")
+def spotifyclient():
+    return "200"
+
+@blueprint.route("/challenge")
+def challenge():
+    userid = request.args.get('userid')
+    code = request.args.get('code')
+
+    user = users.get(userid)
+
+    if not user:  return "403"
+    if not code: return "403"
+
+    match : list[Client] = [client for sid, client in user.clients.items() if client.challenge.id.hex == code]
+    
+    if len(match) == 1:
+        client = match[0]
+
+        if client.challenge.id.hex == code and client.challenge.exp > datetime.now(timezone.utc) and client.challenge.status == 'pending':
+            client.challenge.status = 'accepted'
+            return "Challenge completata con successo, account creato."
+        elif client.challenge.status == 'accepted':
+            return "Account già presente, credenziali corrette."
+        else:
+            client.challenge.status == 'refused'
+            return "Challenge non completata"
+    else:
+        return "Errore"
 
 @blueprint.route('/logout')
 @useridrequired
