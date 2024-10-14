@@ -13,10 +13,35 @@ body {
 }
 
 .onboard-title {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 65px;
+    font-family: 'Spotify Font', sans-serif;
+    color: #1DB954;
+    font-size: 4em;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 20px;
+    width: 100%;
 }
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  
+@keyframes blink {
+    from { border-right-color: white; }
+    to { border-right-color: transparent; }
+}
+
+#title-text {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 3.5s steps(40, end), blink .75s step-end infinite;
+    color: #1DB954;
+    transition: width 1s ease-out; /* Transizione fluida per la cancellazione */
+    width: 100%; /* Larghezza iniziale del testo */
+  }
+  
 
 .container {
     display: flex;
@@ -32,7 +57,7 @@ body {
     margin: 100px;
     flex-direction: column;
     justify-content: center;
-    margin-top: 120px;
+    margin-top: 70px;
 }
 
 .container p {
@@ -106,7 +131,7 @@ a {
 }
 
 .onboard-details p {
-    font-size: 18px; /* Font leggermente più grande */
+    font-size: 14px; /* Font leggermente più grande */
     line-height: 1.6; /* Maggiore spaziatura tra le righe */
     color: #e0e0e0; /* Colore testo più chiaro */
     margin-top: 10px;

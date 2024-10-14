@@ -149,27 +149,32 @@ def challenge():
 
     user = users.get(userid)
 
-    if not user:  return "403"
-    if not code: return "403"
+    if not user: return render_template('challenge.html', user=None) #return "403"
+    if not code: return render_template('challenge.html', user=user) #return "403"
 
     match : list[Client] = [client for sid, client in user.clients.items() if client.challenge.id.hex == code]
     
     if len(match) == 1:
         client = match[0]
-
+        # return render_template('challenge.html', user=None)
         if client.challenge.id.hex == code and client.challenge.exp > datetime.now(timezone.utc) and client.challenge.status == 'pending':
             client.challenge.status = 'accepted'
-
+            """
             session['userid'] = user.id
             user_access_token = create_access_token(identity=user.id)
             response = make_response(redirect('/user'))
             response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
             return response
+            """
+            # return "Challenge completata con successo, account creato." 
+            return render_template('challenge.html', user=user)
         elif client.challenge.status == 'accepted':
-            return "Account già presente, credenziali corrette."
+            # return "Account già presente, credenziali corrette." 
+            return render_template('challenge.html', user=user)
         else:
             client.challenge.status == 'refused'
-            return "Challenge non completata"
+            # return "Challenge non completata" 
+            return render_template('challenge.html', user=user)
     else:
         return "Errore"
 
