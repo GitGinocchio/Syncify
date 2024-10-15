@@ -2,13 +2,15 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
+from Syncify.utils.config import config
 from Syncify.utils.terminal import getlogger
 from Syncify.utils.classes import *
 from Syncify.oauth import *
 
 logger = getlogger()
+engineio_logger = getlogger("engineio")
 
-socketio = SocketIO(cors_allowed_origins="*", engineio_logger=logger,async_mode='gevent')
+socketio = SocketIO(cors_allowed_origins="*", logger=logger, engineio_logger=(engineio_logger if config["debug-mode"] else False),async_mode='gevent')
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}

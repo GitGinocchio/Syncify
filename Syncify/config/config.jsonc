@@ -1,8 +1,7 @@
 {
-    "debug-mode" : true,       // If Enabled will be used Flask WSGI Server (only for development) instead of gevent WSGI Server
+    "debug-mode" : false,       // If Enabled will be used Flask WSGI Server (only for development) instead of gevent WSGI Server
     "address" : "127.0.0.1",
     "port" : 5000,
-    "redirect-url" : "/api/spotify/v1/endpoint",
 
     // Logger settings
     "logger" : {

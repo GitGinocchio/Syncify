@@ -1,4 +1,22 @@
 (function() {
+
+    /*
+    // All endpoints that uses the `sp`, `wg`, and `hm` protocol are internal Spotify endpoints
+    await Spicetify.CosmosAsync.get("sp://desktop/v1/version");
+
+    // Spotify Web API endpoints also works
+    await Spicetify.CosmosAsync.get("https://api.spotify.com/v1/me");
+
+    // Requests to external URLs are NOT safe and may compromise the user's account
+    // Only use this if you're certain that the URL is safe
+    // If you need to make a request to an external URL, use `fetch` instead
+    await fetch("https://example.com");
+
+    see more at: https://spicetify.app/docs/development/api-wrapper/methods/cosmos-async
+
+    */
+
+
     const script = document.createElement('script');
     script.src = 'https://cdn.socket.io/4.0.0/socket.io.min.js';
     document.head.appendChild(script);
