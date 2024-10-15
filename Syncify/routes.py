@@ -159,15 +159,13 @@ def challenge():
         # return render_template('challenge.html', user=None)
         if client.challenge.id.hex == code and client.challenge.exp > datetime.now(timezone.utc) and client.challenge.status == 'pending':
             client.challenge.status = 'accepted'
-            """
+            
             session['userid'] = user.id
             user_access_token = create_access_token(identity=user.id)
-            response = make_response(redirect('/user'))
+            response = make_response(render_template('challenge.html', user=user))
             response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
-            return response
-            """
             # return "Challenge completata con successo, account creato." 
-            return render_template('challenge.html', user=user)
+            return response
         elif client.challenge.status == 'accepted':
             # return "Account già presente, credenziali corrette." 
             return render_template('challenge.html', user=user)

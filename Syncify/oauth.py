@@ -18,7 +18,7 @@ class CacheHandler(spotipy.CacheHandler):
         self.token_info = token_info
 
 credentials = spotipy.SpotifyClientCredentials(
-    #cache_handler=CacheHandler()
+    cache_handler=CacheHandler()
 )
 
 spotify = spotipy.Spotify(client_credentials_manager=credentials)
