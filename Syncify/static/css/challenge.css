@@ -1,7 +1,7 @@
-.access-box{
+.access-box {
     padding: 30px;
     border-radius: 40px;
-    background-color: #2d2d2d;
+    background: linear-gradient(135deg, #333 0%, #2d2d2d 100%);
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -9,26 +9,47 @@
     gap: 20px;
     border: #fff solid 1px;
     box-shadow: #fff 0px 0px 10px 0px;
+    animation: slideIn 0.5s ease-out;
 }
 
-.user-details{
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-details {
     display: flex;
     gap: 20px;
     align-items: center;
 }
 
-.profile-icon{
+.profile-icon {
     border-radius: 100px;
     width: 100px;
     height: 100px;
+    transition: transform 0.3s ease-in-out;
+    border: 3px solid #1DB954;
+    box-shadow: 0px 0px 15px rgba(29, 185, 84, 0.6);
 }
 
-.access-box h1{
+.profile-icon:hover {
+    transform: scale(1.1);
+}
+
+.access-box h1 {
     font-size: 40px;
+    color: #1DB954;
 }
 
-.access-box p{
+.access-box p {
     margin: 0px;
     font-size: 24px;
+    color: #f0f0f0;
+    letter-spacing: 1px;
 }
-

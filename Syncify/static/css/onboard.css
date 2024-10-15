@@ -70,6 +70,7 @@ body {
 
 .onboard-list {
     max-height: 565px;
+    list-style-type: none;
     list-style: none;
     padding: 0;
     margin: 0;
