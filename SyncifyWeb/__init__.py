@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 import tempfile
 import os
 
-from Syncify.utils.config import config
-from Syncify.utils.terminal import getlogger
+from SyncifyWeb.utils.config import config
+from SyncifyWeb.utils.terminal import getlogger
 
 logger = getlogger()
 

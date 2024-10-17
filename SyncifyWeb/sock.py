@@ -2,10 +2,10 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
-from Syncify.utils.config import config
-from Syncify.utils.terminal import getlogger
-from Syncify.utils.classes import *
-from Syncify.oauth import *
+from SyncifyWeb.utils.config import config
+from SyncifyWeb.utils.terminal import getlogger
+from SyncifyWeb.utils.classes import *
+from SyncifyWeb.oauth import *
 
 logger = getlogger()
 engineio_logger = getlogger("engineio")

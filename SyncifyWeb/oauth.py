@@ -4,7 +4,7 @@ from functools import wraps
 import spotipy
 import os
 
-from Syncify.utils.classes import Token
+from SyncifyWeb.utils.classes import Token
 
 class CacheHandler(spotipy.CacheHandler):
     def __init__(self):

@@ -1,5 +1,5 @@
-from Syncify import app, config, socketio, WebSocketHandler, WSGIServer
-from Syncify.utils.terminal import getlogger
+from SyncifyWeb import app, config, socketio, WebSocketHandler, WSGIServer
+from SyncifyWeb.utils.terminal import getlogger
 
 logger = getlogger()
 
