@@ -1,27 +1,6 @@
 from flask_jwt_extended import JWTManager, decode_token
 from flask import request, session, redirect
 from functools import wraps
-import spotipy
-import os
-
-from SyncifyWeb.utils.classes import Token
-
-class CacheHandler(spotipy.CacheHandler):
-    def __init__(self):
-        spotipy.CacheHandler.__init__(self)
-        self.token_info = {}
-
-    def get_cached_token(self) -> dict | None:
-        if self.token_info: return self.token_info
-    
-    def save_token_to_cache(self, token_info) -> None: 
-        self.token_info = token_info
-
-credentials = spotipy.SpotifyClientCredentials(
-    cache_handler=CacheHandler()
-)
-
-spotify = spotipy.Spotify(client_credentials_manager=credentials)
 
 jwt = JWTManager()
 
@@ -86,25 +65,3 @@ def roomidrequired(f):
         if not hasroomid(): return redirect('/')
         return f(*args, **kwargs)
     return wrapper
-
-# Token related
-
-def get_client(token : Token):
-    return spotipy.Spotify(auth=token.access_token,client_credentials_manager=credentials)
-
-"""
-def get_token(code : str):
-    response = Oauth.get_access_token(code,check_cache=False)
-    return Token(**response)
-
-def refresh_token(token : Token):
-    newtoken = Token(**Oauth.refresh_access_token(token.refresh_token))
-    token.access_token = newtoken.access_token
-    token.expires_at = newtoken.expires_at
-    
-def get_client(token : Token):
-    if Oauth.is_token_expired(token.asdict()): refresh_token(token)
-    client = spotipy.Spotify(auth=token.access_token,oauth_manager=Oauth)
-    
-    return client
-"""

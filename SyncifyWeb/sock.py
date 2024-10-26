@@ -14,6 +14,7 @@ socketio = SocketIO(cors_allowed_origins="*", logger=logger, engineio_logger=(en
 
 users : dict[str, User] = {}
 rooms : dict[str, Room] = {}
+challenges : dict[str, Challenge] = {}
 
 # -------- User --------
 
@@ -22,7 +23,7 @@ def user_connect():
     userid = getuserid()
     if not userid: return # Sostituire con un redirect alla pagina home
 
-    user = users.get(userid)
+    #user = users.get(userid)
     logger.info(f"User {userid} connected to /user namespace")
 
 @socketio.on('disconnect',namespace='/user')
@@ -123,7 +124,7 @@ def handle_search_song(query: str):
     user = users.get(userid)
     if not user: return
     
-    tracks_info : list[dict]= spotify.search(query)['tracks']['items']
+    tracks_info : list[dict] = spotify.search(query)['tracks']['items']
     
     songs = []
     for track in tracks_info:
@@ -250,28 +251,36 @@ def handle_room_disconnect():
 # -------- Room -------- (Spotify Client)
 
 @socketio.on('register_spotify_client',namespace='/spotifyclient')
-def register_spotify_client(data : dict):
-    user = users.get(data['id'])
+def register_spotify_client(user_data : dict, platform_data : dict, locale : str):
+    user = users.get(user_data['id'])
+
+    print(platform_data)
 
     if not user:
-        user = User(
-            name=data['display_name'],
-            id=data['id'],
-            url=data['external_urls']['spotify'],
-            image=data['images'][1]['url'],
-            token=Token
-        )
+        users[user.id] = (user:=User(
+            name=user_data['display_name'],
+            id=user_data['id'],
+            url=user_data['external_urls']['spotify'],
+            image=user_data['images'][1]['url'],
+        ))
 
-        users[user.id] = user
     session['userid'] = user.id
-    
-    client = Client(str(request.sid))
-    user.clients[client.sid] = client
 
-    socketio.emit('syncify-spicetify-send-challenge',(user.id, client.challenge.id.hex), namespace='/spotifyclient', to=request.sid)
+    challenge = Challenge(
+        userid=user.id,
+        sid=request.sid,
+        locale=locale,
+        version=platform_data['client_version_quintuple'],
+        platform=platform_data['app_platform'],
+        os_name=platform_data['os_name'],
+        os_version=platform_data['os_version']
+    )
+
+    challenges[challenge.id.hex] = challenge
+
+    socketio.emit('syncify-spicetify-send-challenge',(challenge.id.hex), namespace='/spotifyclient', to=request.sid)
 
     room = user.room
-
     if room and len(room.queue) > 0 and room.status == 'playing':
         nextsong = room.queue[0]
         socketio.emit('syncify-spicetify-registered',(nextsong.id,time.time() - room.song_started_at + (room.song_paused_at if room.song_paused_at else 0)), namespace='/spotifyclient',to=request.sid)

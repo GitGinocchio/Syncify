@@ -3,40 +3,44 @@ from flask import Blueprint, render_template, make_response, redirect, request, 
 
 from SyncifyWeb.utils.classes import *
 from SyncifyWeb.oauth import *
-from SyncifyWeb.sock import users, rooms, socketio
+from SyncifyWeb.sock import users, rooms, challenges, socketio
 
 blueprint = Blueprint("blueprint", __name__)
 
 @blueprint.route('/')
-def index():
+def index_route():
     if hasuserid():
         return redirect('/user')
     else:
         return redirect('/login')
 
 @blueprint.route('/onboard')
-def onboard():
+def onboard_route():
     return render_template('onboard.html', user=None)
 
 @blueprint.route('/login')
-def login():
+def login_route():
     return render_template('login.html')
 
 @blueprint.route("/user")
 @useridrequired
-def user():
+def user_route():
     return render_template('user.html',
                            user=users[session['userid']],
                            num_rooms=len(rooms),
-                           num_public_rooms=len(dict(filter(lambda item: item[1].visibility == 'public', rooms.items()))))
+                           num_public_rooms=len(dict(filter(lambda item: item[1].visibility == Room.Visibility.PUBLIC, rooms.items()))))
 
 @blueprint.route("/new",methods=["POST","GET"])
 @useridrequired
-def new():
-    user = users[session['userid']]
+def new_route():
+    userid = getuserid()
+    user = users.get(userid)
+
+    if not user: return redirect('/')
+
     if request.method == 'POST':
-        if user.room and user.room.id in rooms:
-            rooms.pop(user.room.id)
+        if user.room and user.room.id.hex in rooms:
+            rooms.pop(user.room.id.hex)
         user.room = None
 
         name = request.form.get('name',"[name]")
@@ -52,13 +56,13 @@ def new():
             editablequeue=True if editablequeue else False
             )
         user.room = room
-        rooms[room.id] = room
-        session['roomid'] = room.id
+        rooms[room.id.hex] = room
+        session['roomid'] = room.id.hex
         
         if room.visibility == "public":
             socketio.emit('add_room',room.asdict(),namespace='/join')
 
-        room_access_token = create_access_token(identity=room.id)
+        room_access_token = create_access_token(identity=room.id.hex)
         response = make_response(redirect('/room'))
         response.set_cookie('room_access_token', room_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')
         return response
@@ -70,7 +74,7 @@ def new():
 @blueprint.route("/join",defaults={'roomid': None},methods=["POST","GET"])
 @blueprint.route("/join/<roomid>", methods=["GET"])
 @useridrequired
-def join(roomid):
+def join_route(roomid):
     userid = getuserid()
 
     if not userid: return redirect('/')
@@ -82,6 +86,8 @@ def join(roomid):
     if request.method == 'POST':
         roomid = request.form.get('roomid')
         room = rooms.get(roomid)
+
+        if not room: return redirect('/')
 
         if room.num_members+1 <= room.userlimit:
             session['roomid'] = roomid
@@ -95,6 +101,8 @@ def join(roomid):
     else:
         if roomid:
             room = rooms.get(roomid)
+
+            if not room: return redirect('/')
 
             if room.num_members+1 <= room.userlimit:
                 session['roomid'] = roomid
@@ -110,14 +118,14 @@ def join(roomid):
             'join.html',
             user=user,
             rooms=dict(filter(
-                lambda item: item[1].visibility == 'public', 
+                lambda item: item[1].visibility == Room.Visibility.PUBLIC, 
                 rooms.items()))
         )
 
 @blueprint.route("/room")
 @useridrequired
 @roomidrequired
-def room():
+def room_route():
     userid = getuserid()
     roomid = getroomid()
 
@@ -133,52 +141,59 @@ def room():
 @blueprint.route("/room/leave")
 @useridrequired
 @roomidrequired
-def leave():
+def leave_route():
     response = make_response(redirect('/'))
     response.set_cookie('room_access_token', '',expires=0)
     return response
 
 @blueprint.route("/spotifyclient")
-def spotifyclient():
+def spotifyclient_route():
     return redirect('/')
 
 @blueprint.route("/challenge")
-def challenge():
-    userid = request.args.get('userid')
+def challenge_route():
     code = request.args.get('code')
 
-    user = users.get(userid)
+    if not code: return render_template('challenge.html', user=None) #return "403"
 
+    challenge = challenges.get(code)
+    user = users.get(challenge.userid)
+
+    if not challenge: return render_template('challenge.html', user=None) #return "403"
     if not user: return render_template('challenge.html', user=None) #return "403"
-    if not code: return render_template('challenge.html', user=user) #return "403"
-
-    match : list[Client] = [client for sid, client in user.clients.items() if client.challenge.id.hex == code]
     
-    if len(match) == 1:
-        client = match[0]
-        # return render_template('challenge.html', user=None)
-        if client.challenge.id.hex == code and client.challenge.exp > datetime.now(timezone.utc) and client.challenge.status == 'pending':
-            client.challenge.status = 'accepted'
-            
-            session['userid'] = user.id
-            user_access_token = create_access_token(identity=user.id)
-            response = make_response(render_template('challenge.html', user=user))
-            response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
-            # return "Challenge completata con successo, account creato." 
-            return response
-        elif client.challenge.status == 'accepted':
-            # return "Account già presente, credenziali corrette." 
-            return render_template('challenge.html', user=user)
-        else:
-            client.challenge.status == 'refused'
-            # return "Challenge non completata" 
-            return render_template('challenge.html', user=user)
+    if challenge.id.hex == code and challenge.exp > datetime.now(timezone.utc) and challenge.status == challenge.Status.PENDING:
+        challenge.status = challenge.Status.ACCEPTED
+
+        user.clients[challenge.sid] = Client(
+            challenge.sid,
+            challenge.locale,
+            challenge.version,
+            challenge.platform,
+            challenge.os_name,
+            challenge.os_version
+        )
+
+        del challenges[challenge.id.hex]
+        del challenge
+
+        session['userid'] = user.id
+        user_access_token = create_access_token(identity=user.id)
+        response = make_response(render_template('challenge.html', user=user))
+        response.set_cookie('user_access_token', user_access_token, max_age=86400, secure=True, httponly=True,samesite='Strict')  #24 ore
+        # return "Challenge completata con successo, account creato." 
+        return response
+    elif challenge.status == Challenge.Status.ACCEPTED:
+        # return "Account già presente, credenziali corrette." 
+        return render_template('challenge.html', user=user)
     else:
-        return "Errore"
+        challenge.status == Challenge.Status.REFUSED
+        # return "Challenge non completata" 
+        return render_template('challenge.html', user=user)
 
 @blueprint.route('/logout')
 @useridrequired
-def logout():
+def logout_route():
     userid = getuserid()
     roomid = getroomid()
     
@@ -204,7 +219,7 @@ def logout():
     return response
 
 @blueprint.route('/bugreport')
-def bugreport():
+def bugreport_route():
     userid = getuserid()
 
     user = users.get(userid)

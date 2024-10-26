@@ -1,13 +1,26 @@
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta, timezone
+from enum import StrEnum
 from typing import Literal
 import uuid
 
 @dataclass
 class Challenge:
+	userid : str = field(init=True)
+	sid : str = field(init=True)
+	locale : str = field(init=True, default="en")
+	version : str = field(init=True, default="unspecified")
+	platform : str = field(init=True,default="unspecified")
+	os_name : str = field(init=True, default="unspecified")
+	os_version : str = field(init=True, default="unspecified")
 	id : uuid.UUID = field(default_factory=uuid.uuid4, init=False)
 	exp : datetime = field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(seconds=30), init=False)
-	status : Literal['pending', 'accepted', 'refused'] = field(default_factory=lambda: 'pending',init=False)
+	status : 'Status' = field(default_factory=lambda: Challenge.Status.PENDING,init=False)
+
+	class Status(StrEnum):
+		PENDING = 'pending'
+		ACCEPTED = 'accepted'
+		REFUSED = 'refused'
 
 @dataclass
 class Song:
@@ -36,13 +49,6 @@ class Song:
 			'addedby' : self.addedby.asdict() if self.addedby else None
 		}
 
-@dataclass(frozen=True)
-class Token:
-	access_token: str
-	expires_at: int
-
-	def asdict(self): return asdict(self)
-
 @dataclass
 class Room:
 	name: str = None
@@ -52,20 +58,28 @@ class Room:
 	editablequeue: bool = False
 	song_started_at : float = None
 	song_paused_at : float = None
-	visibility: Literal['public','private'] = 'public'
-	status : Literal['idle','playing'] = 'idle'
+	visibility: 'Visibility' = field(init=True, default=lambda: Room.Visibility.PUBLIC)
+	status : 'Status' = field(init=True, default=lambda: Room.Status.IDLE)
 	chat: list['Message'] = field(default_factory=list)
 	members: list['User'] = field(default_factory=list)
-	id: str = field(default_factory=lambda: uuid.uuid4().hex)
+	id: uuid.UUID = field(default_factory=uuid.uuid4)
 	queue: list[Song] = field(default_factory=list)
 	history: list[Song] = field(default_factory=list)
+
+	class Status(StrEnum):
+		IDLE = 'idle'
+		PLAYING = 'playing'
+
+	class Visibility(StrEnum):
+		PUBLIC = 'public'
+		PRIVATE = 'private'
 
 	def __eq__(self, other):
 		return self.id == other.id
 
 	def asdict(self):
 		return {
-			'id' : self.id,
+			'id' : self.id.hex,
 			'name' : self.name,
 			'status' : self.status,
 			'userlimit' : self.userlimit,
@@ -91,7 +105,11 @@ class Message:
 @dataclass
 class Client:
 	sid : str = field(init=True)
-	challenge : Challenge = field(init=False, default_factory=lambda: Challenge())
+	locale : str = field(init=True, default="en")
+	version : str = field(init=True, default="unspecified")
+	platform : str = field(init=True,default="unspecified")
+	os_name : str = field(init=True, default="unspecified")
+	os_version : str = field(init=True, default="unspecified")
 	connected_at : datetime = field(default_factory=lambda: datetime.now(timezone.utc), init=False)
 
 	def __eq__(self, other):
@@ -104,7 +122,6 @@ class User:
 	image: str = field(default_factory=str,init=True)
 	id: str = field(default_factory=str,init=True)
 	clients : dict[str, Client] = field(default_factory=dict, init=False)
-	token: Token = None
 	room: Room = None
 
 	def __eq__(self, other):

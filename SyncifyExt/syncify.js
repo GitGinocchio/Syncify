@@ -93,11 +93,11 @@ async function attemptConnection(url, user_data) {
         socket.on('connect', () => {
             if (registered) { return; }
 
-            socket.emit('register_spotify_client',user_data);
+            socket.emit('register_spotify_client',user_data, Spicetify.Platform.PlatformData, Spicetify.Platform.Session.locale);
         });
 
-        socket.on('syncify-spicetify-send-challenge', (userid, challengeid) => {
-            window.open(url + '/challenge?userid=' + userid + '&code=' + challengeid , '_blank');
+        socket.on('syncify-spicetify-send-challenge', (challengeid) => {
+            window.open(url + '/challenge?code=' + challengeid , '_blank');
         });
 
         socket.on('syncify-spicetify-registered', (trackid, seekTime) => {
