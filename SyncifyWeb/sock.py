@@ -250,19 +250,15 @@ def handle_room_disconnect():
 # -------- Room -------- (Spotify Client)
 
 @socketio.on('register_spotify_client',namespace='/spotifyclient')
-def register_spotify_client(userid: str, access_token : str, exp : str):
-    user = users.get(userid)
+def register_spotify_client(data : dict):
+    user = users.get(data['id'])
 
     if not user:
-        token = Token(access_token,exp)
-        client = get_client(token)
-        user_info = client.current_user()
-
         user = User(
-            name=user_info['display_name'],
-            id=user_info['id'],
-            url=user_info['external_urls']['spotify'],
-            image=user_info['images'][1]['url'],
+            name=data['display_name'],
+            id=data['id'],
+            url=data['external_urls']['spotify'],
+            image=data['images'][1]['url'],
             token=Token
         )
 

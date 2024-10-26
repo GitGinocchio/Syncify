@@ -8,6 +8,7 @@ const Addresses = [
     `https://syncify.replit.app`
 ];
 
+
 let customButton;
 let observer;
 let socket;
@@ -83,19 +84,15 @@ function showDialog(title, message) {
     });
 };
 
-async function attemptConnection(url) {
+async function attemptConnection(url, user_data) {
     return new Promise((resolve, reject) => {
         const socket = io(url + '/spotifyclient', { reconnectionAttempts: reconnectionAttempts });
         let registered = false;
 
         socket.on('connect', () => {
-            if (!registered) {
-                socket.emit('register_spotify_client',
-                    Spicetify.Platform.LocalStorageAPI.namespace,
-                    Spicetify.Platform.Session.accessToken,
-                    Spicetify.Platform.Session.accessTokenExpirationTimestampMs
-                );
-            }
+            if (registered) { return; }
+
+            socket.emit('register_spotify_client',user_data);
         });
 
         socket.on('syncify-spicetify-send-challenge', (userid, challengeid) => {
@@ -148,9 +145,10 @@ async function attemptConnection(url) {
 };
 
 async function findAvailableConnection() {
+    const user_data = await Spicetify.CosmosAsync.get("https://api.spotify.com/v1/me");
     for (const url of Addresses) {
         try {
-            socket = await attemptConnection(url);
+            socket = await attemptConnection(url,user_data);
             console.log(`Socket.IO connection established at: ${url}`);
             setButtonStatus(true);
             return socket;
@@ -208,7 +206,7 @@ async function connect() {
                 console.log('Playback is already paused or stopped');
             }
             showErrorDialog('Failed to connect to the room. The room has been deleted.');
-            resetButton();
+            disconnect();
         });
 
         socket.on('disconnect', () => {
@@ -232,12 +230,13 @@ async function connect() {
                 console.log('Playback is already paused or stopped');
             }
             showErrorDialog('Failed to connect to the room.');
-            resetButton();
+            disconnect();
         });
        })
        .catch((error) => {
             showDialog('Syncify Error:', error);
             console.log('Syncify Error:', error);
+            disconnect();
        })
 };
 
