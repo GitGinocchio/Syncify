@@ -14,9 +14,6 @@ function copyurl(roomid) {
 	});
 }
 
-window.onload = function() {
-    document.getElementById("popup").style.display = "flex";
-};
 
 function saveUsername() {
     const username = document.getElementById("username").value;
