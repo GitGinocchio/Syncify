@@ -1,26 +1,51 @@
-# App files to copy
-APP_DIR = SyncifyApp
-# App name
-APP_NAME = syncify
-# App Directory
 CUSTOM_APPS_DIR = %appdata%\spicetify\CustomApps
+EXTENSIONS_DIR = %appdata%\spicetify\Extensions
 
-# Obiettivo principale
-install: 
-	@echo "Copying app directory..."
+# Syncify Extension
+EXT_DIR = SyncifyExt
+EXT_NAME = syncify.js
+
+# Syncify Custom App
+APP_DIR = SyncifyApp
+APP_NAME = syncify
+
+# Apply Changes
+
+apply:
+	@spicetify apply
+
+# Installing Ext/App
+
+install:
+	make install-app
+	make install-ext
+
+install-ext:
+	make clean-ext
+	copy "$(EXT_DIR)\$(EXT_NAME)" "$(EXTENSIONS_DIR)"
+	@spicetify config extensions $(EXT_NAME)
+
+install-app:
+	make clean-app
 	xcopy "$(APP_DIR)" "$(CUSTOM_APPS_DIR)\$(APP_NAME)" /E /I /Y || (echo "Failed to copy directory." && exit /b 1)
-	@echo "Configuring Spicetify..."
 	@spicetify config custom_apps $(APP_NAME)
-	@spicetify apply
-	@echo "App installed."
 
-# Obiettivo per disinstallare
-uninstall: 
+# Disabling Syncify Ext/App
+
+uninstall-ext:
+	@spicetify config extensions $(EXT_NAME)-
+
+uninstall-app: 
 	@spicetify config custom_apps $(APP_NAME)-
-	@spicetify apply
-	@echo "App uninstalled."
 
-# Obiettivo per pulire (opzionale)
+# Cleaning
+
+clean-ext:
+	del "$(EXTENSIONS_DIR)\$(EXT_NAME)"
+
+clean-app:
+	rmdir /S /Q "$(CUSTOM_APPS_DIR)\$(APP_NAME)" || (exit /b 0)
+
 clean:
-	rmdir /S /Q "$(CUSTOM_APPS_DIR)\$(APP_NAME)"
-	@echo "Cleaned up application files."
+	make clean-ext
+	make clean-app

@@ -12,7 +12,7 @@ from SyncifyWeb.utils.terminal import getlogger
 logger = getlogger()
 
 logger.info("Loading environment variables")
-load_dotenv('Syncify/config/.env')
+load_dotenv('SyncifyWeb/config/.env')
 
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer

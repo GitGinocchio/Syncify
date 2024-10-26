@@ -2,8 +2,8 @@ PYTHON
 ? Sincronizzare la canzone con gli altri, falla partire e riprendere nella stessa posizione degli altri
 ? Cercare di capire perche' a volte si duplicano i membri presenti
 - spotipy.oauth2.SpotifyOauthError: error: invalid_grant, error_description: Invalid authorization code
-
-
+- Premere il tasto disconnect fara' automaticamente uscire dalla stanza l'utente se e' in una
+- Utilizzare CosmosAsync per ottenere le informazioni necessarie dell'utente vedi spicetify
 
 HTML
 - User
