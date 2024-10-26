@@ -5,7 +5,8 @@ document.head.appendChild(script);
 const reconnectionAttempts = 3;
 const Addresses = [
     `http://localhost:5000`,
-    `https://syncify.replit.app`
+    `https://syncify.replit.app`,
+    `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev`
 ];
 
 

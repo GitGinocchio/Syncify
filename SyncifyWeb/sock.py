@@ -263,6 +263,7 @@ def register_spotify_client(data : dict):
         )
 
         users[user.id] = user
+    session['userid'] = user.id
     
     client = Client(str(request.sid))
     user.clients[client.sid] = client
