@@ -1,9 +1,9 @@
 from flask_jwt_extended import create_access_token, get_jwt_identity
 from flask import Blueprint, render_template, make_response, redirect, request, session
 
-from SyncifyWeb.utils.classes import *
-from SyncifyWeb.oauth import *
-from SyncifyWeb.sock import users, rooms, challenges, socketio
+from OldSyncifyWeb.utils.classes import *
+from OldSyncifyWeb.oauth import *
+from OldSyncifyWeb.sock import users, rooms, challenges, socketio
 
 blueprint = Blueprint("blueprint", __name__)
 

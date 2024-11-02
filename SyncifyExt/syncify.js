@@ -9,7 +9,6 @@ const Addresses = [
     `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev`
 ];
 
-
 let customButton;
 let observer;
 let socket;
@@ -96,8 +95,8 @@ async function attemptConnection(url, user_data) {
             socket.emit('register_spotify_client',user_data, Spicetify.Platform.PlatformData, Spicetify.Platform.Session.locale);
         });
 
-        socket.on('syncify-spicetify-send-challenge', (challengeid) => {
-            window.open(url + '/challenge?code=' + challengeid , '_blank');
+        socket.on('syncify-spicetify-send-challenge', (challengeid) => { 
+            window.open(url + '/challenge?code=' + challengeid , '_blank'); 
         });
 
         socket.on('syncify-spicetify-registered', (trackid, seekTime) => {
@@ -134,12 +133,12 @@ async function attemptConnection(url, user_data) {
         });
 
         socket.on('syncify-spicetify-server-error', (error) => {
-            socket.close();
+            disconnect();
             reject({'type' : 'invalid-roomid','title' : "Syncify Server Error", 'message' : error, 'fatal' : true});
         });
 
         socket.on('connect_error', (error) => {
-            socket.close();
+            disconnect();
             reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : error, 'fatal' : false});
         });
     });
@@ -159,6 +158,10 @@ async function findAvailableConnection() {
     }
     throw new Error('Failed to connect to any Syncify Server. Try again later...');
 };
+
+async function cosmosAsyncFetch(url) {
+    return await Spicetify.CosmosAsync.get(url);
+}
 
 async function connect() {
     findAvailableConnection()
@@ -208,6 +211,16 @@ async function connect() {
             }
             showErrorDialog('Failed to connect to the room. The room has been deleted.');
             disconnect();
+        });
+
+        socket.on('syncify-spicetify-search-songs', (query, type,  market) => {
+            cosmosAsyncFetch(`https://api.spotify.com/v1/search?type=${type}&q=${query}&market=${market}`)
+            .then((data) => {
+
+            })
+            .catch(() => {
+            
+            })
         });
 
         socket.on('disconnect', () => {

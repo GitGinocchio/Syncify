@@ -1,0 +1,1151 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    padding-left: 2vh;
+    padding-top: 2vh;
+    padding-right: 2vh;
+    padding-bottom: 2vh;
+    gap: 2vh;
+    height: 86vh;
+    flex-grow: 1;
+}
+
+.container h2 {
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+.sidebar-left,
+.main-content,
+.sidebar-right {
+    height: 100%;
+}
+
+.sidebar-left {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    background-color: #2B2B2B;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    padding: 10px;
+    justify-content: space-between;
+}
+
+.sidebar-left h2 {
+    color: #fff;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+
+
+.sidebar-left .controls button {
+    padding: 0;
+    margin: 0 5px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-left .controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+
+.sidebar-left .controls button img {
+    width: 36px;
+    height: 36px;
+}
+
+.devices-container {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column-reverse;
+}
+
+.devices-container h2 {
+    text-align: center;
+    color: white;
+}
+
+.arrow-wrapper {
+    padding: 10px;
+}
+
+.current {
+    box-shadow: 0 0 10px 1px #0a0a0a;
+    border-radius: 12px;
+    border: solid 2px #8a8a8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.arrow-container {
+    margin-bottom: 6px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#current-device {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 1vh;
+}
+
+#current-device img {
+    width: 48px;
+    height: 48px;
+}
+
+.arrow {
+    margin-right: 15px;
+    position: relative;
+    width: 25px;
+    height: 25px;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.arrow::before,
+.arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 6px;
+  height: 20px;
+  border-radius: 5px;
+  background: #1DB954;
+  transition: .5s;
+}
+
+.arrow1::before {
+  right: 0;
+  transform: translate(-4px, -50%) rotate(-47deg);
+}
+
+.arrow1::after {
+  left: 0;
+  transform: translate(4px, -50%) rotate(47deg);
+}
+
+.chevron1.active {
+  transform: rotate(180deg);
+}
+
+
+#devices-list {
+    border: solid 2px #8a8a8a;
+    border-radius: 12px;
+    width: auto;
+    height: 160px;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.8s ease, max-height 0.8s ease;
+    overflow-y: auto;
+}
+
+#devices-list.show {
+    display: flex;
+    max-height: 250px;
+    opacity: 1;
+}
+
+#devices-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+#devices-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+#devices-list::-webkit-scrollbar-thumb{
+    background: #555;
+    border-radius: 10px;
+}
+
+
+.device {
+    margin-left: 5px;
+    padding: 10px;
+    display: flex;
+    gap: 1vh;
+    align-items: center;
+}
+
+.device img {
+    width: 48px;
+    height: 48px;
+}
+
+.queue,
+.members,
+.chat {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.header-queue {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.queue-history-buttons {
+  display: flex;
+  gap: 10px; /* Spazio tra i pulsanti, opzionale */
+}
+
+.current-song-image {
+    display: flex;
+    justify-content: center;
+}
+
+.current-song-image span {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.current-song-image img {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+
+.hide{
+    display: none;
+}
+
+#queue-list ul,
+#history-list ul{
+    max-height: 65vh;
+}
+
+
+.animate-button {
+    transition: transform 0.1s;
+}
+
+.animate-button:active {
+    transform: scale(0.95);
+}
+
+.current-song .controls button img.fade-out{
+    opacity: 0; /* Immagine in fase di sparizione */
+}
+
+
+
+.current-song .controls button {
+    padding: 0;
+    margin: 0 5px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.progress-bar {
+    display: flex;
+    flex-direction: row;
+    gap: 2%;
+    justify-content: center;
+}
+
+#bar {
+    align-self: center;
+    width: 70%;
+    height: 5px;
+    border-radius: 5px;
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+#progress {
+    position: absolute;
+    height: 100%;
+    width: 0%;
+    background-color: #1DB954;
+    border-radius: 5px;
+}
+
+#current-time,
+#total-time {
+    color: #888;
+    font-size: 12px;
+    text-align: center;
+}
+
+.queue {
+    border-radius: 8px;
+    background-color: #2B2B2B;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.queue h2 {
+    padding-bottom: 10px;
+    color: #FFFFFF; /* Colore del testo dell'intestazione */
+}
+
+
+
+.song-elements {
+    flex: 1;
+    overflow-y: auto;
+    transition: opacity 0.3s;
+    max-height: 100vh;
+    min-height: 40vh;
+    padding: 10px;
+}
+
+.queue-elements li{
+    border-bottom: 1px solid #444;
+    display: flex;
+    align-items: center;
+}
+
+.result-search-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.song-elements::-webkit-scrollbar {
+    width: 8px;
+}
+
+.song-elements::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.song-elements::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+.song-elements::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+.queue-input-div {
+    margin-top: auto; /* Sposta questo elemento al fondo */
+    display: flex;
+    gap: 10px; /* Spazio tra input e bottone */
+    padding: 10px;
+}
+
+#queue-input {
+    flex: 1; /* Occupa tutto lo spazio disponibile nella queue-request */
+    padding: 10px;
+    border: 1px solid #8a8a8a;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+
+}
+
+#queue-input:hover {
+    border: 1px solid #dbdbdb;
+    transition: border 0.3s ease;
+}
+
+#queue-input:clicked {
+    border: 3px solid white;
+}
+
+#send-song {
+    padding: 10px 20px;
+    border-radius: 3px;
+}
+
+#send-song:hover {
+    background-color: #45a049;
+}
+
+.song-artists{
+    display: flex;
+    font-style: italic;
+    font-weight: normal;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.song-title {
+    padding-bottom: 4px;
+}
+
+
+.song-artists p{
+    margin-left: 2px;
+    font-weight: normal;
+}
+
+
+.song-artists a{
+    text-decoration: none;
+    font-style: italic;
+    font-weight: normal;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.song-artists a:hover{
+    color: #1ed760;
+}
+
+.song-info:hover {
+    background-color: #748179;
+}
+
+.song-info:clicked {
+    background-color: #262f29;
+}
+
+.queue-item {
+    border-radius: 8px;
+    padding: 10px; /* Aggiungi padding per distanziare il contenuto dal bordo */
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Allinea gli elementi all'interno dell'item */
+    position: relative;
+}
+
+.song-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    transition: all 0.3s;
+}
+
+.song-info .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.song-info .song-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.song-info .song-artists {
+    font-size: 14px;
+    color: #fff;
+}
+
+.song-info .song-duration {
+    font-size: 14px;
+    color: #fff;
+    margin-top: 5px; /* Spazio tra autore e minutaggio */
+}
+
+.album-art-load, .album-art {
+    width: 50px; /* Dimensione dell'immagine dell'album */
+    height: 50px;
+    margin-right: 10px; /* Spazio tra immagine e dettagli */
+    border-radius: 8px;
+}
+
+.song-title-load, .song-title {
+    display: block;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF; /* Colore del titolo della canzone */
+}
+
+.song-artist-load, .song-artist {
+    display: block;
+    font-style: italic;
+    color: #CCCCCC; /* Colore dell'artista */
+}
+
+.song-duration-load, .song-duration {
+    right: 10px; /* Spazio dal bordo destro */
+    bottom: 10px; /* Spazio dal bordo inferiore */
+    color: #CCCCCC; /* Colore della durata della canzone */
+}
+
+.current-song-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.current-song-title-placeholder{
+    width: 130px;
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+}
+
+.current-song-artists-placeholder{
+    width: 55px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+.current-song-artists {
+    display: flex;
+    font-style: italic;
+    font-weight: normal;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.current-song-artists p{
+    margin-left: 2px;
+    font-weight: normal;
+}
+
+.current-song-artists a{
+    text-decoration: none;
+    font-style: italic;
+    font-weight: normal;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.current-song-artists a:hover{
+    color: #1ed760;
+}
+
+
+.details {
+    flex: 1;
+}
+
+.sidebar-right {
+    grid-column: 3 / 4;
+    display: flex;
+    flex-direction: column;
+}
+
+.searching-box {
+    display: none;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    background: #262f29;
+    z-index: 2;
+    transition: max-height 0.3s ease-out, opacity 0.3s;
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 10px;
+    max-height: 40vh;
+    color: #fff;
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);  Ombra più scura */
+    border: 1px solid #8a8a8a;
+}
+
+.searching-box h2 {
+    margin-top: 0;
+    font-size: 1.5em;
+    color: #1ed760;
+    text-align: left;
+}
+
+.addedby-user {
+    margin-right: 5px;
+    padding-right: 10px;
+    display: flex;
+    align-content: center;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.addedby-user a {
+    display: flex;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    align-items: center;
+}
+
+.addedby-user img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.result-search-box li {
+    border-bottom: 1px solid #444;
+    display: flex;
+    align-items: center;
+}
+
+.result-search-box li:last-child {
+    border-bottom: none;
+}
+
+.searching-box.show {
+    display: block;
+    opacity: 1;
+}
+
+.result-search-box{
+    overflow-y: auto;
+    max-height: 20vh;
+}
+
+.result-search-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.result-search-box::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.result-search-box::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+.result-search-box::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+
+.current-song-image span,
+.current-song-title-placeholder,
+.current-song-artists-placeholder,
+.album-art-load,
+.song-title-load,
+.song-artist-load,
+.song-duration-load {
+    background-color: #737373;
+    animation: colorChange 0.98s infinite; /* 3 secondi per ciclo di animazione */
+}
+
+@keyframes colorChange {
+    0% {
+        background-color: #737373; /* Colore iniziale */
+    }
+    50% {
+        background-color: #bbbbbb; /* Colore target */
+    }
+    100% {
+        background-color: #737373; /* Ritorna al colore iniziale */
+    }
+}
+
+.song-title-load{
+    width: 85px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+.song-artist-load, .song-duration-load{
+    width: 35px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+.song-title-load, .song-artist-load{
+    margin: 5px;
+}
+
+.members {
+    border-radius: 8px;
+    background-color: #2B2B2B;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-bottom: 20px;
+    height: 50%;
+}
+
+.members-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.members-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.members-container::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+.members-container::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+.members-header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.members-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    text-align: center;
+    margin: 0;
+
+    display: inline-block;
+    align-items: center;
+}
+
+.button p {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+p{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    font-weight: bold;
+}
+
+.members ul {
+    overflow-y: auto;
+    max-height: calc(50% - 40px); /* Imposta l'altezza massima della lista dei membri a metà dell'altezza della colonna meno l'altezza dell'intestazione */
+}
+
+.members li {
+    padding: 1%;
+    display: flex;
+}
+
+.member-name {
+    padding-left: 10px;
+    align-self: center;
+}
+
+.member-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.chat {
+    border-radius: 8px;
+    background-color: #2B2B2B;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-controls {
+    margin-top: auto;
+    display: flex;
+    padding: 10px;
+    gap: 2%;
+    bottom: 0;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    max-height: 500px;
+
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent; 
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #555; 
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #888; 
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+.message p {
+    word-wrap: break-word;
+    font-weight: normal;
+}
+
+.sender {
+    padding: 1%;
+    display: inline-flex;
+    align-self: center;
+}
+
+.sender img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.sender p {
+    padding-left: 10px;
+    padding-right: 5px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.my-message {
+    align-self: flex-end;
+    background-color: #1b1d1c;
+}
+
+.other-message {
+    align-self: flex-start;
+    background-color: #5f5f5f;
+}
+
+.system-message {
+    align-self: center;
+}
+
+#message-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #8a8a8a;
+    border-radius: 5px;
+    font-size: 16px;
+    color: white;
+}
+
+#message-input:hover {
+    border: 1px solid #dbdbdb;
+    transition: border 0.3s ease;
+}
+
+#message-input:clicked {
+    border: 3px solid white;
+}
+
+#send-message {
+    padding: 10px 20px;
+}
+
+#send-message:hover {
+        background-color: #45a049;
+}
+
+input{
+    background: transparent;
+}
+
+/* Light Mode */
+body.light-mode {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+body.light-mode .sidebar-left,
+body.light-mode .sidebar-right,
+body.light-mode .queue,
+body.light-mode .members,
+body.light-mode .chat {
+    background-color: #f0f0f0;
+    color: #000000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .queue h2,
+body.light-mode .sidebar-left h2,
+body.light-mode .members h2,
+body.light-mode .devices-container h2 {
+    color: #1DB954; /* Spotify green for headings */
+}
+
+body.light-mode .member-name,
+body.light-mode #queue-input,
+body.light-mode .song-artists a,
+body.light-mode .addedby-user a,
+body.light-mode .song-info,
+body.light-mode .song-artists,
+body.light-mode .song-title,
+body.light-mode .message p,
+body.light-mode .song-duration{
+    color: #000000;
+}
+
+body.light-mode .searching-box{
+    background: transparent;
+}
+
+/* Pulsanti e controlli */
+body.light-mode .controls button {
+    background-color: #f0f0f0;
+}
+
+body.light-mode .controls button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Elementi specifici della chat */
+body.light-mode .chat-controls {
+    background-color: #f0f0f0;
+}
+
+body.light-mode .my-message {
+background-color: #e0e0e0;
+    color: #000000;
+}
+
+body.light-mode .other-message {
+    background-color: #d0d0d0;
+    color: #000000;
+}
+
+/* Scorrimento personalizzato */
+body.light-mode .song-elements::-webkit-scrollbar-thumb,
+body.light-mode .chat-messages::-webkit-scrollbar-thumb,
+body.light-mode .result-search-box::-webkit-scrollbar-thumb,
+body.light-mode .members-container::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+}
+
+/* Progress bar */
+body.light-mode #bar {
+    background-color: #cccccc;
+}
+
+body.light-mode #progress {
+    background-color: #1DB954;
+}
+  
+
+@media (max-width: 1200px) {
+    .container {
+        display: block; /* Cambia inline in block per mantenere i blocchi uno sotto l'altro */
+        grid-template-columns: 100%;
+        padding-left: 1%;
+        padding-top: 1%;
+        padding-right: 1%;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+        height: fit-content;
+        margin: 10px;
+    }
+
+    .chat {
+        min-height: 35vh;
+    }
+
+    .chat-messages {
+        max-height: 350px;
+    }
+
+    .members {
+        height: 430px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        display: block; /* Mantiene il layout in un'unica colonna */
+        grid-template-columns: 100%;
+        padding-left: 1%;
+        padding-right: 1%;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+        height: fit-content;
+        padding: 8px; /* Riduce il padding su tablet */
+    }
+
+    .main-content {
+        order: 2; /* Sposta il contenuto principale sotto la sidebar */
+    }
+
+    .sidebar-left {
+        order: 1; /* Sidebar sinistra sopra il contenuto principale */
+    }
+
+    .sidebar-right {
+        order: 3; /* Sidebar destra sotto il contenuto principale */
+    }
+
+    .song-info {
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
+    .song-info img.album-art {
+        width: 40px; /* Riduci la dimensione dell'immagine dell'album */
+        height: 40px;
+    }
+
+    .song-info .details {
+        flex: 1;
+        margin-left: 10px;
+    }
+
+    .song-info .addedby-user {
+        display: flex;
+        align-items: center;
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
+    .song-info .song-duration {
+        font-size: 12px; /* Riduci la dimensione del font per i tablet */
+    }
+
+    .chat {
+        min-height: 30vh; /* Riduce l'altezza minima per la chat */
+    }
+
+    .chat-messages {
+        max-height: 300px; /* Riduce la massima altezza dei messaggi della chat */
+    }
+
+    .queue-elements {
+        max-height: 50vh; /* Limita l'altezza massima della lista queue su tablet */
+    }
+
+    header.light-mode {
+        background-color: #ffffff;
+      }
+    
+    .sidebar-left.light-mode, .sidebar-right.light-mode, .main-content.light-mode {
+        background-color: #ffffff;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        display: block; /* Mantiene un layout verticale */
+        grid-template-columns: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+        padding: 5px; /* Riduce il padding su schermi molto piccoli */
+        margin-bottom: 10px;
+    }
+
+    .sidebar-left{
+        height: 430px;
+    }
+
+    .chat {
+        height: 430px;
+        min-height: 25vh; /* Ancora più compatto per la chat su smartphone */
+    }
+
+    .chat-messages {
+        margin-top: 10px;
+        max-height: 250px; /* Riduce ulteriormente la massima altezza dei messaggi della chat */
+    }
+
+    .song-info {
+        flex-direction: column; /* Cambia la disposizione in colonna su schermi molto piccoli */
+        align-items: flex-start;
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
+    }
+
+    .song-info img.album-art {
+        width: 30px; /* Riduci ulteriormente la dimensione dell'immagine dell'album */
+        height: 30px;
+    }
+
+    .song-info .details {
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+
+    .song-info .addedby-user {
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
+    }
+
+    .song-info .song-duration {
+        font-size: 10px; /* Riduci ulteriormente la dimensione del font per gli smartphone */
+    }
+
+    .current-song-image img {
+        width: 120px; /* Riduce la dimensione dell'immagine del brano corrente */
+        height: 120px;
+    }
+
+    .song-title {
+        font-size: 14px; /* Riduce la dimensione del font dei titoli delle canzoni */
+    }
+
+    .queue-elements {
+        max-height: 45vh; /* Riduce l'altezza massima per la lista delle canzoni in coda */
+    }
+
+    .queue-input-div {
+        flex-direction: column; /* Cambia la disposizione della input div per occupare tutta la larghezza */
+    }
+
+    .chat-controls, .queue-input-div {
+        flex-direction: column;
+        gap: 5px; /* Riduce il gap tra input e controlli */
+    }
+
+    #queue-input, #message-input {
+        margin-bottom: 8px;
+        width: 100%;
+        padding: 8px; /* Riduce il padding degli input */
+    }
+
+    .members ul {
+        max-height: 150px; /* Limita l'altezza della lista dei membri su schermi piccoli */
+    }
+}

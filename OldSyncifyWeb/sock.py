@@ -2,10 +2,10 @@ from flask_socketio import SocketIO, join_room, leave_room, close_room, send, em
 from flask import request, make_response
 import time
 
-from SyncifyWeb.utils.config import config
-from SyncifyWeb.utils.terminal import getlogger
-from SyncifyWeb.utils.classes import *
-from SyncifyWeb.oauth import *
+from OldSyncifyWeb.utils.config import config
+from OldSyncifyWeb.utils.terminal import getlogger
+from OldSyncifyWeb.utils.classes import *
+from OldSyncifyWeb.oauth import *
 
 logger = getlogger()
 engineio_logger = getlogger("engineio")
@@ -21,7 +21,10 @@ challenges : dict[str, Challenge] = {}
 @socketio.on('connect',namespace='/user')
 def user_connect():
     userid = getuserid()
+    print(userid)
     if not userid: return # Sostituire con un redirect alla pagina home
+
+    user = users.get(userid)
 
     #user = users.get(userid)
     logger.info(f"User {userid} connected to /user namespace")
@@ -189,20 +192,6 @@ def handle_new_song(songid : str):
     if len(room.queue) == 1:
         socketio.emit('set_current_song_details',song.asdict(),namespace='/room',to=roomid)
 
-"""
-@socketio.on('handle_progress_request',namespace='/room')
-def handle_progress_request():
-    roomid = getroomid()
-
-    if not roomid: return
-
-    room = rooms.get(roomid)
-
-    if not room: return
-
-    socketio.emit('current_progress', room.song_started_at, room.song_paused_at,to=request.sid)
-"""
-
 @socketio.on('disconnect', namespace='/room')
 def handle_room_disconnect():
     userid = getuserid()
@@ -218,6 +207,7 @@ def handle_room_disconnect():
     for sid in user.clients:
         socketio.emit('syncify-spicetify-stop', namespace='/client',to=sid)
 
+
     leave_room(room.id)
     room.members.remove(user)
     room.num_members -= 1
@@ -232,11 +222,11 @@ def handle_room_disconnect():
 
         if creator in room.members: return
 
-        socketio.emit('del_room',room.id,namespace='/join')
-        socketio.emit('del_room',namespace='/room',to=room.id)
+        socketio.emit('del_room',room.id.hex,namespace='/join')
+        socketio.emit('del_room',namespace='/room',to=room.id.hex)
 
         #close_room(room.id)
-        if room.id in rooms: rooms.pop(room.id)
+        if room.id.hex in rooms: rooms.pop(room.id.hex)
 
         logger.info(f"Room '{room.name}' created by {room.creator.name} deleted")
 
@@ -253,8 +243,6 @@ def handle_room_disconnect():
 @socketio.on('register_spotify_client',namespace='/spotifyclient')
 def register_spotify_client(user_data : dict, platform_data : dict, locale : str):
     user = users.get(user_data['id'])
-
-    print(platform_data)
 
     if not user:
         users[user.id] = (user:=User(
