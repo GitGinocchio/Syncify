@@ -11,5 +11,5 @@ if __name__ == '__main__':
     if config['debug-mode']:
         socketio.run(app, host=config['address'],port=config['port'], debug=True, use_reloader=True)
     else:
-        server = WSGIServer((config['address'], config['port']), app, handler_class=WebSocketHandler, log=logger)
+        server = WSGIServer((config['address'], config['port']), app, handler_class=WebSocketHandler, log=logger, keyfile='SyncifyWeb/certs/privkey.pem', certfile='SyncifyWeb/certs/cert.pem')
         server.serve_forever()

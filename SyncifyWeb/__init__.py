@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 from flask_session import Session
 from flask_cors import CORS
 from flask import Flask
@@ -16,8 +19,6 @@ load_dotenv('SyncifyWeb/config/.env')
 
 from geventwebsocket.handler import WebSocketHandler
 from gevent.pywsgi import WSGIServer
-from gevent import monkey
-monkey.patch_all()
 
 from .routes import blueprint
 from .sock import socketio
