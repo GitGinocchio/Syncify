@@ -6,11 +6,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "syncify",
   "main": "./src/worker.js",
-  "compatibility_date": "2024-01-24",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": ["nodejs_compat_v2"],
   "observability": {
     "enabled": true
   },
-  "placement": { "mode": "smart" }
+  "placement": { "mode": "smart" },
+  "assets" : { "directory" : "./src/public",  "binding" : "ASSETS" }
 
   /**
    * Bindings

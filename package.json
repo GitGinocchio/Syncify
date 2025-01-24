@@ -9,6 +9,7 @@
     "start": "wrangler dev"
   },
   "dependencies": {
+    "itty-router": "^5.0.18",
     "urlpattern-polyfill": "^10.0.0"
   }
 }

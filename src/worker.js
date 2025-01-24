@@ -1,19 +1,20 @@
+import { AutoRouter } from 'itty-router';
 
+import Index from './routes/index.js';
 import User from './routes/user.js';
 import Room from './routes/room.js';
 
-export default {
-    async fetch(request, env, ctx) {
-        const url = new URL(request.url);
+const router = AutoRouter()
 
-        
-        switch (url.pathname) {
-            case './routes/user.js':
-                User.fetch(request, env, ctx);
-            case './routes/room.js':
-                Room.fetch(request, env, ctx);
-            default:
-                return new Response("hello world!");
-        }
-    }
-}
+router.get('/',     (request, env, ctx) => Index.get(request, env, ctx));
+router.post('/',     (request, env, ctx) => Index.post(request, env, ctx));
+
+router.get('/user', (request, env, ctx) => User.get(request, env, ctx));
+router.get('/room', (request, env, ctx) => Room.get(request, env, ctx));
+
+
+router.get('*', (request, env, ctx) => { 
+    return new Response('Not Found', { status: 404 })
+});
+
+export default router
