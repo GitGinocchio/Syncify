@@ -5,7 +5,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "syncify",
-  "main": "./src/worker.js",
+  "main": "src/worker.js",
   "compatibility_date": "2024-01-24",
   "observability": {
     "enabled": true
