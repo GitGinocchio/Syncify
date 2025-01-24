@@ -11,6 +11,8 @@ export default {
                 User.fetch(request, env, ctx);
             case './routes/room.js':
                 Room.fetch(request, env, ctx);
+            default:
+                return new Response("hello world!");
         }
     }
 }
