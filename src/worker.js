@@ -6,6 +6,7 @@ export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
 
+        
         switch (url.pathname) {
             case './routes/user.js':
                 User.fetch(request, env, ctx);
