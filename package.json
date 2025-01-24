@@ -9,7 +9,6 @@
     "start": "wrangler dev"
   },
   "dependencies": {
-    "urlpattern-polyfill": "^10.0.0",
-    "wrangler": "^3.105.1"
+    "urlpattern-polyfill": "^10.0.0"
   }
 }
