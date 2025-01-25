@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Syncify</title>
-  <link rel="stylesheet" href="/static/css/default.css" type="text/css">
-  <link rel="stylesheet" href="/static/css/bugreport.css" type="text/css">
-  <link rel='icon' href="/static/images/icon.png">
-  <script src="/static/js/default.js"></script>
-  <script src="/static/js/bugreport.js"></script>
+  <link rel="stylesheet" href="../../static/css/default.css" type="text/css">
+  <link rel="stylesheet" href="./routes/bugreport/bugreport.css" type="text/css">
+  <link rel='icon' href="../../static/images/icon.png">
+  <script src="../../static/js/default.js"></script>
+  <script src="./routes/bugreport/bugreport.js"></script>
 </head>
 <body>
   <header>
     <a href="/">
       <div class="brand">
-        <img src="/static/images/icon.png" alt="account icon" class="account-icon">
+        <img src="../../static/images/icon.png" alt="account icon" class="account-icon">
         <h1>Syncify</h1>
       </div>
     </a>
@@ -34,13 +34,13 @@
       </div>
       {{/ user }}
       {{# !user }}
-      <img src="/static/images/account.png" alt="account icon" class="account-icon">
+      <img src="../../static/images/account.png" alt="account icon" class="account-icon">
       {{/ !user }}
     </div>
   </header>
   <div class="bug-report-container light-mode">
     <h2>Report a Bug</h2>
-    <form action="/report-bug" method="post" enctype="multipart/form-data">
+    <form action="/bugreport" method="post" enctype="multipart/form-data">
       <label for="bug-type">Type of Bug:</label>
       <select id="bug-type" name="bug-type" required>
         <option value="Functional">Functional</option>

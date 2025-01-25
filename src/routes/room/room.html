@@ -4,18 +4,18 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Syncify</title>
-	<link rel="stylesheet" href="/static/css/default.css">
-	<link rel="stylesheet" href="/static/css/room.css">
-	<link rel='icon' href="/static/images/icon.png">
+	<link rel="stylesheet" href="../../static/css/default.css">
+	<link rel="stylesheet" href="./routes/room/room.css">
+	<link rel='icon' href="../../static/images/icon.png">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
-	<script src="/static/js/default.js"></script>
-	<script src="/static/js/room.js"></script>
+	<script src="../../static/js/default.js"></script>
+	<script src="./routes/room/room.js"></script>
 </head>
 <body>
 	<header>
 		<a href="/">
 			<div class="brand">
-				<img src="/static/images/icon.png" alt="account icon" class="account-icon">
+				<img src="../../static/images/icon.png" alt="account icon" class="account-icon">
 				<h1>Syncify</h1>
 			</div>
 		</a>
@@ -62,19 +62,20 @@
 				</div>
 				<div class="controls">
 					<button id="backButton" class="animate-button">
-						<img src="/static/images/rewind.png" alt="Back"></button>
+						<img src="../../static/images/rewind.png" alt="Back"></button>
 					<button id="playPauseButton" class="animate-button">
-						{{#room.status}} 
+						{{#room.status}}
 							{{#eq room.status "playing"}}
-								<img src="/static/images/pause.png" alt="Pause" id="playPauseImage"/>
-							{{/eq}}
-						{{/room.status}}
-						{{^room.status}}
-							<img src="/static/images/play.png" alt="Play" id="playPauseImage"/>
+								<img src="../../static/images/pause.png" alt="Pause" id="playPauseImage"/>
+							{{/eq room.status "playing"}}
+							{{^eq room.status "playing"}}
+								<img src="../../static/images/play.png" alt="Play" id="playPauseImage"/>
+							{{/eq room.status "playing"}}
 						{{/room.status}}
 					</button>
 					<button id="skipButton" class="animate-button">
-						<img src="/static/images/forward.png" alt="Next"></button>
+						<img src="../../static/images/forward.png" alt="Next">
+					</button>
 				</div>  
 				<div class="progress-bar">
 					<span id="current-time">0:00</span>
@@ -84,21 +85,23 @@
 					<span id="total-time">0:00</span>
 				</div>
 			</div>
-			{{#user.product == "premium"}}
+			{{#eq user.product "premium"}}
 			<div class="main-devices-container">
 				<div class="devices-container">
 					<div id="devices-list">
 						{{#user.devices}}
 							<div class="device" id="{{this.id}}">
 								{{#eq this.type "Computer"}}
-								<img src="/static/images/device-pc.png" alt="pc icon">
-								{{/eq}}
+								<img src="../../static/images/device-pc.png" alt="pc icon">
+								{{/eq this.type "Computer"}}
+								
 								{{#eq this.type "Smartphone"}}
-								<img src="/static/images/device-phone.png" alt="phone icon">
-								{{/eq}}
+								<img src="../../static/images/device-phone.png" alt="phone icon">
+								{{/eq this.type "Smartphone"}}
+								
 								{{#eq this.type "Speaker"}}
-								<img src="/static/images/device-speaker.png" alt="speaker icon">
-								{{/eq}}
+								<img src="../../static/images/device-speaker.png" alt="speaker icon">
+								{{/eq this.type "Speaker"}}
 								<span>{{this.name}}</span>
 							</div>
 						{{/user.devices}}
@@ -113,21 +116,23 @@
 						<div id="current-device">
 						{{#user.current_device}}
 							{{#eq user.current_device.type "Computer"}}
-							<img src="/static/images/device-pc.png" alt="pc icon">
-							{{/eq}}
+								<img src="../../static/images/device-pc.png" alt="pc icon">
+							{{/eq user.current_device.type "Computer"}}
+							
 							{{#eq user.current_device.type "Smartphone"}}
-							<img src="/static/images/device-phone.png" alt="phone icon">
-							{{/eq}}
+								<img src="../../static/images/device-phone.png" alt="phone icon">
+							{{/eq user.current_device.type "Smartphone"}}
+							
 							{{#eq user.current_device.type "Speaker"}}
-							<img src="/static/images/device-speaker.png" alt="speaker icon">
-							{{/eq}}
+								<img src="../../static/images/device-speaker.png" alt="speaker icon">
+							{{/eq user.current_device.type "Speaker"}}
 							<span>{{user.current_device.name}}</span>
 						{{/user.current_device}}
 						</div>
 					</div>
 				</div>
 			</div>
-			{{/user.product == "premium"}}
+			{{/eq user.product "premium"}}
 		</div>
 		<div class="main-content">
 			<div class="queue">
@@ -226,18 +231,18 @@
 					{{#room.chat}}
 						{{#eq sender.id user.id}}
 						<div class="message my-message">
-						{{/eq}}
+						{{/eq sender.id user.id}}
 						{{#neq sender.name "system"}}
 						<div class="message other-message">
-						{{/neq}}
+						{{/neq sender.name "system"}}
 						{{#eq sender.name "system"}}
 						<div class="message system-message">
-						{{/eq}}
-							<div class="sender">
-								<img src="{{sender.image}}">
-								<p>{{sender.name}}</p>
-							</div>
-							<p>{{text}}</p>
+						{{/eq sender.name "system"}}
+						<div class="sender">
+							<img src="{{sender.image}}">
+							<p>{{sender.name}}</p>
+						</div>
+						<p>{{text}}</p>
 						</div>
 					{{/room.chat}}
 				</div>
