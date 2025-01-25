@@ -23,11 +23,11 @@
     <div class="account">
       <input type="checkbox" id="toggle-menu" class="toggle-menu">
       <label for="toggle-menu" class="account-label">
-        <p class="username">{{ user.name }}</p>
-        <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+        <p class="username">{{user.name}}</p>
+        <img src="{{user.image}}" alt="account icon" class="account-icon" id="profile-icon">
       </label>
       <div class="dropdown-menu" id="dropdown-menu">
-        <a href="{{ user.url }}" target="_blank">Profile</a>
+        <a href="{{user.url}}" target="_blank">Profile</a>
         <a href="/logout">Logout</a>
         <div class="theme-toggle" onclick="toggleTheme()">
           <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
@@ -36,36 +36,37 @@
     </div>
   </header>
   <section>
-  <div class="join-private-session">
-    <form action="/join" method="post" id="join-form">
-      <h2 class="priv-session-title">Join a private room</h2>
-      <input type="text" name="roomid" id="roomidInput" placeholder="Room ID" required>
-      <button type="submit">Join</button>
-    </form>
-  </div>
-  <div class="public-sessions" id="public-sessions">
+    <div class="join-private-session">
+      <form action="/join" method="post" id="join-form">
+        <h2 class="priv-session-title">Join a private room</h2>
+        <input type="text" name="roomid" id="roomidInput" placeholder="Room ID" required>
+        <button type="submit">Join</button>
+      </form>
+    </div>
+    <div class="public-sessions" id="public-sessions">
       <h2>Public Rooms</h2>
-      {% if rooms %}
-        {% for key, room in rooms.items() %}
-          <div class="session" id="{{ room.id }}">
+      {{#rooms}}
+        {{#rooms.items}}
+          <div class="session" id="{{room.id}}">
             <div class="headerS">
-              <p class="session-name">{{ room.name }}</p>
-              <p class="session-creator">Created by: {{ room.creator.name }}</p>
+              <p class="session-name">{{room.name}}</p>
+              <p class="session-creator">Created by: {{room.creator.name}}</p>
             </div>
             <div class="infoplusS">
-              <p class="session-queue">Editable queue: {{ room.editablequeue }}</p>
+              <p class="session-queue">Editable queue: {{room.editablequeue}}</p>
             </div>
             <div class="footerS">
-              <button class="session-join" onclick="joinroom('{{ room.id }}')" href="/room">Join</button>
-              <p class="session-members" id="session-members">{{ room.num_members }} / {{ room.userlimit }} Members</p>
+              <button class="session-join" onclick="joinroom('{{room.id}}')" href="/room">Join</button>
+              <p class="session-members" id="session-members">{{room.num_members}} / {{room.userlimit}} Members</p>
             </div>
           </div>
-        {% endfor %}
-      {% else %}
+        {{/rooms.items}}
+      {{/rooms}}
+      {{^rooms}}
         <p class="nosession" id="nosession">There are no existing public rooms!</p>
-      {% endif %}
-  </div>
-</section>
+      {{/rooms}}
+    </div>
+  </section>
   <footer>
     <div class="reportbug-container">
       <a class="reportbug" href="/bugreport";>Contact us</a>

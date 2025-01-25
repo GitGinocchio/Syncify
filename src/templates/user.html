@@ -22,11 +22,11 @@
       <div class="account">
         <input type="checkbox" id="toggle-menu" class="toggle-menu">
         <label for="toggle-menu" class="account-label">
-          <p class="username">{{ user.name }}</p>
-          <img src="{{ user.image }}" alt="account icon" class="account-icon" id="profile-icon">
+          <p class="username">{{user.name}}</p>
+          <img src="{{user.image}}" alt="account icon" class="account-icon" id="profile-icon">
         </label>
         <div class="dropdown-menu" id="dropdown-menu">
-          <a href="{{ user.url }}" target="_blank">Profile</a>
+          <a href="{{user.url}}" target="_blank">Profile</a>
           <a href="/logout">Logout</a>
           <div class="theme-toggle" onclick="toggleTheme()">
             <img id="theme-icon" src="https://img.icons8.com/material-outlined/24/ffffff/moon--v1.png" alt="theme toggle icon" class="theme-icon">
@@ -39,20 +39,20 @@
         <h2>Create a Room</h2>
         <p class="description">Create a new room to enjoy synchronized Spotify music with friends and family.</p>
         <div class="room-container">
-          <p class="counter-rooms">{{ num_rooms }} Total rooms</p>
+          <p class="counter-rooms">{{num_rooms}} Total rooms</p>
         </div>
       </div>
       <div class="card joinroom-container" onclick="location.href='/join'">
         <h2>Join a Room</h2>
         <p class="description">Join an existing room using a room code to experience synchronized Spotify music with others.</p>
         <div class="room-container">
-          <p class="counter-rooms">{{ num_public_rooms }} Public rooms</p>
+          <p class="counter-rooms">{{num_public_rooms}} Public rooms</p>
         </div>
       </div>
     </div>
     <footer>
       <div class="reportbug-container">
-        <a class="reportbug" href="/bugreport";>Contact us</a>
+        <a class="reportbug" href="/bugreport">Contact us</a>
       </div>
     </footer>
   </body>
