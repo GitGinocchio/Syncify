@@ -1,4 +1,4 @@
-import Index from '../templates/login.html'
+import Index from './index.html'
 
 
 export default {
