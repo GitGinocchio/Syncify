@@ -12,7 +12,7 @@
     "enabled": true
   },
   "placement": { "mode": "smart" },
-  "assets" : { "directory" : "./src/public",  "binding" : "ASSETS" }
+  "assets" : { "directory" : "./src",  "binding" : "assets" }
 
   /**
    * Bindings

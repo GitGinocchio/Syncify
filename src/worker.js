@@ -13,7 +13,7 @@ router.get('/user', (request, env, ctx) => User.get(request, env, ctx));
 router.get('/room', (request, env, ctx) => Room.get(request, env, ctx));
 
 
-router.get('*', (request, env, ctx) => { 
+router.all('*', (request, env, ctx) => { 
     return new Response('Not Found', { status: 404 })
 });
 
