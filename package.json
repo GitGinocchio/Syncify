@@ -9,8 +9,8 @@
     "start": "wrangler dev"
   },
   "dependencies": {
-    "handlebars": "^4.7.8",
     "itty-router": "^5.0.18",
+    "mustache": "^4.2.0",
     "urlpattern-polyfill": "^10.0.0"
   }
 }
