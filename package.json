@@ -9,7 +9,9 @@
     "start": "wrangler dev"
   },
   "dependencies": {
+    "express": "^4.21.2",
     "itty-router": "^5.0.18",
+    "jsonwebtoken": "^9.0.2",
     "mustache": "^4.2.0",
     "urlpattern-polyfill": "^10.0.0"
   }

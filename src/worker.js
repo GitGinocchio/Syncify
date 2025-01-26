@@ -9,15 +9,15 @@ import OnBoard from './routes/onboard/route.js';
 import Challenge from './routes/challenge/route.js';
 import BugReport from './routes/bugreport/route.js';
 
+import Auth from './auth.js';
+import Sock from './sock.js'
 
-const router = AutoRouter()
+const router = AutoRouter();
 
-/*
 // Route per controllare tutte le richieste in arrivo utilizzando dei JWT (JSON Web Token)
-router.all('*', (request, env, ctx) => { 
-    console.log("ciao");
-});
-*/
+router.all('*', (request, env, ctx) => Auth.auth(request, env, ctx));
+
+router.get('/socket.io', (request, env, ctx) => Sock.handle(request, env, ctx));
 
 router.get('/',     (request, env, ctx) => Index.get(request, env, ctx));
 router.post('/',     (request, env, ctx) => Index.post(request, env, ctx));
