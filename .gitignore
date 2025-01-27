@@ -164,3 +164,6 @@ replit.nix
 /.syncify-venv
 /Syncify/config
 /SyncifyWeb/certs
+/.wrangler
+/.vscode
+/node_modules

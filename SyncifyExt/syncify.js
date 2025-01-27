@@ -6,7 +6,7 @@ const reconnectionAttempts = 3;
 const Addresses = [
     `http://localhost:5000`,
     `https://syncify.replit.app`,
-    `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev`,
+    `https://6c6b1342-4aef-44a5-9433-b9c1a3b4b0ae-00-3hmlnqulnsnd0.kirk.replit.dev:5000`,
     `http://fi9.bot-hosting.net:21339`
 ];
 

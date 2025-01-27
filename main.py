@@ -16,7 +16,7 @@ if __name__ == '__main__':
             app, 
             handler_class=WebSocketHandler, 
             log=logger, 
-            keyfile='SyncifyWeb/certs/cloudflare.key', 
-            certfile='SyncifyWeb/certs/cloudflare.certfile'
+            #keyfile='SyncifyWeb/certs/cloudflare.key', 
+            #certfile='SyncifyWeb/certs/cloudflare.certfile'
         )
         server.serve_forever()
