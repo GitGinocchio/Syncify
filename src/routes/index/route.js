@@ -2,10 +2,6 @@ import Index from './index.html'
 
 
 export default {
-    async post (request, env, ctx) {
-
-    },
-
     async get (request, env, ctx) {
         const url = new URL(request.url);
 
