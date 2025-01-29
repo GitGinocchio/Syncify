@@ -4,10 +4,8 @@ document.head.appendChild(script);
 
 const reconnectionAttempts = 3;
 const Addresses = [
-    `http://localhost:5000`,
-    `https://syncify.replit.app`,
-    `https://975a5844-c932-4a93-861e-435e7007b6c2-00-329tdlss1bik9.janeway.replit.dev`,
-    `http://fi9.bot-hosting.net:21339`
+    `127.0.0.1:8787`,
+    `syncify.ginocchio.workers.dev/`
 ];
 
 
@@ -88,61 +86,37 @@ function showDialog(title, message) {
 
 async function attemptConnection(url, user_data) {
     return new Promise((resolve, reject) => {
-        const socket = io(url + '/spotifyclient', { reconnectionAttempts: reconnectionAttempts });
+        socket = new WebSocket(`ws://${url}/websocket`, "websocket");
         let registered = false;
 
-        socket.on('connect', () => {
-            if (registered) { return; }
+        socket.addEventListener("open", (event) => {
+            console.log(event);
 
-            socket.emit('register_spotify_client',user_data, Spicetify.Platform.PlatformData, Spicetify.Platform.Session.locale);
+            const data = JSON.stringify({
+                route : '/auth',
+                type : "auth",
+                data : {
+                    user : user_data,
+                    platform  : Spicetify.Platform.PlatformData, 
+                    locale    : Spicetify.Platform.Session.locale 
+                }
+            });
+
+            socket.send(data);
         });
 
-        socket.on('syncify-spicetify-send-challenge', (challengeid) => {
-            window.open(url + '/challenge?code=' + challengeid , '_blank');
-        });
+        socket.addEventListener("message", (event) => {
+            console.log(event);
 
-        socket.on('syncify-spicetify-registered', (trackid, seekTime) => {
-            registered = true;
-            if (trackid === undefined) {
-                if (Spicetify.Player.isPlaying) { Spicetify.Player.pause(); }
-                resolve(socket); return; 
-            }
-
-            console.log(`Play request received with trackid: ${trackid} and seektime: ${seekTime}`);
-        
-            const trackUri = `spotify:track:${trackid}`;
-            const currentTrackUri = Spicetify.Player.data?.item.uri;
-        
-            if (Spicetify.Player.isPlaying) {
-                Spicetify.Player.pause();
-            }
-        
-            const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
-
-            if (currentTrackUri === trackUri) {
-                // Se la canzone è già in corso, vai al minutaggio specificato
-                Spicetify.Player.play();
-                Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
-            } else {
-                // Altrimenti, riprova la canzone dal principio
-                Spicetify.Player.playUri(trackUri);
-                Spicetify.Player.pause();
-                Spicetify.Player.play();
-                Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
-            }
-        
             resolve(socket);
         });
 
-        socket.on('syncify-spicetify-server-error', (error) => {
+        socket.addEventListener("close", (event) => {
             socket.close();
-            reject({'type' : 'invalid-roomid','title' : "Syncify Server Error", 'message' : error, 'fatal' : true});
+            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : false});
         });
 
-        socket.on('connect_error', (error) => {
-            socket.close();
-            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : error, 'fatal' : false});
-        });
+
     });
 };
 
@@ -164,76 +138,6 @@ async function findAvailableConnection() {
 async function connect() {
     findAvailableConnection()
        .then((socket) => {
-        socket.on('syncify-spicetify-play', (trackid, seekTime) => {
-            console.log(`Play request received with trackid: ${trackid} and seektime: ${seekTime}`);
-
-            const trackUri = `spotify:track:${trackid}`;
-            const currentTrackUri = Spicetify.Player.data?.item.uri;
-
-            if (Spicetify.Player.isPlaying) {
-                Spicetify.Player.pause();
-            }
-
-            const seekTimeMilliseconds = parseFloat(seekTime) * 1000; // Converti il minutaggio in secondi
-
-            if (currentTrackUri === trackUri) {
-                // Se la canzone è già in corso, vai al minutaggio specificato
-                Spicetify.Player.play();
-                Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
-            } else {
-                // Altrimenti, riprova la canzone dal principio
-                Spicetify.Player.playUri(trackUri);
-                Spicetify.Player.pause();
-                Spicetify.Player.play();
-                Spicetify.Player.seek(parseInt(seekTimeMilliseconds));
-            }
-        });
-
-        socket.on('syncify-spicetify-stop', () => {
-            console.log('Stop request received');
-            if (Spicetify.Player.isPlaying) {
-                console.log('Pausing playback');
-                Spicetify.Player.pause();
-            } else {
-                console.log('Playback is already paused or stopped');
-            }
-        });
-
-        socket.on('syncify-spicetify-deleted-room', () => {
-            console.error('Room connection error: Failed to connect to the room. The room has been deleted.');
-            if (Spicetify.Player.isPlaying) {
-                console.log('Pausing playback');
-                Spicetify.Player.pause();
-            } else {
-                console.log('Playback is already paused or stopped');
-            }
-            showErrorDialog('Failed to connect to the room. The room has been deleted.');
-            disconnect();
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Socket.IO connection closed');
-            if (Spicetify.Player.isPlaying) {
-                console.log('Pausing playback');
-                Spicetify.Player.pause();
-            } else {
-                console.log('Playback is already paused or stopped');
-            }
-            showErrorDialog('Disconnected from the room.');
-            resetButton();
-        });
-
-        socket.on('connect_error', (error) => {
-            console.error('Socket.IO connection error:', error);
-            if (Spicetify.Player.isPlaying) {
-                console.log('Pausing playback');
-                Spicetify.Player.pause();
-            } else {
-                console.log('Playback is already paused or stopped');
-            }
-            showErrorDialog('Failed to connect to the room.');
-            disconnect();
-        });
        })
        .catch((error) => {
             showDialog('Syncify Error:', error);

@@ -2,11 +2,11 @@ CUSTOM_APPS_DIR = %appdata%\spicetify\CustomApps
 EXTENSIONS_DIR = %appdata%\spicetify\Extensions
 
 # Syncify Extension
-EXT_DIR = SyncifyExt
+EXT_DIR = src\ext
 EXT_NAME = syncify.js
 
 # Syncify Custom App
-APP_DIR = SyncifyApp
+APP_DIR = src\app
 APP_NAME = syncify
 
 # Apply Changes
@@ -49,3 +49,6 @@ clean-app:
 clean:
 	make clean-ext
 	make clean-app
+
+run:
+	wrangler dev
