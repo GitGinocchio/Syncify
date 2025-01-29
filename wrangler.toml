@@ -5,9 +5,9 @@ compatibility_flags = ["nodejs_compat_v2"]
 
 observability = { enabled = true}
 placement = { mode = "smart" }
-assets = { directory = "./src", binding = "assets" }
+assets = { directory = "./src/web", binding = "assets" }
 
-main = "./src/worker.mjs"
+main = "./src/web/worker.mjs"
 
 [durable_objects]
 bindings = [
