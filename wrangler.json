@@ -12,7 +12,11 @@
     "enabled": true
   },
   "placement": { "mode": "smart" },
-  "assets" : { "directory" : "./src",  "binding" : "assets" }
+  "assets" : { "directory" : "./src",  "binding" : "assets" },
+
+  "limits" : {
+    "cpu_ms" : 2000
+  }
 
   /**
    * Bindings
