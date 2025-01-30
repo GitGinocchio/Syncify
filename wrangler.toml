@@ -7,7 +7,7 @@ observability = { enabled = true}
 placement = { mode = "smart" }
 assets = { directory = "./src", binding = "assets" }
 
-main = "./src/worker.mjs"
+main = "./src/worker.js"
 
 [limits]
 cpu_ms = 2000
