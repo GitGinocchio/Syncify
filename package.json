@@ -9,6 +9,7 @@
     "start": "wrangler dev"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "itty-router": "^5.0.18",
     "jsonwebtoken": "^9.0.2",

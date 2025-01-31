@@ -6,6 +6,10 @@ export default {
     // Either way, the result is the number of seconds to wait before allowing the IP to perform its
     // next action.
     async fetch(request) {
+        const url = new URL(request.url);
+
+        console.log(url);
+
         if (request.method != "POST" && request.method != "GET") {
             return new Response("Method not allowed", { status: 405 });
         }

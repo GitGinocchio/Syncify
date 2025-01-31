@@ -1,6 +1,8 @@
 import Challenge from './challenge.html'
 import mustache from 'mustache';
 
+import auth from '../../auth.js'
+
 export default {
     async get (request, env, ctx) {
         const url = new URL(request.url);
@@ -8,14 +10,26 @@ export default {
         const id = env.users.idFromString(code);
 
         const user = env.users.get(id);
-
-        // user.data non funziona, i dati all'interno di user devono essere salvati utilizzando il metodo fetch
-        // quindi nel file sock.js devo inviare una richiesta al durable object per inviare i dati
+        const data = await user.getUserData();
 
         const html = mustache.render(Challenge, { 
-            user : { name : "John Doe", image : "/image", url: "https://example.com" },
+            user : {
+                name : data.user.display_name, 
+                image : data.user.images[0].url, 
+                url: data.user.external_urls.spotify
+            }
         });
 
-        return new Response(html, { headers: { 'Content-Type': 'text/html' }});
+        const max_age = 10400;
+
+        const token = await auth.generateToken({ id }, max_age)
+
+        return new Response(html, { 
+            headers: { 
+                'Content-Type': 'text/html',
+                'Set-Cookie' : `user_access_token=${token}; Max-Age=${max_age}; Secure; HttpOnly`
+            },
+            status: 200
+        });
     }
 }

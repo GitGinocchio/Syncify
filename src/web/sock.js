@@ -4,8 +4,9 @@ export default {
         if (request.headers.get("Upgrade") != "websocket") {
             return new Response("Not Found", { status: 404 })
         }
-
         const [client, server] = Object.values(new WebSocketPair());
+        const url = new URL(request.url);
+
 
         server.accept();
 
@@ -13,7 +14,7 @@ export default {
             console.log(event);
         });
 
-        server.addEventListener("message", (event) => {
+        server.addEventListener("message", async (event) => {
             // Abbiamo ricevuto i dati dell'account dell'utente
             // 1. Dobbiamo processare i dati dell'utente e creare un durable Object per quell'utente
             // 2. Dobbiamo inviare una risposta al client per notificargli che il login e' andato a buon fine
@@ -23,7 +24,8 @@ export default {
 
             let id = env.users.idFromName(data.user.id);
             let user = env.users.get(id);
-            user.data = data;
+
+            await user.setUserData(data);
 
             const response = JSON.stringify({
                 route : '/auth',

@@ -13,5 +13,13 @@ export default {
         if (protectedRoutes.includes(url.pathname)) {
             //return new Response('Not Authorized', { status: 403 });
         }
+    },
+
+    async generateToken(payload, expiration) {
+        const secret = "wdahgahwdhsghjjahwjdhauwhruahwuodhoauwf";
+
+        console.log(process.env);
+        return jwt.sign(payload, secret, { expiresIn: expiration });
     }
+
 }

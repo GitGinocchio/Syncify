@@ -1,5 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { AutoRouter } from 'itty-router';
+require('dotenv').config({ path: '../.env', debug: true});
 
 import IndexRoute from './routes/index/route.js';
 import AuthRoute from './routes/auth/route.js';
@@ -11,8 +12,6 @@ import OnBoardRoute from './routes/onboard/route.js';
 import ChallengeRoute from './routes/challenge/route.js';
 import BugReportRoute from './routes/bugreport/route.js';
 
-import UserDurableObjMethods from './user.js';
-import RoomDurableObjMethods from './room.js';
 import Sock from './sock.js'
 
 const router = AutoRouter()
@@ -21,19 +20,32 @@ export class Room extends DurableObject {
     constructor(state, env) {
     }
 
-    async fetch(request) { RoomDurableObjMethods.fetch(request) }
+    async fetch(request) {
+
+    }
 }
 
 export class User extends DurableObject {
     constructor(state, env) {
         super(state, env);
         this.state = state;
+        this.storage = this.state.storage;
         this.env = env;
 
         this.nextAllowedTime = 0;
     }
 
-    async fetch(request) { UserDurableObjMethods.fetch(request) }
+    async setUserData(data) {
+        await this.storage.put('data', data);
+    }
+
+    async getUserData() {
+        return await this.storage.get('data');
+    }
+
+    async fetch(request) { 
+
+    }
 }
 
 
