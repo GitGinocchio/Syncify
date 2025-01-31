@@ -27,7 +27,7 @@
 ## Usage
 
 1. **Access the website**:
-   - Go to Syncify's website: [**https://syncify.replit.app**](https://syncify.replit.app).
+   - Go to Syncify's website: [**https://syncify.ginocchio.workers.dev**](https://syncify.ginocchio.workers.dev).
 2. **Sign in with Spotify**:
    - Click on "Get Started" and authorize the application to access your Spotify account. No additional registration is required!
      (**No personal data will be requested**, and all your data are temporary!)
