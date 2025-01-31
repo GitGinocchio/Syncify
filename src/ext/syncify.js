@@ -4,8 +4,8 @@ document.head.appendChild(script);
 
 const reconnectionAttempts = 3;
 const Addresses = [
-    `127.0.0.1:8787`,
-    `syncify.ginocchio.workers.dev/`
+    `http://127.0.0.1:8787`,
+    `https://syncify.ginocchio.workers.dev/`
 ];
 
 
@@ -86,12 +86,10 @@ function showDialog(title, message) {
 
 async function attemptConnection(url, user_data) {
     return new Promise((resolve, reject) => {
-        socket = new WebSocket(`ws://${url}/websocket`, "websocket");
+        socket = new WebSocket(`${url.replace("https", "ws").replace("http", "ws")}/websocket`, "websocket");
         let registered = false;
 
         socket.addEventListener("open", (event) => {
-            console.log(event);
-
             const data = JSON.stringify({
                 route : '/auth',
                 type : "auth",
@@ -106,17 +104,20 @@ async function attemptConnection(url, user_data) {
         });
 
         socket.addEventListener("message", (event) => {
-            console.log(event);
+            const data = JSON.parse(event.data);
 
-            resolve(socket);
+            if (data.status == 'success') {
+                window.open(`${url}/challenge?code=${data.id}`, '_blank');
+                resolve(socket); 
+            }
+
+            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true})
         });
 
         socket.addEventListener("close", (event) => {
             socket.close();
-            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : false});
+            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true});
         });
-
-
     });
 };
 

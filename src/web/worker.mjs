@@ -26,6 +26,10 @@ export class Room extends DurableObject {
 
 export class User extends DurableObject {
     constructor(state, env) {
+        super(state, env);
+        this.state = state;
+        this.env = env;
+
         this.nextAllowedTime = 0;
     }
 

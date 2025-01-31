@@ -14,12 +14,26 @@ export default {
         });
 
         server.addEventListener("message", (event) => {
-            const data = JSON.parse(event.data.data);
-
             // Abbiamo ricevuto i dati dell'account dell'utente
             // 1. Dobbiamo processare i dati dell'utente e creare un durable Object per quell'utente
             // 2. Dobbiamo inviare una risposta al client per notificargli che il login e' andato a buon fine
             //server.send();
+
+            const data = JSON.parse(event.data).data;
+
+            let id = env.users.idFromName(data.user.id);
+            let user = env.users.get(id);
+            user.data = data;
+
+            const response = JSON.stringify({
+                route : '/auth',
+                type: 'auth',
+                status: 'success',
+                message : 'successfully logged in',
+                id : id.toString()
+            });
+
+            server.send(response);
         });
 
         server.addEventListener("close", (event) => {
