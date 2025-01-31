@@ -27,7 +27,7 @@
 ## Usage
 
 1. **Access the website**:
-   - Go to: <a href="https://syncify.ginocchio.workers.dev" target="_blank">Syncify Website</a>.
+   - Go to: [Syncify Website](https://syncify.ginocchio.workers.dev).
 2. **Sign in with Spotify**:
    - Click on "Get Started" and authorize the application to access your Spotify account. No additional registration is required!
      (**No personal data will be requested**, and all your data are temporary!)
