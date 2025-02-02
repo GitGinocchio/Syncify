@@ -7,7 +7,6 @@ export default {
         const [client, server] = Object.values(new WebSocketPair());
         const url = new URL(request.url);
 
-
         server.accept();
 
         server.addEventListener("open", (event) => {
@@ -18,10 +17,14 @@ export default {
             // Abbiamo ricevuto i dati dell'account dell'utente
             // 1. Dobbiamo processare i dati dell'utente e creare un durable Object per quell'utente
             // 2. Dobbiamo inviare una risposta al client per notificargli che il login e' andato a buon fine
-            //server.send();
 
             const data = JSON.parse(event.data).data;
 
+            // Qui dobbiamo considerare che se e' gia' presente un utente con lo stesso id 
+            // (Cosa impossibile perche gli id di spotify sono univoci)
+            // Verra' ritornato lo stesso user
+            // Qui dobbiamo gestire il caso in cui l'utente stia accedendo da due dispositivi diversi con lo stesso account
+            // Dobbiamo quindi aggiornare i dati dell'utente per inserire il nuovo client
             let id = env.users.idFromName(data.user.id);
             let user = env.users.get(id);
 

@@ -5,10 +5,12 @@ export default {
     async get (request, env, ctx) {
         const url = new URL(request.url);
 
+        /*
         const html = mustache.render(OnBoard, { 
             "user" : { "name" : "John Doe", "image" : "/image", "url" : "https://example.com" }, 
         });
+        */
 
-        return new Response(html, { headers: { 'Content-Type': 'text/html' }});
+        return new Response(OnBoard, { headers: { 'Content-Type': 'text/html' }});
     }
 }

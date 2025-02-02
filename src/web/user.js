@@ -8,8 +8,6 @@ export default {
     async fetch(request) {
         const url = new URL(request.url);
 
-        console.log(url);
-
         if (request.method != "POST" && request.method != "GET") {
             return new Response("Method not allowed", { status: 405 });
         }
