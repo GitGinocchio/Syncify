@@ -3,8 +3,6 @@ import mustache from 'mustache';
 
 import auth from '../../auth.js'
 
-const USER_ACCESS_TOKEN_MAX_AGE = 10400;
-
 export default {
     async get (request, env, ctx) {
         const url = new URL(request.url);
@@ -22,12 +20,14 @@ export default {
             }
         });
 
-        const token = await auth.generateToken({ id : id.toString() }, USER_ACCESS_TOKEN_MAX_AGE)
+        const token = await auth.generateToken({ id : id.toString() }, env.USER_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY)
+
+        console.log(`user_access_token=${token}; Max-Age=${env.USER_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`);
 
         return new Response(html, { 
             headers: { 
                 'Content-Type': 'text/html',
-                'Set-Cookie' : `user_access_token=${token}; Max-Age=${USER_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`
+                'Set-Cookie' : `user_access_token=${token}; Max-Age=${env.USER_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`
             },
             status: 200
         });

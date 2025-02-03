@@ -2,8 +2,6 @@ const jwt = require('jsonwebtoken');
 
 import Utils from './utils.js';
 
-const secret = "wdahgahwdhsghjjahwjdhauwhruahwuodhoauwf";
-
 const protectedRoutes = [
     '/user',
     '/room',
@@ -14,30 +12,36 @@ const protectedRoutes = [
 export default {
     async auth(request, env, ctx) {
         const url = new URL(request.url);
+        if (!protectedRoutes.includes(url.pathname)) { return; }
+
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
 
         const token = cookies.get('user_access_token');
-        const payload = await this.verifyToken(token);
-
-        if (!protectedRoutes.includes(url.pathname)) { return; }
+        const payload = await this.verifyToken(token, env.JWT_SECRET_KEY);
 
         if (!payload) {
-            return new Response('Not Authorized', { status: 403 });
+            return new Response('Not Authorized', { 
+                status: 403,
+                headers: {
+                    'Set-Cookie': `user_access_token=; Max-Age=-1; room_access_token=; Max-Age=-1;`,
+                    Location: `/`
+                },
+            });
         }
     },
 
-    async generateToken(payload, expiration) {
-        console.log(expiration);
+    async generateToken(payload, expiration, secret) {
         return jwt.sign(payload, secret, { expiresIn: expiration });
     },
 
-    async verifyToken(token) {
+    async verifyToken(token, secret) {
         if (!token) return null;
 
         try {
-            const decoded = jwt.verify(token, secret);
+            const decoded = jwt.verify(token, secret.toString().trim());
             return decoded;
         } catch (err) {
+            console.log(err);
             return null;
         }
     }

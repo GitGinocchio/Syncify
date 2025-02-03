@@ -1,6 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
 import { AutoRouter } from 'itty-router';
-require('dotenv').config({ path: '../.env', debug: false});
 
 import IndexRoute from './routes/index/route.js';
 import AuthRoute from './routes/auth/route.js';

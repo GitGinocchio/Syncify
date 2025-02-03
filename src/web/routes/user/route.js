@@ -10,7 +10,7 @@ export default {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
         const token = cookies.get('user_access_token');
-        const payload = await Auth.verifyToken(token);
+        const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
         const id = env.users.idFromString(payload.id);
 
         const user = env.users.get(id);

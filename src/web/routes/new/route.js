@@ -4,15 +4,13 @@ import mustache from 'mustache';
 import Auth from '../../auth.js'
 import Utils from '../../utils.js';
 
-const ROOM_ACCESS_TOKEN_MAX_AGE = 10400;
-
 export default {
     async get (request, env, ctx) {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
         
         const token = cookies.get('user_access_token');
-        const payload = await Auth.verifyToken(token);
+        const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
         const id = env.users.idFromString(payload.id);
 
         const user = env.users.get(id);
@@ -37,7 +35,7 @@ export default {
         const room_data = raw.split('&').reduce((acc, pair) => ({ ...acc, [pair.split('=')[0]]: pair.split('=')[1] }), {});
 
         const user_token = cookies.get('user_access_token');
-        const payload = await Auth.verifyToken(user_token);
+        const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const userid = env.users.idFromString(payload.id);
 
         const user = env.users.get(userid);
@@ -53,7 +51,7 @@ export default {
         const roomid = env.rooms.newUniqueId();
         const room = env.rooms.get(roomid);
 
-        const room_token = await Auth.generateToken({ id : roomid.toString() }, ROOM_ACCESS_TOKEN_MAX_AGE);
+        const room_token = await Auth.generateToken({ id : roomid.toString() }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
         await room.setRoomData({
             name : room_data.name,
@@ -64,7 +62,7 @@ export default {
 
         return new Response(null, { 
             headers: {
-                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${ROOM_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`,
+                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`,
                 Location : '/room'
             },
             status: 302

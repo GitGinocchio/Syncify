@@ -26,14 +26,14 @@ export default {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
         const user_token = cookies.get('user_access_token');
-        const user_payload = await Auth.verifyToken(user_token);
+        const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const user_id = env.users.idFromString(user_payload.id);
 
         const user = env.users.get(user_id);
         const user_data = await user.getUserData();
 
         const room_token = cookies.get('room_access_token');
-        const room_payload = await Auth.verifyToken(room_token);
+        const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
         const room_id = env.rooms.idFromString(room_payload.id);
 
         const html = mustache.render(Room, { 
