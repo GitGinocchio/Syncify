@@ -10,13 +10,13 @@ export default {
         const id = env.users.idFromString(code);
 
         const user = env.users.get(id);
-        const data = await user.getUserData();
+        const data = await user?.getUserData();
 
         const html = mustache.render(Challenge, { 
             user : {
-                name : data.user.display_name, 
-                image : data.user.images[0].url, 
-                url: data.user.external_urls.spotify
+                name : data?.user.display_name, 
+                image : data?.user.images[0].url, 
+                url: data?.user.external_urls.spotify
             }
         });
 

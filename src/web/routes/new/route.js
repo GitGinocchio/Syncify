@@ -51,12 +51,26 @@ export default {
         const roomid = env.rooms.newUniqueId();
         const room = env.rooms.get(roomid);
 
+        let rooms = await env.kv.get("rooms");
+
+        if (rooms != null) {
+            rooms = JSON.parse(rooms);
+            rooms[roomid] = null;
+        } else {
+            rooms = { [roomid]: null };
+        }
+
+        await env.kv.put("rooms", JSON.stringify(rooms));
+
         const room_token = await Auth.generateToken({ id : roomid.toString() }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
         await room.setRoomData({
+            id : roomid.toString(),
             name : room_data.name,
+            num_members : 0,
             userlimit : room_data.userlimit,
             visibility : room_data.visibility,
+            editablequeue : room_data.editablequeue,
             owner : user_data
         })
 

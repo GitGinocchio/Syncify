@@ -16,9 +16,13 @@ bindings = [
     { name = "users", class_name = "User"}
 ]
 
+[limits]
+cpu_ms = 2000
+
+[[kv_namespaces]]
+binding = "kv"
+id = "9e15917973e94c38970d8836e8e2bfcb"
+
 [[migrations]]
 tag = "v1" # Should be unique for each entry
 new_classes = []
-
-[limits]
-cpu_ms = 2000

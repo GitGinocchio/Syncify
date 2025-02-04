@@ -40,6 +40,11 @@ uninstall-app:
 
 # Cleaning
 
+clean-wrangler:
+	rmdir /S /Q ".wrangler/state/v3/do"
+	rmdir /S /Q ".wrangler/state/v3/kv"
+	rmdir /S /Q ".wrangler/tmp"
+
 clean-ext:
 	del "$(EXTENSIONS_DIR)\$(EXT_NAME)"
 
@@ -49,6 +54,7 @@ clean-app:
 clean:
 	make clean-ext
 	make clean-app
+	make clean-wrangler
 
 run:
 	wrangler dev
