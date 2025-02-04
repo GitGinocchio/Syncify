@@ -38,7 +38,7 @@ export default {
         if (!token) return null;
 
         try {
-            const decoded = jwt.verify(token, secret.toString().trim());
+            const decoded = jwt.verify(token, secret);
             return decoded;
         } catch (err) {
             console.log(err);
