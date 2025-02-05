@@ -11,6 +11,7 @@ import RoomRoute from './routes/room/route.js';
 import OnBoardRoute from './routes/onboard/route.js';
 import ChallengeRoute from './routes/challenge/route.js';
 import BugReportRoute from './routes/bugreport/route.js';
+import Route404 from './routes/404/route.js';
 
 import Sock from './sock.js'
 import Auth from './auth.js'
@@ -91,6 +92,6 @@ router.get('/room',       (request, env, ctx) => RoomRoute.get(request, env, ctx
 router.get('/bugreport',  (request, env, ctx) => BugReportRoute.get(request, env, ctx));
 router.post('/bugreport', (request, env, ctx) => BugReportRoute.post(request, env, ctx));
 
-router.all('*',           (request, env, ctx) => { return new Response('Not Found', { status: 404 }); });
+router.all('*',           (request, env, ctx) => Route404.get(request, env, ctx));
 
 export default router;

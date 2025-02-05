@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    padding: 20px;
+    gap: 50px;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.textError {
+    animation: bounceIn 1.5s ease-out;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+.textError h1 {
+    font-size: 120px;
+    color: #1DB954;
+    margin: 0 0 10px;
+}
+
+.textError p {
+    font-size: 30px;
+    margin: 10px 0 20px;
+    line-height: 1.6;
+}
+
+.imageError img {
+    width: 100%;
+    max-width: 650px;
+}
+
+
+footer {
+    padding: 10px 0;
+    text-align: center;
+    width: 100%;
+}
