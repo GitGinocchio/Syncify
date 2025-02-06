@@ -1,16 +1,11 @@
-const script = document.createElement('script');
-script.src = 'https://cdn.socket.io/4.0.0/socket.io.min.js';
-document.head.appendChild(script);
-
 const reconnectionAttempts = 3;
 const Addresses = [
     `http://127.0.0.1:8787`,
     `https://syncify.ginocchio.workers.dev/`
 ];
 
-
 let customButton;
-let observer;
+let syncify_observer;
 let socket;
 
 function createButton() {
@@ -126,7 +121,7 @@ async function findAvailableConnection() {
     for (const url of Addresses) {
         try {
             socket = await attemptConnection(url,user_data);
-            console.log(`Socket.IO connection established at: ${url}`);
+            console.log(`WebSocket connection established at: ${url}`);
             setButtonStatus(true);
             return socket;
         } catch (error) {
@@ -152,9 +147,9 @@ function disconnect() {
     if (socket) { socket.close(); socket = null; }
 }
 
-observer = new MutationObserver((mutations) => {
+syncify_observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => { createButton(); });
 });
 
 // Configura l'observer per monitorare le modifiche nel DOM
-observer.observe(document.body, { childList: true, subtree: true });
+syncify_observer.observe(document.body, { childList: true, subtree: true });

@@ -20,10 +20,8 @@ export default {
             }
         });
 
-        const token = await auth.generateToken({ id : id.toString() }, env.USER_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY)
-
-        console.log(`user_access_token=${token}; Max-Age=${env.USER_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`);
-
+        const token = await auth.generateToken({ id : id.toString() }, env.USER_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
+        
         return new Response(html, { 
             headers: { 
                 'Content-Type': 'text/html',
