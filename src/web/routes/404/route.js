@@ -1,4 +1,4 @@
-import User from './404.html'
+import Page404 from './404.html'
 import mustache from 'mustache';
 
 import Auth from '../../auth.js';
@@ -19,7 +19,7 @@ export default {
             data = await user.getUserData();
         }
 
-        const html = mustache.render(User, { 
+        const html = mustache.render(Page404, { 
             user : {
                 name : payload ? data.user.display_name : null, 
                 image : payload ? data.user.images[0].url : null, 

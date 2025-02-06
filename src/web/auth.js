@@ -20,13 +20,8 @@ export default {
         const payload = await this.verifyToken(token, env.JWT_SECRET_KEY);
 
         if (!payload) {
-            return new Response('Not Authorized', { 
-                status: 403,
-                headers: {
-                    'Set-Cookie': `user_access_token=; Max-Age=-1; room_access_token=; Max-Age=-1;`,
-                    Location: `/`
-                },
-            });
+            url.pathname = '/403'
+            return Response.redirect(url);
         }
     },
 

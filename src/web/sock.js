@@ -1,4 +1,4 @@
-
+// import ... from 'socket.io-serverless';
 
 async function onAuthEvent(request, env, ctx, server, event) {
     // Abbiamo ricevuto i dati dell'account dell'utente
@@ -28,6 +28,10 @@ async function onAuthEvent(request, env, ctx, server, event) {
     server.send(response);
 }
 
+async function onRoomMessage(request, env, ctx, server, event) {
+    console.log(event);
+}
+
 export default {
     async fetch(request, env, ctx) {
         if (request.headers.get("Upgrade") != "websocket") {
@@ -35,6 +39,7 @@ export default {
             url.pathname = "/404";
             return Response.redirect(url);
         }
+
         const [client, server] = Object.values(new WebSocketPair());
 
         server.accept();
@@ -50,23 +55,34 @@ export default {
                 case '/auth':
                     await onAuthEvent(request, env, ctx, server, event);
                     break;
+                case '/room':
+                    if (data.type == 'message') {
+                        await onRoomMessage(request, env, ctx, server, event);
+                    }
+                    break;
                 default:
                     console.log(`Unknown Websocket event ${event}`)
             }
+        });
+
+        server.addEventListener("error", (event) => {
+            console.log(event);
         });
 
         server.addEventListener("close", (event) => {
             console.log(event);
         });
 
-        return new Response(null, { 
-            status: 101, 
-            webSocket: client, 
+        const response = new Response(null, { status : 101, webSocket : client, 
             headers : {
                 "sec-websocket-key" : request.headers.get('sec-websocket-key'),
-                "sec-websocket-protocol" : request.headers.get("sec-websocket-protocol"),
                 "sec-websocket-version" : request.headers.get("sec-websocket-version"),
             } 
-        })
+        });
+
+        const proto = request.headers.get("sec-websocket-protocol");
+        if (proto) { response.headers.set("sec-websocket-protocol", proto); }
+
+        return response;
     }
 }

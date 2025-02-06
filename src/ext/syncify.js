@@ -110,7 +110,9 @@ async function attemptConnection(url, user_data) {
         });
 
         socket.addEventListener("close", (event) => {
+            console.log("disconnected");
             socket.close();
+            disconnect();
             reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true});
         });
     });
