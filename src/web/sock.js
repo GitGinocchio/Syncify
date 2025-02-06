@@ -44,7 +44,7 @@ export default {
         });
 
         server.addEventListener("message", async (event) => {
-            const data = JSON.parse(event.data).data;
+            const data = JSON.parse(event.data);
 
             switch (data.route) {
                 case '/auth':
@@ -66,6 +66,7 @@ export default {
                 "sec-websocket-key" : request.headers.get('sec-websocket-key'),
                 "sec-websocket-protocol" : request.headers.get("sec-websocket-protocol"),
                 "sec-websocket-version" : request.headers.get("sec-websocket-version"),
-        } })
+            } 
+        })
     }
 }
