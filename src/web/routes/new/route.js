@@ -46,8 +46,6 @@ export default {
         // e ritornerebbe una stanza gia presente
         // 
         // (Questo id potrebbe essere utilizzato per unirsi alle stanze private)
-        // (Il roomid come lo userid non ha senso inserirlo nei dati salvati nel Durable Object 
-        //  perche di per se' il Durable Object e' gia' a conoscenza del suo id)
         const roomid = env.rooms.newUniqueId();
         const room = env.rooms.get(roomid);
 
@@ -76,7 +74,7 @@ export default {
 
         return new Response(null, { 
             headers: {
-                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`,
+                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
                 Location : '/room'
             },
             status: 302

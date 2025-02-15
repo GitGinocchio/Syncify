@@ -7,15 +7,20 @@ async function onAuthEvent(request, env, ctx, server, event) {
 
     const data = JSON.parse(event.data).data;
 
-    // Qui dobbiamo considerare che se e' gia' presente un utente con lo stesso id 
-    // (Cosa impossibile perche gli id di spotify sono univoci)
-    // Verra' ritornato lo stesso user
-    // Qui dobbiamo gestire il caso in cui l'utente stia accedendo da due dispositivi diversi con lo stesso account
-    // Dobbiamo quindi aggiornare i dati dell'utente per inserire il nuovo client
     let id = env.users.idFromName(data.user.id);
     let user = env.users.get(id);
 
-    await user.setUserData(data);
+    const saved_data = await user.getUserData();
+
+    if (!('user' in saved_data)) {
+        saved_data['user'] = data.user;
+        saved_data['user']['syncifyid'] = id.toString();
+        saved_data['locale'] = data.locale;
+    }
+    
+    saved_data['platforms'][data.platform.event_sender_context_information.device_id] = data.platform;
+
+    await user.setUserData(saved_data);
 
     const response = JSON.stringify({
         route : '/auth',

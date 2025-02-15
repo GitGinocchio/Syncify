@@ -16,5 +16,8 @@
     "mustache": "^4.2.0",
     "socket.io-serverless": "^0.2.1",
     "urlpattern-polyfill": "^10.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0"
   }
 }

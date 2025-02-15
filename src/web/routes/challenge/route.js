@@ -25,7 +25,7 @@ export default {
         return new Response(html, { 
             headers: { 
                 'Content-Type': 'text/html',
-                'Set-Cookie' : `user_access_token=${token}; Max-Age=${env.USER_ACCESS_TOKEN_MAX_AGE}; Secure; HttpOnly`
+                'Set-Cookie' : `user_access_token=${token}; Max-Age=${env.USER_COOKIE_MAX_AGE}; Secure; HttpOnly`
             },
             status: 200
         });

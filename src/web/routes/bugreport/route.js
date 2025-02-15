@@ -14,7 +14,7 @@ export default {
         const url = new URL(request.url);
         
         const token = cookies.get('user_access_token');
-        const payload = await Auth.verifyToken(token);
+        const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
 
         let data = null;
         if (payload != null){

@@ -16,10 +16,10 @@ import AllRoute from './routes/all/route.js';
 import Route404 from './routes/404/route.js';
 import Route403 from './routes/403/route.js';
 
-import Sock from './sock.js'
-import Auth from './auth.js'
+import Sock from './sock.js';
+import Auth from './auth.js';
 
-const router = AutoRouter()
+const router = AutoRouter();
 
 export class Room extends DurableObject {
     constructor(state, env) {
@@ -40,7 +40,7 @@ export class Room extends DurableObject {
     async fetch(request) {
 
     }
-}
+};
 
 export class User extends DurableObject {
     constructor(state, env) {
@@ -49,6 +49,7 @@ export class User extends DurableObject {
         this.storage = this.state.storage;
         this.env = env;
 
+        this.storage.put('data', { platforms : {} });
         this.nextAllowedTime = 0;
     }
 
@@ -63,7 +64,7 @@ export class User extends DurableObject {
     async fetch(request) { 
 
     }
-}
+};
 
 router
 // Route per controllare tutte le richieste in arrivo utilizzando dei JWT (JSON Web Token)
