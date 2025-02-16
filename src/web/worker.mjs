@@ -1,4 +1,3 @@
-import { DurableObject } from "cloudflare:workers";
 import { AutoRouter } from 'itty-router';
 
 import IndexRoute from './routes/index/route.js';
@@ -16,53 +15,13 @@ import AllRoute from './routes/all/route.js';
 import Route404 from './routes/404/route.js';
 import Route403 from './routes/403/route.js';
 
+import { User, Room } from './durables.js';
 import Sock from './sock.js';
 import Auth from './auth.js';
 
 const router = AutoRouter();
 
-export class Room extends DurableObject {
-    constructor(state, env) {
-        super(state, env);
-        this.state = state;
-        this.storage = this.state.storage;
-        this.env = env;
-    }
-
-    async setRoomData(data) {
-        await this.storage.put('data', data);
-    }
-
-    async getRoomData() {
-        return await this.storage.get('data');
-    }
-
-    async fetch(request) {
-
-    }
-};
-
-export class User extends DurableObject {
-    constructor(state, env) {
-        super(state, env);
-        this.state = state;
-        this.storage = this.state.storage;
-        this.env = env;
-
-        this.nextAllowedTime = 0;
-    }
-
-    async setUserData(data) {
-        await this.storage.put('data', data);
-    }
-
-    async getUserData() {
-        return await this.storage.get('data');
-    }
-
-    async fetch(request) {
-    }
-};
+export { User, Room };
 
 router
 // Route per controllare tutte le richieste in arrivo utilizzando dei JWT (JSON Web Token)
