@@ -49,7 +49,6 @@ export class User extends DurableObject {
         this.storage = this.state.storage;
         this.env = env;
 
-        this.storage.put('data', { platforms : {} });
         this.nextAllowedTime = 0;
     }
 
@@ -61,8 +60,7 @@ export class User extends DurableObject {
         return await this.storage.get('data');
     }
 
-    async fetch(request) { 
-
+    async fetch(request) {
     }
 };
 
@@ -79,10 +77,13 @@ router
 .get('/logout',     (request, env, ctx) => LogoutRoute.get(request, env, ctx))
 
 .get('/user',       (request, env, ctx) => UserRoute.get(request, env, ctx))
+
 .get('/new',        (request, env, ctx) => NewRoute.get(request, env, ctx))
 .post('/new',        (request, env, ctx) => NewRoute.post(request, env, ctx))
+
 .get('/join',       (request, env, ctx) => JoinRoute.get(request, env, ctx))
 .post('/join',      (request, env, ctx) => JoinRoute.post(request, env, ctx))
+
 .get('/room',       (request, env, ctx) => RoomRoute.get(request, env, ctx))
 
 .get('/bugreport',  (request, env, ctx) => BugReportRoute.get(request, env, ctx))

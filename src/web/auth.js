@@ -18,9 +18,19 @@ export default {
 
         const token = cookies.get('user_access_token');
         const payload = await this.verifyToken(token, env.JWT_SECRET_KEY);
-
+        
         if (!payload) {
             url.pathname = '/403'
+            return Response.redirect(url);
+        }
+
+        const id = env.users.idFromString(payload.id);
+
+        const user = env.users.get(id);
+        const data = await user?.getUserData();
+
+        if (!data) {
+            url.pathname = '/logout'
             return Response.redirect(url);
         }
     },

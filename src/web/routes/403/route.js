@@ -21,9 +21,9 @@ export default {
 
         const html = mustache.render(Page403, { 
             user : {
-                name : payload ? data.user.display_name : null, 
-                image : payload ? data.user.images[0].url : null, 
-                url: payload ? data.user.external_urls.spotify : null
+                name : payload && data ? data.user.display_name : null, 
+                image : payload && data ? data.user.images[0].url : null, 
+                url: payload && data ? data.user.external_urls.spotify : null
             },
         });
 
