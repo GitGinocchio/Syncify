@@ -17,18 +17,8 @@ export class Room extends DurableObject {
         return await this.storage.get('data');
     }
 
-    }
+    async fetch(request) {
 
-    async webSocketMessage(ws, message) {
-        console.log(ws, message);
-    }
-
-    async webSocketClose(ws, closeEvent) {
-        console.log(ws, closeEvent);
-    }
-
-    async webSocketError(ws, error) {
-        console.log(ws, error);
     }
 };
 
@@ -51,17 +41,5 @@ export class User extends DurableObject {
     }
 
     async fetch(request) {
-    }
-
-    async webSocketMessage(ws, message) {
-
-    }
-
-    async webSocketClose(ws, closeEvent) {
-        
-    }
-
-    async webSocketError(ws, error) {
-
     }
 };
