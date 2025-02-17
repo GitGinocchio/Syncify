@@ -1,5 +1,3 @@
-
-
 export default {
     parseCookies(cookies) {
         if (!cookies) { return new Map(); }
@@ -10,5 +8,17 @@ export default {
                 ({...dictionary, [pair.split("=")[0].trim()] : pair.split("=")[1] }), {})
                 // cookies + [key] = value
         ));
+    },
+
+    parseParams(raw) {
+        return raw.split('&').reduce((acc, pair) => ({ ...acc, [pair.split('=')[0]]: pair.split('=')[1] }), {});
+    },
+
+    redirectToNormPath(request) {
+        const url = new URL(request.url);
+        if (url.pathname.endsWith('/') && url.pathname !== '/') {
+            url.pathname = url.pathname.replace(/\/+$/, '');
+            return Response.redirect(url);
+        }
     }
 }

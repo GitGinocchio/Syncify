@@ -5,9 +5,42 @@ import Auth from '../../auth.js'
 import Utils from '../../utils.js';
 
 export default {
+    async post (request, env, ctx) {
+        const raw = await request.text();
+        const params = Utils.parseParams(raw);
+
+        const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
+
+        return new Response(null, { 
+            headers: {
+                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
+                Location : '/room'
+            },
+            status: 302
+        });
+    },
+
     async get (request, env, ctx) {
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
+
+        if (url.pathname == '/join/') {
+            url.pathname = '/join';
+            return Response.redirect(url);
+        }
+
+        if (request.params.roomid) {
+            const room_token = await Auth.generateToken({ id : request.params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
+
+            return new Response(null, {
+                headers: {
+                    'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
+                    Location : '/room'
+                },
+                status: 302
+            })
+        }
+
+        const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
@@ -53,5 +86,5 @@ export default {
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});
-    }
+    },
 }
