@@ -1,3 +1,4 @@
+// @ts-ignore
 const jwt = require('jsonwebtoken');
 
 import Utils from './utils.js';
@@ -10,7 +11,7 @@ const protectedRoutes = [
 ]
 
 export default {
-    async auth(request, env, ctx) {
+    async auth(request : Request, env, ctx) {
         const url = new URL(request.url);
         if (!protectedRoutes.includes(url.pathname)) { return; }
 
@@ -27,7 +28,7 @@ export default {
         const id = env.users.idFromString(payload.id);
 
         const user = env.users.get(id);
-        const data = await user?.getUserData();
+        const data = await user?.getData();
 
         if (!data) {
             url.pathname = '/logout'
@@ -35,7 +36,7 @@ export default {
         }
     },
 
-    async generateToken(payload, expiration, secret) {
+    async generateToken(payload : Request, expiration, secret) {
         return jwt.sign(payload, secret, { expiresIn: expiration });
     },
 

@@ -1,10 +1,11 @@
+// @ts-ignore
 import Index from './index.html'
 
 import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
 

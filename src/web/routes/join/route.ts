@@ -1,14 +1,17 @@
+// @ts-ignore
 import Join from './join.html'
 import mustache from 'mustache';
 
+import { User, Room } from '../../durables.js';
 import Auth from '../../auth.js'
 import Utils from '../../utils.js';
 
 export default {
-    async post (request, env, ctx) {
+    async post (request : Request, env, ctx) {
         const raw = await request.text();
         const params = Utils.parseParams(raw);
 
+        // @ts-ignore
         const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
         return new Response(null, { 
@@ -20,15 +23,12 @@ export default {
         });
     },
 
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
 
-        if (url.pathname == '/join/') {
-            url.pathname = '/join';
-            return Response.redirect(url);
-        }
-
+        // @ts-ignore
         if (request.params.roomid) {
+            // @ts-ignore
             const room_token = await Auth.generateToken({ id : request.params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
             return new Response(null, {
@@ -46,24 +46,29 @@ export default {
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
         const id = env.users.idFromString(payload.id);
 
-        const user = env.users.get(id);
-        const user_data = await user?.getUserData();
+        const user : User = env.users.get(id);
+        const user_data = await user?.getData();
 
         // Qui dobbiamo ottenere tutte le stanze (durable objects) e filtrare per le stanze pubbliche
         let roomids = await env.kv.get("rooms");
         
-        const rooms = [];
+        const rooms : Array<Object> = [];
+
+        console.log(roomids);
         
         if (roomids != null) {
             roomids = JSON.parse(roomids);
+
             let changed = false;
             for (const roomidstring in roomids) {
-                const roomid = env.rooms.idFromString(roomidstring);
-                let room = env.rooms.get(roomid);
-                let data = await room?.getRoomData();
+                let roomid = env.rooms.idFromString(roomidstring);
+                let room : Room = env.rooms.get(roomid);
+                let data = await room?.getData();
+
+                console.log(data);
 
                 if (room != null && data != null) {
-                    if (data.visibility == "public") { rooms.push(data); }
+                    if (data.public) { rooms.push(data); }
                 }
                 else {
                     delete roomids[roomidstring];
@@ -78,9 +83,11 @@ export default {
 
         const html = mustache.render(Join, { 
             user : { 
-                name : user_data?.user.display_name, 
-                image : user_data?.user.images[0].url, 
-                url: user_data?.user.external_urls.spotify
+                name : user_data?.display_name, 
+                // @ts-ignore
+                image : user_data?.images[0].url, 
+                // @ts-ignore
+                url: user_data?.external_urls.spotify
             },
             rooms : rooms.length > 0 ? rooms : null // null if vuoto else {...}
         });

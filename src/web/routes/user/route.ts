@@ -1,11 +1,13 @@
-import User from './user.html'
+// @ts-ignore
+import UserPage from './user.html';
 import mustache from 'mustache';
 
+import { User } from '../../durables.js';
 import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
@@ -13,14 +15,16 @@ export default {
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
         const id = env.users.idFromString(payload.id);
 
-        const user = env.users.get(id);
-        const data = await user.getUserData();
+        const user : User = env.users.get(id);
+        const data = await user.getData();
 
-        const html = mustache.render(User, { 
+        const html = mustache.render(UserPage, { 
             user : {
-                name : data.user.display_name, 
-                image : data.user.images[0].url, 
-                url: data.user.external_urls.spotify
+                name : data.display_name, 
+                //@ts-ignore
+                image : data.images[0].url,
+                //@ts-ignore
+                url: data.external_urls.spotify
             },
             num_rooms : Object.keys(env.rooms).length,
             num_public_rooms : 0

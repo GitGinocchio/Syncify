@@ -15,7 +15,7 @@ function copyurl(roomid) {
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    const socket = new WebSocket(`ws://${window.location.host}/websocket`, "websocket");
+    const socket = new WebSocket(`ws://${window.location.host}/room`);
 
 	const messageInput = document.getElementById("message-input");
 	const queueInput = document.getElementById("queue-input");
@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		const text = messageInput.value;
 		if (text.trim()) {
             data = JSON.stringify({ 
-                route : window.location.pathname,
                 type : "message",
                 text : text
             });

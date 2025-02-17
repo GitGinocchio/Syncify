@@ -14,7 +14,7 @@ export default {
         return raw.split('&').reduce((acc, pair) => ({ ...acc, [pair.split('=')[0]]: pair.split('=')[1] }), {});
     },
 
-    redirectToNormPath(request) {
+    redirectToNormPath(request : Request) {
         const url = new URL(request.url);
         if (url.pathname.endsWith('/') && url.pathname !== '/') {
             url.pathname = url.pathname.replace(/\/+$/, '');

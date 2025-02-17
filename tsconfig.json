@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "lib": ["ESNext", "WebWorker"],
+    "types": ["@cloudflare/workers-types"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false
+  }
+}

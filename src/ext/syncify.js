@@ -81,18 +81,13 @@ function showDialog(title, message) {
 
 async function attemptConnection(url, user_data) {
     return new Promise((resolve, reject) => {
-        socket = new WebSocket(`${url.replace("https", "ws").replace("http", "ws")}/websocket`, "websocket");
-        let registered = false;
+        socket = new WebSocket(`${url.replace("https", "ws").replace("http", "ws")}/auth`, "websocket");
 
         socket.addEventListener("open", (event) => {
             const data = JSON.stringify({
-                route : '/auth',
-                type : "auth",
-                data : {
-                    user : user_data,
-                    platform  : Spicetify.Platform.PlatformData, 
-                    locale    : Spicetify.Platform.Session.locale 
-                }
+                user : user_data,
+                platform  : Spicetify.Platform.PlatformData, 
+                locale    : Spicetify.Platform.Session.locale 
             });
 
             socket.send(data);

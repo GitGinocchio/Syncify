@@ -1,24 +1,24 @@
 import { Router, error, json, withParams } from 'itty-router'
 
-import IndexRoute from './routes/index/route.js';
-import AuthRoute from './routes/auth/route.js';
-import UserRoute from './routes/user/route.js';
-import LogoutRoute from './routes/logout/route.js';
-import NewRoute from './routes/new/route.js';
-import JoinRoute from './routes/join/route.js';
-import RoomRoute from './routes/room/route.js';
-import OnBoardRoute from './routes/onboard/route.js';
-import ChallengeRoute from './routes/challenge/route.js';
-import BugReportRoute from './routes/bugreport/route.js';
+import IndexRoute from './routes/index/route.ts';
+import AuthRoute from './routes/auth/route.ts';
+import UserRoute from './routes/user/route.ts';
+import LogoutRoute from './routes/logout/route.ts';
+import NewRoute from './routes/new/route.ts';
+import JoinRoute from './routes/join/route.ts';
+import RoomRoute from './routes/room/route.ts';
+import OnBoardRoute from './routes/onboard/route.ts';
+import ChallengeRoute from './routes/challenge/route.ts';
+import BugReportRoute from './routes/bugreport/route.ts';
 
-import AllRoute from './routes/all/route.js';
-import Route404 from './routes/404/route.js';
-import Route403 from './routes/403/route.js';
+import AllRoute from './routes/all/route.ts';
+import Route404 from './routes/404/route.ts';
+import Route403 from './routes/403/route.ts';
 
-import { User, Room } from './durables.js';
-import Utils from './utils.js';
-import Sock from './sock.js';
-import Auth from './auth.js';
+import { User, Room } from './durables.ts';
+import Utils from './utils.ts';
+import Sock from './sock.ts';
+import Auth from './auth.ts';
 
 const router = Router({
     before: [Utils.redirectToNormPath],
@@ -32,12 +32,10 @@ router
 // Route per controllare tutte le richieste in arrivo utilizzando dei JWT (JSON Web Token)
 .all('*', (request, env, ctx) => Auth.auth(request, env, ctx))
 
-.get('/websocket', (request, env, ctx) => Sock.fetch(request, env, ctx))
-
 .get('/',               (request, env, ctx) => IndexRoute.get(request, env, ctx))
 .get('/onboard',        (request, env, ctx) => OnBoardRoute.get(request, env, ctx))
 .get('/challenge',      (request, env, ctx) => ChallengeRoute.get(request, env, ctx))
-//.get('/auth',         (request, env, ctx) => AuthRoute.get(request, env, ctx))
+.get('/auth',           (request, env, ctx) => AuthRoute.get(request, env, ctx))
 .get('/logout',         (request, env, ctx) => LogoutRoute.get(request, env, ctx))
 
 .get('/user',           (request, env, ctx) => UserRoute.get(request, env, ctx))

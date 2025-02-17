@@ -1,11 +1,13 @@
+// @ts-ignore
 import New from './new.html';
 import mustache from 'mustache';
 
-import Auth from '../../auth.js'
+import { User, Room } from '../../durables.js';
+import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
         
@@ -14,32 +16,33 @@ export default {
         const id = env.users.idFromString(payload.id);
 
         const user = env.users.get(id);
-        const data = await user.getUserData();
+        const data : User = await user.getData();
 
         const html = mustache.render(New, { 
             user : { 
-                name : data.user.display_name, 
-                image : data.user.images[0].url, 
-                url: data.user.external_urls.spotify
+                name : data.display_name, 
+                // @ts-ignore
+                image : data.images[0].url, 
+                // @ts-ignore
+                url: data.external_urls.spotify
             }, 
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});
     },
 
-    async post(request, env, ctx) {
+    async post(request : Request, env, ctx) {
         const url = new URL(request.url);
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
 
-        const raw = await request.text();
-        const room_data = raw.split('&').reduce((acc, pair) => ({ ...acc, [pair.split('=')[0]]: pair.split('=')[1] }), {});
+        const room_data = Utils.parseParams(await request.text());
 
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const userid = env.users.idFromString(payload.id);
 
-        const user = env.users.get(userid);
-        const user_data = await user.getUserData();
+        const user : User = env.users.get(userid);
+        const user_data = await user.getData();
 
         // Ci assicuriamo che ci sia un singolo id
         // non possiamo generarlo con il nome della stanza, perché potrebbe essere già esistente
@@ -47,30 +50,18 @@ export default {
         // 
         // (Questo id potrebbe essere utilizzato per unirsi alle stanze private)
         const roomid = env.rooms.newUniqueId();
-        const room = env.rooms.get(roomid);
+        const room : Room = env.rooms.get(roomid);
 
-        let rooms = await env.kv.get("rooms");
-
-        if (rooms != null) {
-            rooms = JSON.parse(rooms);
-            rooms[roomid] = null;
-        } else {
-            rooms = { [roomid]: null };
-        }
-
-        await env.kv.put("rooms", JSON.stringify(rooms));
-
+        // @ts-ignore
         const room_token = await Auth.generateToken({ id : roomid.toString() }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
-        await room.setRoomData({
-            id : roomid.toString(),
-            name : room_data.name,
-            num_members : 0,
-            userlimit : room_data.userlimit,
-            visibility : room_data.visibility,
-            editablequeue : room_data.editablequeue,
-            owner : user_data
-        })
+        // Aggiungere l'id dell'owner della stanza
+        await room.init(
+            room_data.name,
+            room_data.userlimit,
+            room_data.editablequeue == undefined ? false : true,
+            room_data.visibility == 'public' ? true : false,
+        )
 
         return new Response(null, { 
             headers: {
