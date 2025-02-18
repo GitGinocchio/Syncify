@@ -1,8 +1,12 @@
 import { DurableObject } from "cloudflare:workers";
 
+import Auth from './auth.js';
+import Utils from './utils.js';
+
 export interface Room {
     storage : DurableObjectStorage;
     clients : Map<WebSocket, any>;
+    env : DurableObjectNamespace;
     id : DurableObjectId;
     awakaned : boolean;
 
@@ -75,7 +79,18 @@ export class Room extends DurableObject {
         const [client, server] = Object.values(new WebSocketPair());
         this.ctx.acceptWebSocket(server);
 
-        //server.serializeAttachment({...server.deserializeAttachment(), user: user});
+        const cookies = Utils.parseCookies(request.headers.get('Cookie'));
+        const token = cookies.get('user_access_token');
+
+        // @ts-ignore
+        const payload = await Auth.verifyToken(token, this.env.JWT_SECRET_KEY)
+
+        if (!payload) {
+            console.log("Token verification failed");
+            return Response.error();
+        }
+
+        server.serializeAttachment({...server.deserializeAttachment(), userid: payload.id});
 
         this.clients.set(server, {});
 
@@ -83,12 +98,32 @@ export class Room extends DurableObject {
     }
 
     async webSocketMessage(ws : WebSocket, message : string) {
+        const attachments = ws.deserializeAttachment();
         const data = JSON.parse(message);
-        console.log(data);
+
+        // @ts-ignore
+        const userid = this.env.users.idFromString(attachments.userid);
+
+        // @ts-ignore
+        const user = await this.env.users.get(userid);
+        const user_data = await user.getData();
+
+        const new_message = JSON.stringify({
+            user : user_data.display_name,
+            image : user_data.images[0].url,
+            message : data.text,
+            type : data.type
+        })
+
+        this.broadcast(null, new_message);
     }
 
-    async broadcastWebSocketMessage(sender : WebSocket, message : string) {
+    broadcast(sender : WebSocket | null, message : string) {
+        for (let [ws] of this.clients) {
+            if (sender != null && ws === sender) { continue; }
 
+            ws.send(message);
+        }
     }
 
     async webSocketClose(ws : WebSocket, code : number, reason : string, wasClean : boolean) {
@@ -152,12 +187,12 @@ export class User extends DurableObject {
         this.env = env;
         this.id = ctx.id;
         this.awakaned = false;
+        this.nextAllowedTime = 0;
     }
 
     async init(spotifyid : string, display_name : string, birthdate : string, email : string, platform : object,locale : string, external_urls : object, explicit_content : object, images : Array<object>,policies : Map<string, any>,product : string,followers : object, country : string, type : string, uri : string) {
         await this.storage.put('spotifyid', spotifyid);
         await this.storage.put('display_name', display_name);
-        await this.storage.put('next_allowed_time', 0);
         await this.storage.put('birthdate', birthdate);
         await this.storage.put('email', email);
         await this.storage.put('platform', platform);
@@ -178,7 +213,6 @@ export class User extends DurableObject {
     
         this.spotifyid = String(await this.storage.get('spotifyid'));
         this.display_name = String(await this.storage.get('display_name'));
-        this.nextAllowedTime = Number(await this.storage.get('next_allowed_time'));
         this.birthdate = String(await this.storage.get('birthdate'));
         this.email = String(await this.storage.get('email'));
         this.platform = Object(await this.storage.get('platform'));
@@ -201,7 +235,6 @@ export class User extends DurableObject {
             id : this.id,
             spotifyid : this.spotifyid,
             display_name : this.display_name,
-            next_allowed_time : this.nextAllowedTime,
             birthdate : this.birthdate,
             email : this.email,
             platform : this.platform,
@@ -219,10 +252,30 @@ export class User extends DurableObject {
     }
 
     async fetch(request : Request) {
-        const [client, server] = Object.values(new WebSocketPair());
-        this.ctx.acceptWebSocket(server);
+        const url = new URL(request.url);
 
-        return new Response(null, { status : 101, webSocket : client});
+        if (request.method != "POST" && request.method != "GET") {
+            return new Response("Method not allowed", { status: 405 });
+        }
+
+        let now = Date.now() / 1000;
+  
+        this.nextAllowedTime = Math.max(now, this.nextAllowedTime);
+  
+        if (request.method == "POST") {
+          // POST request means the user performed an action.
+          // We allow one action per 5 seconds.
+          this.nextAllowedTime += 5;
+        }
+  
+        // Return the number of seconds that the client needs to wait.
+        //
+        // We provide a "grace" period of 20 seconds, meaning that the client can make 4-5 requests
+        // in a quick burst before they start being limited.
+        let cooldown = Math.max(0, this.nextAllowedTime - now - 20);
+        return new Response(JSON.stringify({
+            cooldown : cooldown
+        }));
     }
 
 };

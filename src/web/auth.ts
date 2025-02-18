@@ -36,11 +36,11 @@ export default {
         }
     },
 
-    async generateToken(payload : Request, expiration, secret) {
+    async generateToken(payload : Request, expiration : string, secret : string): Promise<string> {
         return jwt.sign(payload, secret, { expiresIn: expiration });
     },
 
-    async verifyToken(token, secret) {
+    async verifyToken(token : string, secret : string): Promise<{ id : string, iat : number, exp : number } | null> {
         if (!token) return null;
 
         try {

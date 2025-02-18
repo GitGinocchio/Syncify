@@ -61,10 +61,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
                 messageElement.classList.add("my-message");
                 messageElement.innerHTML = `
                     <div class="sender">
-                        <img src="${data.sender.image}">
-                        <p>${data.sender.name}</p>
+                        <img src="${data.image}">
+                        <p>${data.user}</p>
                     </div>
-                    <p class="mess">${data.text}</p>
+                    <p class="mess">${data.message}</p>
                 `;
                 messagesContainer.appendChild(messageElement);
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;

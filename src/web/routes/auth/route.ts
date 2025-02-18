@@ -46,8 +46,6 @@ export default {
                 data.user.uri
             );
 
-            console.log(await user.getData());
-
             const response = JSON.stringify({
                 status: 'success',
                 message : 'successfully logged in',

@@ -17,7 +17,6 @@ import Route403 from './routes/403/route.js';
 
 import { User, Room } from './durables.js';
 import Utils from './utils.js';
-import Sock from './sock.js';
 import Auth from './auth.js';
 
 const router = Router({
