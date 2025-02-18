@@ -92,6 +92,8 @@ export class Room extends DurableObject {
 
         server.serializeAttachment({...server.deserializeAttachment(), userid: payload.id});
 
+        // Al momento sembra che lo stesso utente possa creare piu' websocket aggiornando la pagina
+        // Per risolvere questo dovrei salvare ogni websocket con chiave lo userid e value il websocket
         this.clients.set(server, {});
 
         return new Response(null, { status : 101, webSocket : client});
