@@ -38,7 +38,7 @@
 				<h2>Now Playing</h2>
 				<div class="current-song-image" id="current-song-image">
 					{{#room.queue}}
-						<img src="{{this.album.images[1].url}}" alt="album art">
+						<img src="{{album.images[1].url}}" alt="album art">
 					{{/room.queue}}
 					{{^room.queue}}
 						<span></span>
@@ -46,11 +46,11 @@
 				</div>
 				<div class="current-song-details" id="current-song-details">
 					{{#room.queue}}
-					<span class="current-song-title" id="{{this.id}}">{{this.name}}</span>
+					<span class="current-song-title" id="{{id}}">{{name}}</span>
 					<span class="current-song-artists">
-					{{#this.artists}}
-						<a href="{{this.external_urls.spotify}}" target="_blank">{{this.name}}</a>{{#next}}, {{/next}}
-					{{/this.artists}}
+					{{#artists}}
+						<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+					{{/artists}}
 					</span>
 					{{/room.queue}}
 					{{^room.queue}}
@@ -88,19 +88,19 @@
 				<div class="devices-container">
 					<div id="devices-list">
 						{{#user.devices}}
-							<div class="device" id="{{this.id}}">
-								{{#eq this.type "Computer"}}
+							<div class="device" id="{{id}}">
+								{{#eq type "Computer"}}
 								<img src="../../static/images/device-pc.png" alt="pc icon">
-								{{/eq this.type "Computer"}}
+								{{/eq type "Computer"}}
 								
-								{{#eq this.type "Smartphone"}}
+								{{#eq type "Smartphone"}}
 								<img src="../../static/images/device-phone.png" alt="phone icon">
-								{{/eq this.type "Smartphone"}}
+								{{/eq type "Smartphone"}}
 								
-								{{#eq this.type "Speaker"}}
+								{{#eq type "Speaker"}}
 								<img src="../../static/images/device-speaker.png" alt="speaker icon">
-								{{/eq this.type "Speaker"}}
-								<span>{{this.name}}</span>
+								{{/eq type "Speaker"}}
+								<span>{{name}}</span>
 							</div>
 						{{/user.devices}}
 					</div>
@@ -144,47 +144,47 @@
 					<div class="song-elements">
 						<ul id="queue-list">
 						{{#room.queue}}
-						<li class="song-info" id="{{this.id}}">
-							<img class="album-art" src="{{this.album.images[2].url}}">
+						<li class="song-info" id="{{id}}">
+							<img class="album-art" src="{{album.images[2].url}}">
 							<div class="details">
-								<span class="song-title">{{this.name}}</span>
+								<span class="song-title">{{name}}</span>
 								<span class="song-artists">
-								{{#this.artists}}
-									<a href="{{this.external_urls.spotify}}" target="_blank">{{this.name}}</a>{{#next}}, {{/next}}
-								{{/this.artists}}
+								{{#artists}}
+									<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+								{{/artists}}
 								</span>
 							</div>
 							<span class="addedby-user">
 								Added by:
-								<a href="{{this.addedby.url}}" target="_blank">
-										<img src="{{this.addedby.image}}" class="member-icon">
-										{{this.addedby.name}}
+								<a href="{{addedby.url}}" target="_blank">
+										<img src="{{addedby.image}}" class="member-icon">
+										{{addedby.name}}
 								</a>
 							</span>
-							<span class="song-duration">{{this.duration}}</span>
+							<span class="song-duration">{{duration}}</span>
 						</li>
 						{{/room.queue}}
 						</ul>
 						<ul id="history-list" class="hide">
 							{{#room.history}}
-							<li class="song-info" id="{{this.id}}">
-								<img class="album-art" src="{{this.album.images[2].url}}">
+							<li class="song-info" id="{{id}}">
+								<img class="album-art" src="{{album.images[2].url}}">
 								<div class="details">
-									<span class="song-title">{{this.name}}</span>
+									<span class="song-title">{{name}}</span>
 									<span class="song-artists">
-										{{#this.artists}}
-										<a href="{{this.external_urls.spotify}}" target="_blank">{{this.name}}</a>{{#next}}, {{/next}}
-										{{/this.artists}}
+										{{#artists}}
+										<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+										{{/artists}}
 									</span>
 								</div>
 								<span class="addedby-user">
 									Added by:
-									<a href="{{this.addedby.url}}" target="_blank">
-										<img src="{{this.addedby.image}}" class="member-icon">
-										{{this.addedby.name}}
+									<a href="{{addedby.url}}" target="_blank">
+										<img src="{{addedby.image}}" class="member-icon">
+										{{addedby.name}}
 									</a>
 								</span>
-								<span class="song-duration">{{this.duration}}</span>
+								<span class="song-duration">{{duration}}</span>
 							</li>
 							{{/room.history}}
 							</ul>
@@ -214,35 +214,20 @@
 				</div>
 				<div>
 					<ul id="members-container">
-						{{#room.members}}
-							<li id="{{this.id}}">
-								<img src="{{this.image}}" alt="account icon" class="member-icon">
-								<p class="member-name">{{this.name}}</p>
+						{{#&room.members}}
+							<li id="{{id}}">
+								<img src="{{image}}" alt="account icon" class="member-icon">
+								<p class="member-name">{{name}}</p>
 							</li>
-						{{/room.members}}
+						{{/&room.members}}
 					</ul>
 				</div>
 			</div>
 			<div class="chat">
 				<h2>Chat</h2>
 				<div class="chat-messages" id="chat-messages" onload="toBottom()">
-					{{#room.chat}}
-						{{#eq sender.id user.id}}
-						<div class="message my-message">
-						{{/eq sender.id user.id}}
-						{{#neq sender.name "system"}}
-						<div class="message other-message">
-						{{/neq sender.name "system"}}
-						{{#eq sender.name "system"}}
-						<div class="message system-message">
-						{{/eq sender.name "system"}}
-						<div class="sender">
-							<img src="{{sender.image}}">
-							<p>{{sender.name}}</p>
-						</div>
-						<p>{{text}}</p>
-						</div>
-					{{/room.chat}}
+				{{#renderChat}}
+				{{/renderChat}}
 				</div>
 				<div class="chat-controls">
 					<input type="text" id="message-input" placeholder="Type a message...">
@@ -250,8 +235,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	</div>
 	</div>
 	<script src="./routes/room/room.js"></script>
 </body>

@@ -10,6 +10,10 @@ const protectedRoutes = [
     '/new',
 ]
 
+const roomidRequiredRoutes = [
+    '/room'
+]
+
 export default {
     async auth(request : Request, env, ctx) {
         const url = new URL(request.url);
@@ -17,21 +21,41 @@ export default {
 
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
 
-        const token = cookies.get('user_access_token');
-        const payload = await this.verifyToken(token, env.JWT_SECRET_KEY);
-        
-        if (!payload) {
+        const user_token = cookies.get('user_access_token');
+        const user_payload = await this.verifyToken(user_token, env.JWT_SECRET_KEY);
+
+        if (!user_payload) {
             url.pathname = '/403'
             return Response.redirect(url);
         }
 
-        const id = env.users.idFromString(payload.id);
+        const userid = env.users.idFromString(user_payload.id);
 
-        const user = env.users.get(id);
-        const data = await user?.getData();
+        const user = env.users.get(userid);
+        const user_data = await user?.getData();
 
-        if (!data) {
+        if (!user_data) {
             url.pathname = '/logout'
+            return Response.redirect(url);
+        }
+
+        if (!roomidRequiredRoutes.includes(url.pathname)) { return; }
+
+        const room_token = cookies.get('room_access_token');
+        const room_payload = await this.verifyToken(room_token, env.JWT_SECRET_KEY);
+
+        if (!room_payload) {
+            url.pathname = '/403'
+            return Response.redirect(url);
+        }
+
+        const roomid = env.rooms.idFromString(room_payload.id);
+        
+        const room = env.users.get(roomid);
+        const room_data = await room?.getData();
+
+        if (!room_data) {
+            url.pathname = '/room/leave'
             return Response.redirect(url);
         }
     },

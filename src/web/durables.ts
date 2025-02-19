@@ -5,10 +5,15 @@ import Utils from './utils.js';
 
 export interface Room {
     storage : DurableObjectStorage;
-    clients : Map<WebSocket, any>;
+    clients : Map<string, WebSocket>;
     env : DurableObjectNamespace;
     id : DurableObjectId;
     awakaned : boolean;
+
+    messages : Array<{ sender : { id : string, name : string, image : string, type : string}, message : string, type : string }>;
+    members : Map<string, { id : string, name : string, image : string}>;
+    queue : Array<object>;
+    artists : Array<object>;
 
     name : string;
     max_members : number;
@@ -19,123 +24,6 @@ export interface Room {
     awake() : Promise<void>;
     getData() : Promise<object | null>;
 }
-
-export class Room extends DurableObject {
-    constructor(ctx : DurableObjectState, env : DurableObjectNamespace) {
-        super(ctx, env);
-        this.ctx = ctx;
-        this.storage = this.ctx.storage;
-        this.env = env;
-        this.awakaned = false;
-        this.id = this.ctx.id;
-
-        this.clients = new Map();
-        this.ctx.getWebSockets().forEach((ws) => {
-            this.clients.set(ws, {...ws.deserializeAttachment()});
-        })
-    }
-
-    async init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean) {
-        // @ts-ignore
-        let rooms = await this.env.kv.get("rooms");
-
-        if (rooms != null) {
-            rooms = JSON.parse(rooms);
-            rooms[this.ctx.id.toString()] = null;
-        } else {
-            rooms = { [this.ctx.id.toString()]: null };
-        }
-        // @ts-ignore
-        await this.env.kv.put("rooms", JSON.stringify(rooms));
-
-        await this.storage.put('name', name);
-        await this.storage.put('max_members', max_members);
-        await this.storage.put('queue_editable', queue_editable);
-        await this.storage.put('public', ispublic);
-    }
-
-    async awake() {
-        this.awakaned = true;
-
-        this.name = String(await this.storage.get('name'));
-        this.max_members = Number(await this.storage.get('max_members'));
-        this.queue_editable = Boolean(await this.storage.get('queue_editable'));
-        this.public = Boolean(await this.storage.get('public'));
-    }
-
-    async getData() {
-        if (!this.awakaned) { await this.awake(); }
-
-        return {
-            id : this.id, 
-            name : this.name, 
-            max_members : this.max_members, 
-            queue_editable : this.queue_editable, 
-            public : this.public
-        };
-    }
-
-    async fetch(request : Request) {
-        const [client, server] = Object.values(new WebSocketPair());
-        this.ctx.acceptWebSocket(server);
-
-        const cookies = Utils.parseCookies(request.headers.get('Cookie'));
-        const token = cookies.get('user_access_token');
-
-        // @ts-ignore
-        const payload = await Auth.verifyToken(token, this.env.JWT_SECRET_KEY)
-
-        if (!payload) {
-            console.log("Token verification failed");
-            return Response.error();
-        }
-
-        server.serializeAttachment({...server.deserializeAttachment(), userid: payload.id});
-
-        // Al momento sembra che lo stesso utente possa creare piu' websocket aggiornando la pagina
-        // Per risolvere questo dovrei salvare ogni websocket con chiave lo userid e value il websocket
-        this.clients.set(server, {});
-
-        return new Response(null, { status : 101, webSocket : client});
-    }
-
-    async webSocketMessage(ws : WebSocket, message : string) {
-        const attachments = ws.deserializeAttachment();
-        const data = JSON.parse(message);
-
-        // @ts-ignore
-        const userid = this.env.users.idFromString(attachments.userid);
-
-        // @ts-ignore
-        const user = await this.env.users.get(userid);
-        const user_data = await user.getData();
-
-        const new_message = JSON.stringify({
-            user : user_data.display_name,
-            image : user_data.images[0].url,
-            message : data.text,
-            type : data.type
-        })
-
-        this.broadcast(null, new_message);
-    }
-
-    broadcast(sender : WebSocket | null, message : string) {
-        for (let [ws] of this.clients) {
-            if (sender != null && ws === sender) { continue; }
-
-            ws.send(message);
-        }
-    }
-
-    async webSocketClose(ws : WebSocket, code : number, reason : string, wasClean : boolean) {
-
-    }
-
-    async webSocketError(ws : WebSocket, error : any) {
-
-    }
-};
 
 export interface User {
     storage : DurableObjectStorage;
@@ -180,6 +68,188 @@ export interface User {
     awake() : Promise<void>;
     getData() : Promise<object | null>;
 }
+
+export class Room extends DurableObject {
+    constructor(ctx : DurableObjectState, env : DurableObjectNamespace) {
+        super(ctx, env);
+        this.ctx = ctx;
+        this.storage = this.ctx.storage;
+        this.env = env;
+        this.awakaned = false;
+        this.id = this.ctx.id;
+
+        this.clients = new Map();
+        this.ctx.getWebSockets().forEach((ws) => {
+            const attachments = ws.deserializeAttachment();
+            this.clients.set(attachments.userid, ws);
+        })
+    }
+
+    async init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean) {
+        // @ts-ignore
+        let rooms = await this.env.kv.get("rooms");
+
+        if (rooms != null) {
+            rooms = JSON.parse(rooms);
+            rooms[this.ctx.id.toString()] = null;
+        } else {
+            rooms = { [this.ctx.id.toString()]: null };
+        }
+        // @ts-ignore
+        await this.env.kv.put("rooms", JSON.stringify(rooms));
+
+        await this.storage.put('name', name);
+        await this.storage.put('max_members', max_members);
+        await this.storage.put('queue_editable', queue_editable);
+        await this.storage.put('public', ispublic);
+    }
+
+    async awake() {
+        this.awakaned = true;
+
+        this.name = String(await this.storage.get('name'));
+        this.max_members = Number(await this.storage.get('max_members'));
+        this.queue_editable = Boolean(await this.storage.get('queue_editable'));
+        this.public = Boolean(await this.storage.get('public'));
+        
+        this.messages = await this.storage.get('messages') || Array();
+        this.artists = await this.storage.get('artists') || Array();
+        this.members = new Map(await this.storage.get('members') || []);
+        this.queue = await this.storage.get('queue') || Array();
+    }
+
+    async getData() {
+        if (!this.awakaned) { await this.awake(); }
+
+        return {
+            id : this.id, 
+            name : this.name, 
+            max_members : this.max_members, 
+            queue_editable : this.queue_editable, 
+            public : this.public,
+            messages : this.messages,
+            artists : this.artists,
+            members : this.members,
+            queue : this.queue
+        };
+    }
+
+    async fetch(request : Request) {
+        const [client, server] = Object.values(new WebSocketPair());
+        this.ctx.acceptWebSocket(server);
+
+        const cookies = Utils.parseCookies(request.headers.get('Cookie'));
+        const token = cookies.get('user_access_token');
+
+        // @ts-ignore
+        const payload = await Auth.verifyToken(token, this.env.JWT_SECRET_KEY);
+
+        if (!payload) {
+            console.log("Token verification failed");
+            return Response.error();
+        }
+
+        // @ts-ignore
+        const userid = await this.env.users.idFromString(payload.id);
+        // @ts-ignore
+        const user : User = await this.env.users.get(userid);
+        const user_data = await user.getData();
+
+        server.serializeAttachment({...server.deserializeAttachment(), userid: payload.id});
+
+        this.clients.set(payload.id, server);
+
+        // @ts-ignore
+        const member = { id : user_data.spotifyid, name : user_data.display_name, image : user_data.images[0].url }
+
+        this.members.set(payload.id, member);
+        this.broadcast(null, JSON.stringify({ type : 'member_joined', ...member }));
+
+        await this.storage.put('members', this.members);
+
+        return new Response(null, { status : 101, webSocket : client});
+    }
+
+    async onChatMessageReceived(ws : WebSocket, data : Map<string, any>) {
+        if (!this.awakaned) { await this.awake(); } // Ensure the data is loaded
+        const attachments = ws.deserializeAttachment();
+
+        // @ts-ignore
+        const userid = this.env.users.idFromString(attachments.userid);
+
+        // @ts-ignore
+        const user = await this.env.users.get(userid);
+        const user_data = await user.getData();
+
+        const message = {
+            sender : {
+                id : user_data.spotifyid,
+                name : user_data.display_name,
+                image : user_data.images[0].url,
+                type : 'user'
+            },
+            // @ts-ignore
+            message : data.text,
+            // @ts-ignore
+            type : data.type
+        }
+
+        this.messages.push(message);
+
+        await this.storage.put('messages', this.messages);
+
+        this.broadcast(ws, JSON.stringify(message));
+
+        // Send a different response to the user who sent the message
+        const messagecopy = JSON.parse(JSON.stringify(message));
+        messagecopy.sender.type = 'me';
+        ws.send(JSON.stringify(messagecopy));
+    }
+
+    async webSocketMessage(ws : WebSocket, message : string) {
+        const data : Map<string, any> = JSON.parse(message);
+
+        // @ts-ignore
+        switch (data.type) {
+            case 'message':
+                await this.onChatMessageReceived(ws, data);
+                break;
+            default:
+                console.log("Invalid message type");
+        }
+    }
+
+    broadcast(sender : WebSocket | null, message : string) {
+        for (let [userid, ws] of this.clients) {
+            if (sender != null && ws === sender) { continue; }
+
+            ws.send(message);
+        }
+    }
+
+    async webSocketClose(ws : WebSocket, code : number, reason : string, wasClean : boolean) {
+        if (!this.awakaned) { await this.awake(); } // Ensure the data is loaded
+        const attachments = ws.deserializeAttachment();
+
+        this.members.delete(attachments.userid);
+
+        // @ts-ignore
+        const userid = await this.env.users.idFromString(attachments.userid);
+        // @ts-ignore
+        const user : User = await this.env.users.get(userid);
+        const user_data = await user.getData();
+
+        this.broadcast(ws, JSON.stringify({ id : user_data.spotifyid, type : "member_left" }));
+
+        await this.storage.put('members', this.members);
+
+        console.log(`User ${attachments.userid} with WebSocket ${ws} left the room: ${code} ${reason} ${wasClean}`);
+    }
+
+    async webSocketError(ws : WebSocket, error : any) {
+        console.error(`An error occurred with WebSocket ${ws}: ${error}`);
+    }
+};
 
 export class User extends DurableObject {
     constructor(ctx : DurableObjectState, env : DurableObjectNamespace) {

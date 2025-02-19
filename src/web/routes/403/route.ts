@@ -1,3 +1,4 @@
+// @ts-ignore
 import Page403 from './403.html'
 import mustache from 'mustache';
 
@@ -16,14 +17,17 @@ export default {
         if (payload != null){
             const id = env.users.idFromString(payload.id);
             const user = env.users.get(id);
-            data = await user.getUserData();
+            data = await user.getData();
         }
 
         const html = mustache.render(Page403, { 
             user : {
-                name : payload && data ? data.user.display_name : null, 
-                image : payload && data ? data.user.images[0].url : null, 
-                url: payload && data ? data.user.external_urls.spotify : null
+                // @ts-ignore
+                name : payload && data ? data.display_name : null, 
+                // @ts-ignore
+                image : payload && data ? data.images[0].url : null,
+                // @ts-ignore
+                url: payload && data ? data.external_urls.spotify : null
             },
         });
 

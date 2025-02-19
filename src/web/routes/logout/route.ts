@@ -8,6 +8,6 @@ export default {
               Location: `/`
             },
             status: 302
-          });
+        });
     }
 }

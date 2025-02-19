@@ -46,28 +46,66 @@ document.addEventListener("DOMContentLoaded", (event) => {
 	var progressInterval;
 	let debounceTimeout;
 
+	function onMessage(data) {
+		const messageElement = document.createElement("div");
+		messageElement.classList.add("message");
+		if (data.sender.type == "me") {
+			messageElement.classList.add("my-message");
+		}
+		else if (data.sender.type == "user") {
+			messageElement.classList.add("other-message");
+		}
+		else {
+			messageElement.classList.add("system-message");
+		}
+		messageElement.innerHTML = `
+			<div class="sender">
+				<img src="${data.sender.image}">
+				<p>${data.sender.name}</p>
+			</div>
+			<p class="mess">${data.message}</p>
+		`;
+		messagesContainer.appendChild(messageElement);
+		messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	}
+
+	function onMemberJoined(data) {
+		const memberElement = document.createElement("li");
+		memberElement.id = data.id;
+		memberElement.innerHTML = `
+	  		<img src="${data.image}" alt="account icon" class="member-icon">
+	  		<p class="member-name">${data.name}</p>
+		`;
+		membersContainer.appendChild(memberElement);
+	}
+
+	function onMemberLeft(data) {
+		const memberElement = document.getElementById(data.id);
+		if (memberElement) {
+			membersContainer.removeChild(memberElement);
+		}
+	}
+
     socket.addEventListener("open", (event) => {
         console.log(`Connected to the server: ${window.location.pathname}`);
     });
 
     socket.addEventListener("message", (event) => {
-        console.log(`Received message: ${event.data}`);
         const data = JSON.parse(event.data);
 
         switch (data.type) {
             case "message":
-                const messageElement = document.createElement("div");
-                messageElement.classList.add("message");
-                messageElement.classList.add("my-message");
-                messageElement.innerHTML = `
-                    <div class="sender">
-                        <img src="${data.image}">
-                        <p>${data.user}</p>
-                    </div>
-                    <p class="mess">${data.message}</p>
-                `;
-                messagesContainer.appendChild(messageElement);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+				onMessage(data);
+				break;
+			case "member_joined":
+				onMemberJoined(data);
+				break;
+			case "member_left":
+				onMemberLeft(data);
+				break;
+			case "default":
+				console.log("WebSocket message not recognized: ", data);
+				break;
         }
     });
 

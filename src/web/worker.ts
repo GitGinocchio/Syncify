@@ -47,6 +47,7 @@ router
 .post('/join',          (request, env, ctx) => JoinRoute.post(request, env, ctx))
 
 .get('/room',           (request, env, ctx) => RoomRoute.get(request, env, ctx))
+.get('/room/leave',     (request, env, ctx) => RoomRoute.get(request, env, ctx))
 
 .get('/bugreport',      (request, env, ctx) => BugReportRoute.get(request, env, ctx))
 .post('/bugreport',     (request, env, ctx) => BugReportRoute.post(request, env, ctx))

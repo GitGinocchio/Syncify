@@ -18,7 +18,7 @@ export default {
             user : {
                 name : data?.display_name, 
                 // @ts-ignore
-                image : data?.images[0].url,
+                image : data?.images[0]?.url,
                 // @ts-ignore
                 url: data?.external_urls.spotify
             }

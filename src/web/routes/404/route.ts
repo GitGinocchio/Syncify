@@ -1,11 +1,12 @@
-import Page404 from './404.html'
+// @ts-ignore
+import Page404 from './404.html';
 import mustache from 'mustache';
 
 import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
@@ -16,14 +17,17 @@ export default {
         if (payload != null){
             const id = env.users.idFromString(payload.id);
             const user = env.users.get(id);
-            data = await user.getUserData();
+            data = await user.getData();
         }
 
-        const html = mustache.render(Page404, { 
+        const html = mustache.render(Page404, {
             user : {
-                name : payload ? data.user.display_name : null, 
-                image : payload ? data.user.images[0].url : null, 
-                url: payload ? data.user.external_urls.spotify : null
+                // @ts-ignore
+                name : payload && data ? data.display_name : null, 
+                // @ts-ignore
+                image : payload && data ? data.images[0].url : null, 
+                // @ts-ignore
+                url: payload && data ? data.external_urls.spotify : null
             },
         });
 
