@@ -13,6 +13,12 @@ export default {
         
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
+
+        if (!payload) {
+            url.pathname = '/logout';
+            return Response.redirect(url, 302);
+        }
+    
         const id = env.users.idFromString(payload.id);
 
         const user = env.users.get(id);
@@ -39,10 +45,16 @@ export default {
 
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
-        const userid = env.users.idFromString(payload.id);
 
-        const user : User = env.users.get(userid);
-        const user_data = await user.getData();
+        if (!payload) {
+            url.pathname = '/logout';
+            return Response.redirect(url, 302);
+        }
+
+        // const userid = env.users.idFromString(payload.id);
+
+        // const user : User = env.users.get(userid);
+        // const user_data = await user.getData();
 
         // Ci assicuriamo che ci sia un singolo id
         // non possiamo generarlo con il nome della stanza, perché potrebbe essere già esistente
@@ -61,6 +73,7 @@ export default {
             room_data.userlimit,
             room_data.editablequeue == undefined ? false : true,
             room_data.visibility == 'public' ? true : false,
+            payload.id,
         )
 
         return new Response(null, { 

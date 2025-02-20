@@ -11,7 +11,7 @@ function renderChat(data : any, user_data : any) {
         let chat = '';
 
         data.messages.forEach((message) => {
-            const message_template = `					
+            const message_template = `
             <div class="sender">
                 <img src="${message.sender.image}">
                 <p>${message.sender.name}</p>
@@ -27,14 +27,14 @@ function renderChat(data : any, user_data : any) {
             }
             else if (message.sender.type == "system") {
                 chat += `
-                <div class="message other-message">
+                <div class="message system-message">
                     ${message_template}
                 </div>
                 `;
             }
             else {
                 chat += `
-                <div class="message system-message">
+                <div class="message other-message">
                     ${message_template}
                 </div>
                 `;
@@ -49,7 +49,47 @@ export default {
     async get(request : Request, env : any, ctx : any) {
         const url = new URL(request.url);
 
+        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        
+        const user_token = cookies.get('user_access_token');
+        const room_token = cookies.get('room_access_token');
+
+        const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
+        const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
+
+        if (!user_payload || !room_payload) {
+            url.pathname = '/logout';
+            return Response.redirect(url, 302);
+        }
+
+        const user_id = env.users.idFromString(user_payload.id);
+        const user : User = env.users.get(user_id);
+        const user_data = await user.getData();
+
+        const room_id = env.rooms.idFromString(room_payload.id);
+        const room : Room = env.rooms.get(room_id);
+        const room_data = await room.getData();
+
+        if (request.headers.get("Upgrade") == "websocket") {
+            return room.fetch(request);
+        }
+
         if (url.pathname == '/room/leave') {
+
+            if (room_data.ownerid == user_data.id.toString()) {
+                // The owner left the room, delete the room
+    
+                // @ts-ignore
+                var rooms = await env.kv.get("rooms");
+                var rooms = JSON.parse(rooms);
+    
+                var rooms = rooms.filter((element, index) => element != room_data.id.toString());
+    
+                // @ts-ignore
+                await env.kv.put("rooms", JSON.stringify(rooms));
+                //this.ctx.abort("Room owner left the room, deleting the room");
+            }
+
             return new Response(null, {
                 headers: {
                     'Set-Cookie': `room_access_token=; Max-Age=-1;`,
@@ -58,26 +98,6 @@ export default {
                 status: 302
             });
         }
-
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
-        
-        const user_token = cookies.get('user_access_token');
-        const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
-        const user_id = env.users.idFromString(user_payload.id);
-
-        const user : User = env.users.get(user_id);
-        const user_data = await user.getData();
-
-        const room_token = cookies.get('room_access_token');
-        const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
-        const room_id = env.rooms.idFromString(room_payload.id);
-        const room : Room = env.rooms.get(room_id);
-
-        if (request.headers.get("Upgrade") == "websocket") {
-            return room.fetch(request);
-        }
-
-        const data = await room.getData();
 
         const html = mustache.render(RoomPage, { 
             user : {
@@ -90,14 +110,14 @@ export default {
             }, 
             room : {
                 id : room_id,
-                chat : data.messages,
-                members : data.members.values(),
-                artists : data.artists,
-                queue : data.queue,
+                chat : room_data.messages,
+                members : room_data.members.values(),
+                artists : room_data.artists,
+                queue : room_data.queue,
                 status : "playing",
                 devices : []
             },
-            renderChat : (text : string, render : Function) => renderChat(data, user_data)
+            renderChat : (text : string, render : Function) => renderChat(room_data, user_data)
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});

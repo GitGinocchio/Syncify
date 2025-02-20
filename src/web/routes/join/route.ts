@@ -44,6 +44,12 @@ export default {
         
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
+
+        if (!payload) {
+            url.pathname = '/logout';
+            return Response.redirect(url, 302);
+        }
+
         const id = env.users.idFromString(payload.id);
 
         const user : User = env.users.get(id);
@@ -53,19 +59,15 @@ export default {
         let roomids = await env.kv.get("rooms");
         
         const rooms : Array<Object> = [];
-
-        console.log(roomids);
         
         if (roomids != null) {
             roomids = JSON.parse(roomids);
 
             let changed = false;
-            for (const roomidstring in roomids) {
+            for (const roomidstring of roomids) {
                 let roomid = env.rooms.idFromString(roomidstring);
                 let room : Room = env.rooms.get(roomid);
                 let data = await room?.getData();
-
-                console.log(data);
 
                 if (room != null && data != null) {
                     if (data.public) { rooms.push(data); }

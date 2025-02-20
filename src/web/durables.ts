@@ -15,12 +15,13 @@ export interface Room {
     queue : Array<object>;
     artists : Array<object>;
 
+    ownerid : string;
     name : string;
     max_members : number;
     queue_editable : boolean;
     public : boolean;
 
-    init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean) : Promise<void>;
+    init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean, ownerid : string) : Promise<void>;
     awake() : Promise<void>;
     getData() : Promise<object | null>;
 }
@@ -85,16 +86,17 @@ export class Room extends DurableObject {
         })
     }
 
-    async init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean) {
+    async init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean, ownerid : string) {
         // @ts-ignore
         let rooms = await this.env.kv.get("rooms");
 
         if (rooms != null) {
             rooms = JSON.parse(rooms);
-            rooms[this.ctx.id.toString()] = null;
         } else {
-            rooms = { [this.ctx.id.toString()]: null };
+            rooms = [];
         }
+
+        rooms.push(this.ctx.id.toString());
         // @ts-ignore
         await this.env.kv.put("rooms", JSON.stringify(rooms));
 
@@ -102,6 +104,7 @@ export class Room extends DurableObject {
         await this.storage.put('max_members', max_members);
         await this.storage.put('queue_editable', queue_editable);
         await this.storage.put('public', ispublic);
+        await this.storage.put('ownerid', ownerid);
     }
 
     async awake() {
@@ -111,6 +114,7 @@ export class Room extends DurableObject {
         this.max_members = Number(await this.storage.get('max_members'));
         this.queue_editable = Boolean(await this.storage.get('queue_editable'));
         this.public = Boolean(await this.storage.get('public'));
+        this.ownerid = String(await this.storage.get('ownerid'));
         
         this.messages = await this.storage.get('messages') || Array();
         this.artists = await this.storage.get('artists') || Array();
@@ -127,6 +131,7 @@ export class Room extends DurableObject {
             max_members : this.max_members, 
             queue_editable : this.queue_editable, 
             public : this.public,
+            ownerid : this.ownerid,
             messages : this.messages,
             artists : this.artists,
             members : this.members,

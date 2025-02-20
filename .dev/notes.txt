@@ -4,6 +4,7 @@ PYTHON
 - spotipy.oauth2.SpotifyOauthError: error: invalid_grant, error_description: Invalid authorization code
 - Premere il tasto disconnect fara' automaticamente uscire dalla stanza l'utente se e' in una
 - Utilizzare CosmosAsync per ottenere le informazioni necessarie dell'utente vedi spicetify
+- Sostituire il field ownerid della room con owner, all'interno di owner ci devono essere le proprieta dell'utente
 
 HTML
 - User

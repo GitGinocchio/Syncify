@@ -19,6 +19,10 @@ apply:
 install:
 	make install-app
 	make install-ext
+	make install-wrangler
+
+install-wrangler:
+	npm install wrangler --save-dev
 
 install-ext:
 	make clean-ext
@@ -39,12 +43,6 @@ uninstall-app:
 	@spicetify config custom_apps $(APP_NAME)-
 
 # Cleaning
-
-clean-wrangler:
-	rmdir /S /Q ".wrangler/state/v3/do"
-	rmdir /S /Q ".wrangler/state/v3/kv"
-	rmdir /S /Q ".wrangler/tmp"
-
 clean-ext:
 	del "$(EXTENSIONS_DIR)\$(EXT_NAME)"
 
@@ -52,9 +50,9 @@ clean-app:
 	rmdir /S /Q "$(CUSTOM_APPS_DIR)\$(APP_NAME)" || (exit /b 0)
 
 clean:
-	make clean-ext
-	make clean-app
-	make clean-wrangler
+	rmdir /S /Q ".wrangler/state/v3/do"
+	rmdir /S /Q ".wrangler/state/v3/kv"
+	rmdir /S /Q ".wrangler/tmp"
 
 run:
 	wrangler dev
