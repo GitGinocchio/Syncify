@@ -31,6 +31,9 @@ export interface User {
     env : DurableObjectNamespace;
     id : DurableObjectId;
     awakaned : boolean;
+    
+    devices : Map<string, WebSocket>;
+
 
     spotifyid : string;
     display_name : string;
@@ -246,7 +249,10 @@ export class Room extends DurableObject {
 
         this.broadcast(ws, JSON.stringify({ id : user_data.spotifyid, type : "member_left" }));
 
+        this.clients.delete(attachments.userid);
+
         await this.storage.put('members', this.members);
+        await this.storage.put('clients', this.clients);
 
         console.log(`User ${attachments.userid} with WebSocket ${ws} left the room: ${code} ${reason} ${wasClean}`);
     }
@@ -265,6 +271,12 @@ export class User extends DurableObject {
         this.id = ctx.id;
         this.awakaned = false;
         this.nextAllowedTime = 0;
+
+        this.devices = new Map();
+        this.ctx.getWebSockets().forEach((ws) => {
+            const attachments = ws.deserializeAttachment();
+            this.devices.set(attachments.deviceid, ws);
+        })
     }
 
     async init(spotifyid : string, display_name : string, birthdate : string, email : string, platform : object,locale : string, external_urls : object, explicit_content : object, images : Array<object>,policies : Map<string, any>,product : string,followers : object, country : string, type : string, uri : string) {
@@ -328,31 +340,76 @@ export class User extends DurableObject {
         };
     }
 
-    async fetch(request : Request) {
-        const url = new URL(request.url);
-
-        if (request.method != "POST" && request.method != "GET") {
-            return new Response("Method not allowed", { status: 405 });
-        }
-
-        let now = Date.now() / 1000;
-  
-        this.nextAllowedTime = Math.max(now, this.nextAllowedTime);
-  
-        if (request.method == "POST") {
-          // POST request means the user performed an action.
-          // We allow one action per 5 seconds.
-          this.nextAllowedTime += 5;
-        }
-  
-        // Return the number of seconds that the client needs to wait.
-        //
-        // We provide a "grace" period of 20 seconds, meaning that the client can make 4-5 requests
-        // in a quick burst before they start being limited.
-        let cooldown = Math.max(0, this.nextAllowedTime - now - 20);
-        return new Response(JSON.stringify({
-            cooldown : cooldown
-        }));
+    async checkCooldown() {
     }
 
+    async fetch(request : Request) {
+        const [client, server] = Object.values(new WebSocketPair());
+        this.ctx.acceptWebSocket(server);
+
+        return new Response(null, { status : 101, webSocket : client});
+    }
+
+    async onAuthRequest(ws : WebSocket, data : any) {
+        const attachments = ws.deserializeAttachment();
+        // @ts-ignore
+        const deviceid = data.platform.event_sender_context_information.device_id;
+
+        if (!attachments || !attachments.deviceid || !this.devices.has(attachments.deviceid)) {
+            ws.serializeAttachment({ ...attachments, deviceid: deviceid });
+            this.devices.set(deviceid, ws);
+        }
+
+        await this.init(
+            data.user.id,
+            data.user.display_name,
+            data.user.birthdate,
+            data.user.email,
+            data.platform,
+            data.locale,
+            data.user.external_urls,
+            data.user.explicit_content,
+            data.user.images,
+            data.user.policies,
+            data.user.product,
+            data.user.followers,
+            data.user.country,
+            data.user.type,
+            data.user.uri
+        );
+
+        const response = JSON.stringify({
+            status: 'success',
+            message : 'successfully logged in',
+            id : this.id.toString()
+        });
+
+        ws.send(response);
+    }
+
+    async webSocketMessage(ws : WebSocket, message : string) {
+        const data : Map<string, any> = JSON.parse(message);
+
+        // @ts-ignore
+        switch (data.type) {
+            case 'auth':
+                await this.onAuthRequest(ws, data);
+                break;
+            default:
+                console.log("Invalid message type");
+        }
+
+
+    }
+
+    broadcast(sender : WebSocket | null, message : string) {
+    }
+
+    async webSocketClose(ws : WebSocket, code : number, reason : string, wasClean : boolean) {
+        console.log(`User with WebSocket ${ws.toString()} disconnected: ${code} ${reason} ${wasClean}`);
+    }
+    
+    async webSocketError(ws : WebSocket, error : any) {
+        console.error(`An error occurred with WebSocket ${ws.toString()}: ${error}`);
+    }
 };

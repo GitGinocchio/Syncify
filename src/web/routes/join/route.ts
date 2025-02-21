@@ -8,11 +8,22 @@ import Utils from '../../utils.js';
 
 export default {
     async post (request : Request, env, ctx) {
+        const url = new URL(request.url);
         const raw = await request.text();
         const params = Utils.parseParams(raw);
 
         // @ts-ignore
         const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
+
+        var rooms = await env.kv.get("rooms");
+        var rooms = JSON.parse(rooms);
+
+        if (!rooms.includes(params.roomid)) {
+            // La stanza e' stata eliminata e non esiste piu'
+            // dovremmo notificare l'utente che la stanza a cui sta cercando di accedere non esiste piu'
+            url.pathname = '/404';
+            return Response.redirect(url, 302);
+        }
 
         return new Response(null, { 
             headers: {
