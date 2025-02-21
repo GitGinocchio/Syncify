@@ -1,5 +1,5 @@
 .container {
-  margin: auto;
+  margin-top: 300px;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -29,7 +29,6 @@
 
 /* Headings and Paragraphs in Cards */
 .card h2 {
-  text-align: center;
   font-size: 24px;
   margin-bottom: 10px;
   color: #1ed760;
@@ -37,17 +36,19 @@
 
 .description {
   font-size: 16px;
-  /*margin-bottom: 20px;*/
+  margin-top: 15%;
   min-height: 70px;
   color: #ccc;
 }
 
 .room-container {
+  margin-right: auto;
+  margin-left: auto;
+  width: 175px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  margin-top: 10%;
   border-radius: 15px;
-  background-color: #353232;
+  background-color: #1e1e1e;
   display: flex;
   justify-content: center;
 }
