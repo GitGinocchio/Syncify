@@ -11,17 +11,17 @@ export interface Room {
     awakaned : boolean;
 
     messages : Array<{ sender : { id : string, name : string, image : string, type : string}, message : string, type : string }>;
-    members : Map<string, { id : string, name : string, image : string}>;
+    members : Map<string, { id : string | undefined, name : string | undefined, image : string | undefined}>;
     queue : Array<object>;
     artists : Array<object>;
 
-    ownerid : string;
-    name : string;
+    owner : any;
+    name : string | undefined;
     max_members : number;
-    queue_editable : boolean;
+    editable_queue : boolean;
     public : boolean;
 
-    init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean, ownerid : string) : Promise<void>;
+    init(name : string, max_members : number, editable_queue : boolean, ispublic : boolean, owner: object) : Promise<void>;
     awake() : Promise<void>;
     getData() : Promise<object | null>;
 }
@@ -35,22 +35,22 @@ export interface User {
     devices : Map<string, WebSocket>;
 
 
-    spotifyid : string;
-    display_name : string;
+    spotifyid : string | undefined;
+    display_name : string | undefined;
     nextAllowedTime : number;
-    birthdate : string;
-    email : string;
+    birthdate : string | undefined;
+    email : string | undefined;
     platform : object;
-    locale : string;
+    locale : string | undefined;
     external_urls : Map<string, any>;
     explicit_content : object;
     images : Array<Map<string, any>>,
     policies : Map<string, any>,
-    product : string,
+    product : string | undefined,
     followers : object;
-    country : string;
-    type : string;
-    uri : string;
+    country : string | undefined;
+    type : string | undefined;
+    uri : string | undefined;
 
     init(
         spotifyid : string,
@@ -89,7 +89,7 @@ export class Room extends DurableObject {
         })
     }
 
-    async init(name : string, max_members : number, queue_editable : boolean, ispublic : boolean, ownerid : string) {
+    async init(name : string, max_members : number, editable_queue : boolean, ispublic : boolean, owner : object) {
         // @ts-ignore
         let rooms = await this.env.kv.get("rooms");
 
@@ -105,19 +105,19 @@ export class Room extends DurableObject {
 
         await this.storage.put('name', name);
         await this.storage.put('max_members', max_members);
-        await this.storage.put('queue_editable', queue_editable);
+        await this.storage.put('editable_queue', editable_queue);
         await this.storage.put('public', ispublic);
-        await this.storage.put('ownerid', ownerid);
+        await this.storage.put('owner' , owner);
     }
 
     async awake() {
         this.awakaned = true;
 
-        this.name = String(await this.storage.get('name'));
+        this.name = await this.storage.get('name');
         this.max_members = Number(await this.storage.get('max_members'));
-        this.queue_editable = Boolean(await this.storage.get('queue_editable'));
+        this.editable_queue = Boolean(await this.storage.get('editable_queue'));
         this.public = Boolean(await this.storage.get('public'));
-        this.ownerid = String(await this.storage.get('ownerid'));
+        this.owner = await this.storage.get('owner');
         
         this.messages = await this.storage.get('messages') || Array();
         this.artists = await this.storage.get('artists') || Array();
@@ -131,10 +131,10 @@ export class Room extends DurableObject {
         return {
             id : this.id, 
             name : this.name, 
-            max_members : this.max_members, 
-            queue_editable : this.queue_editable, 
+            max_members : this.max_members,
+            editable_queue : this.editable_queue, 
             public : this.public,
-            ownerid : this.ownerid,
+            owner : this.owner,
             messages : this.messages,
             artists : this.artists,
             members : this.members,
@@ -163,7 +163,19 @@ export class Room extends DurableObject {
         const user : User = await this.env.users.get(userid);
         const user_data = await user.getData();
 
-        server.serializeAttachment({...server.deserializeAttachment(), userid: payload.id});
+        const current_client = this.clients.get(payload.id);
+
+        const attachments = {...server.deserializeAttachment(), userid: payload.id };
+    
+        if (current_client) {
+            attachments['nextAllowedTime'] = current_client.deserializeAttachment().nextAllowedTime;
+            current_client.close(1000, "User already connected");
+        }
+        else {
+            attachments['nextAllowedTime'] = 0;
+        }
+
+        server.serializeAttachment(attachments);
 
         this.clients.set(payload.id, server);
 
@@ -171,11 +183,27 @@ export class Room extends DurableObject {
         const member = { id : user_data.spotifyid, name : user_data.display_name, image : user_data.images[0].url }
 
         this.members.set(payload.id, member);
-        this.broadcast(null, JSON.stringify({ type : 'member_joined', ...member }));
+        this.broadcast(null, JSON.stringify({ type : 'member-joined', ...member }));
 
         await this.storage.put('members', this.members);
 
         return new Response(null, { status : 101, webSocket : client});
+    }
+
+    async checkCooldown(ws : WebSocket, actionPerformed : boolean = false) {
+        let now = Date.now() / 1000;
+
+        const attachments = ws.deserializeAttachment();
+
+        attachments.nextAllowedTime = Math.max(now, attachments.nextAllowedTime);
+
+        if (actionPerformed) {
+            attachments.nextAllowedTime += 5;
+        }
+
+        ws.serializeAttachment(attachments);
+
+        return Math.max(0, attachments.nextAllowedTime - now - 20);
     }
 
     async onChatMessageReceived(ws : WebSocket, data : Map<string, any>) {
@@ -214,16 +242,45 @@ export class Room extends DurableObject {
         ws.send(JSON.stringify(messagecopy));
     }
 
+    async onSearchSong(ws : WebSocket, data : Map<string, any>) {
+        const attachments = ws.deserializeAttachment();
+
+        // @ts-ignore
+        const userid = this.env.users.idFromString(attachments.userid);
+
+        // @ts-ignore
+        const user = await this.env.users.get(userid);
+        const user_data = await user.getData();
+
+        console.log(user_data);
+    }
+
+
     async webSocketMessage(ws : WebSocket, message : string) {
         const data : Map<string, any> = JSON.parse(message);
+
+        const cooldown = await this.checkCooldown(ws, true);
+
+        if (cooldown > 0.0) {
+            const data = {
+                type : 'rate-limit-reached',
+                cooldown : cooldown
+            }
+            ws.send(JSON.stringify(data));
+            return;
+        }
 
         // @ts-ignore
         switch (data.type) {
             case 'message':
                 await this.onChatMessageReceived(ws, data);
                 break;
+            case 'search_song':
+                await this.onSearchSong(ws, data);
+                break;
             default:
-                console.log("Invalid message type");
+                // @ts-ignore
+                console.log(`Invalid Room Websocket message type received in room ${this.name}(id: ${this.id}): ${data.type}`);
         }
     }
 
@@ -239,6 +296,27 @@ export class Room extends DurableObject {
         if (!this.awakaned) { await this.awake(); } // Ensure the data is loaded
         const attachments = ws.deserializeAttachment();
 
+        if (attachments.userid == this.owner.id) {
+            // @ts-ignore
+            let rooms = await this.env.kv.get("rooms");
+
+            if (rooms == null) {
+                console.log("An error occurred: rooms should not be null");
+                return;
+            }
+
+            rooms = JSON.parse(rooms);
+            rooms = rooms.filter((roomid : string) => roomid !== this.id.toString());
+
+            // Qui dovremmo inviare un segnale a tutti gli utenti che il proprietario ha lasciato la stanza
+            // e che la stanza è stata chiusa e i membri devono essere disconnessi
+
+            // @ts-ignore
+            await this.env.kv.put("rooms", JSON.stringify(rooms));
+
+            return;
+        }
+
         this.members.delete(attachments.userid);
 
         // @ts-ignore
@@ -247,18 +325,19 @@ export class Room extends DurableObject {
         const user : User = await this.env.users.get(userid);
         const user_data = await user.getData();
 
-        this.broadcast(ws, JSON.stringify({ id : user_data.spotifyid, type : "member_left" }));
-
+        this.broadcast(ws, JSON.stringify({ id : user_data.spotifyid, type : "member-left" }));
+        
+        ws.close(1000, "User left the room");
         this.clients.delete(attachments.userid);
 
         await this.storage.put('members', this.members);
         await this.storage.put('clients', this.clients);
 
-        console.log(`User ${attachments.userid} with WebSocket ${ws} left the room: ${code} ${reason} ${wasClean}`);
+        console.log(`Room Websocket closed (code: ${code}, clean: ${wasClean}, reason: User left the room):\n\tUser: ${user_data.display_name} (id: ${user_data.id})\n\tRoom: ${this.name} (id: ${this.id})`);
     }
 
     async webSocketError(ws : WebSocket, error : any) {
-        console.error(`An error occurred with WebSocket ${ws}: ${error}`);
+        console.log(`One user Websocket of room ${this.name}(id: ${this.id}) raised an error: ${error}`);
     }
 };
 
@@ -276,7 +355,7 @@ export class User extends DurableObject {
         this.ctx.getWebSockets().forEach((ws) => {
             const attachments = ws.deserializeAttachment();
             this.devices.set(attachments.deviceid, ws);
-        })
+        });
     }
 
     async init(spotifyid : string, display_name : string, birthdate : string, email : string, platform : object,locale : string, external_urls : object, explicit_content : object, images : Array<object>,policies : Map<string, any>,product : string,followers : object, country : string, type : string, uri : string) {
@@ -300,21 +379,21 @@ export class User extends DurableObject {
     async awake() {
         this.awakaned = true;
     
-        this.spotifyid = String(await this.storage.get('spotifyid'));
-        this.display_name = String(await this.storage.get('display_name'));
-        this.birthdate = String(await this.storage.get('birthdate'));
-        this.email = String(await this.storage.get('email'));
+        this.spotifyid = await this.storage.get('spotifyid');
+        this.display_name = await this.storage.get('display_name');
+        this.birthdate = await this.storage.get('birthdate');
+        this.email = await this.storage.get('email');
         this.platform = Object(await this.storage.get('platform'));
-        this.locale = String(await this.storage.get('locale'));
+        this.locale = await this.storage.get('locale');
         this.external_urls = Object(await this.storage.get('external_urls'));
         this.explicit_content = Object(await this.storage.get('explicit_content'));
         this.images = Object(await this.storage.get('images'));
         this.policies = Object(await this.storage.get('policies'));
-        this.product = String(await this.storage.get('product'));
+        this.product = await this.storage.get('product');
         this.followers = Object(await this.storage.get('followers'));
-        this.country = String(await this.storage.get('country'));
-        this.type = String(await this.storage.get('type'));
-        this.uri = String(await this.storage.get('uri'));
+        this.country = await this.storage.get('country');
+        this.type = await this.storage.get('type');
+        this.uri = await this.storage.get('uri');
     }
 
     async getData() {
@@ -340,7 +419,16 @@ export class User extends DurableObject {
         };
     }
 
-    async checkCooldown() {
+    checkCooldown(actionPerformed : boolean = false) {
+        let now = Date.now() / 1000;
+
+        this.nextAllowedTime = Math.max(now, this.nextAllowedTime);
+
+        if (actionPerformed) {
+            this.nextAllowedTime += 5;
+        }
+
+        return Math.max(0, this.nextAllowedTime - now - 20);
     }
 
     async fetch(request : Request) {
@@ -396,20 +484,24 @@ export class User extends DurableObject {
                 await this.onAuthRequest(ws, data);
                 break;
             default:
-                console.log("Invalid message type");
+                console.log(`Invalid Spotify Websocket message received from user ${this.display_name}(id: ${this.spotifyid})`);
         }
-
-
     }
 
     broadcast(sender : WebSocket | null, message : string) {
+        for (let [deviceid, ws] of this.devices) {
+            if (sender != null && ws === sender) { continue; }
+
+            ws.send(message);
+        }
     }
 
     async webSocketClose(ws : WebSocket, code : number, reason : string, wasClean : boolean) {
-        console.log(`User with WebSocket ${ws.toString()} disconnected: ${code} ${reason} ${wasClean}`);
+        console.log(`Spotify Websocket of user ${this.display_name}(id: ${this.spotifyid}) closed with code ${code} and reason ${reason}`);
+        ws.close(1000, "Spotify Websocket closed");
     }
     
     async webSocketError(ws : WebSocket, error : any) {
-        console.error(`An error occurred with WebSocket ${ws.toString()}: ${error}`);
+        console.log(`Spotify Websocket of user ${this.display_name}(id: ${this.spotifyid}) raised an error: ${error}`);
     }
 };

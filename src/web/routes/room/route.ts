@@ -75,24 +75,9 @@ export default {
         }
 
         if (url.pathname == '/room/leave') {
-
-            if (room_data.ownerid == user_data.id.toString()) {
-                // The owner left the room, delete the room
-    
-                // @ts-ignore
-                var rooms = await env.kv.get("rooms");
-                var rooms = JSON.parse(rooms);
-    
-                var rooms = rooms.filter((element, index) => element != room_data.id.toString());
-    
-                // @ts-ignore
-                await env.kv.put("rooms", JSON.stringify(rooms));
-                //this.ctx.abort("Room owner left the room, deleting the room");
-            }
-
             return new Response(null, {
                 headers: {
-                    'Set-Cookie': `room_access_token=; Max-Age=-1;`,
+                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly`,
                     Location: '/user'
                 },
                 status: 302

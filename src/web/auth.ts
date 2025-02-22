@@ -22,7 +22,10 @@ export default {
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
 
         const user_token = cookies.get('user_access_token');
+        const room_token = cookies.get('room_access_token');
+
         const user_payload = await this.verifyToken(user_token, env.JWT_SECRET_KEY);
+        const room_payload = await this.verifyToken(room_token, env.JWT_SECRET_KEY);
 
         if (!user_payload) {
             url.pathname = '/403'
@@ -34,15 +37,25 @@ export default {
         const user = env.users.get(userid);
         const user_data = await user?.getData();
 
-        if (!user_data) {
+        if (!Object.keys(user_data).every((key) => user_data[key] !== undefined)) {
             url.pathname = '/logout'
             return Response.redirect(url);
         }
 
-        if (!roomidRequiredRoutes.includes(url.pathname)) { return; }
+        if (!roomidRequiredRoutes.includes(url.pathname)) { 
+            if (room_token == undefined) { return; }
 
-        const room_token = cookies.get('room_access_token');
-        const room_payload = await this.verifyToken(room_token, env.JWT_SECRET_KEY);
+            // Se la route non richiede un roomid, ma è presente un room_access_token, allora lo rimuovo
+            // e reindirizzo l'utente alla stessa pagina in cui cercava di andare
+            // (Questa procedura non viene fatta per le route che non richiedono uno userid)
+            return new Response(null, {
+                headers: {
+                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly`,
+                    Location: `${url.pathname}`
+                },
+                status: 302
+            });
+        }
 
         if (!room_payload) {
             url.pathname = '/403'

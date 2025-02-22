@@ -45,21 +45,19 @@
     <div class="public-sessions" id="public-sessions">
       <h2>Public Rooms</h2>
       {{#rooms}}
-        {{#rooms}}
-          <div class="session">
-            <div class="headerS">
-              <p class="session-name">{{name}}</p>
-              <p class="session-creator">Created by: {{owner.user.display_name}}</p>
-            </div>
-            <div class="infoplusS">
-              <p class="session-queue">Editable queue: {{room.editablequeue}} </p>
-            </div>
-            <div class="footerS">
-              <button class="session-join" onclick="joinroom('{{id}}')">Join</button>
-              <p class="session-members" id="session-members">{{room.num_members}} / {{room.userlimit}} Members</p>
-            </div>
+        <div class="session">
+          <div class="headerS">
+            <p class="session-name">{{name}}</p>
+            <p class="session-creator">Created by: {{owner.display_name}}</p>
           </div>
-        {{/rooms}}
+          <div class="infoplusS">
+            <p class="session-queue">Editable queue: {{editable_queue}} </p>
+          </div>
+          <div class="footerS">
+            <button class="session-join" onclick="joinroom('{{id}}')">Join</button>
+            <p class="session-members" id="session-members">{{members.size}} / {{max_members}} Members</p>
+          </div>
+        </div>
       {{/rooms}}
       {{^rooms}}
         <p class="nosession" id="nosession">There are no existing public rooms!</p>

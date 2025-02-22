@@ -44,7 +44,7 @@ export default {
 
             return new Response(null, {
                 headers: {
-                    'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
+                    'Set-Cookie' : `room_access_token=${room_token}; Path=/; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
                     Location : '/room'
                 },
                 status: 302

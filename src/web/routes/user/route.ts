@@ -27,7 +27,8 @@ export default {
                 url: data.external_urls.spotify
             },
             num_rooms : Object.keys(env.rooms).length,
-            num_public_rooms : 0
+            num_public_rooms : 0,
+            num_total_rooms : 0
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});

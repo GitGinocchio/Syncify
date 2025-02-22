@@ -45,16 +45,17 @@ export default {
 
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
+        
 
         if (!payload) {
             url.pathname = '/logout';
             return Response.redirect(url, 302);
         }
 
-        // const userid = env.users.idFromString(payload.id);
+        const userid = env.users.idFromString(payload.id);
 
-        // const user : User = env.users.get(userid);
-        // const user_data = await user.getData();
+        const user : User = env.users.get(userid);
+        const user_data = await user.getData();
 
         // Ci assicuriamo che ci sia un singolo id
         // non possiamo generarlo con il nome della stanza, perché potrebbe essere già esistente
@@ -73,12 +74,12 @@ export default {
             room_data.userlimit,
             room_data.editablequeue == undefined ? false : true,
             room_data.visibility == 'public' ? true : false,
-            payload.id,
+            user_data
         )
 
         return new Response(null, { 
             headers: {
-                'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
+                'Set-Cookie' : `room_access_token=${room_token}; Path=/; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
                 Location : '/room'
             },
             status: 302

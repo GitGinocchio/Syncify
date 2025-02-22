@@ -43,7 +43,9 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
 	messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+	var rateLimited = false;
 	var progressInterval;
+
 	let debounceTimeout;
 
 	function onMessage(data) {
@@ -86,8 +88,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		}
 	}
 
+	function onRateLimitReached(data) {
+		alert("Rate limit reached. Please wait a few seconds before sending another message.");
+
+		if (rateLimited) { return; }
+
+		rateLimited = true;
+		setTimeout(() => {
+			alert("Rate limit lifted. You can now send messages again!");
+			rateLimited = false;
+		}, data.cooldown * 1000);
+	}
+
     socket.addEventListener("open", (event) => {
-        console.log(`Connected to the server: ${window.location.pathname}`);
+        console.log("WebSocket connection opened: ", event);
     });
 
     socket.addEventListener("message", (event) => {
@@ -97,11 +111,14 @@ document.addEventListener("DOMContentLoaded", (event) => {
             case "message":
 				onMessage(data);
 				break;
-			case "member_joined":
+			case "member-joined":
 				onMemberJoined(data);
 				break;
-			case "member_left":
+			case "member-left":
 				onMemberLeft(data);
+				break;
+			case "rate-limit-reached":
+				onRateLimitReached(data);
 				break;
 			case "default":
 				console.log("WebSocket message not recognized: ", data);
@@ -109,13 +126,59 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
     });
 
+	socket.addEventListener("close", (event) => {
+		console.log("WebSocket connection closed: ", event);
+	});
+
+	addSongButton.addEventListener("click", () => {
+		// Quando viene premuto il tasto 'Invio':
+		// Se la input contiene 'https://' allora manda un segnale al server
+		// Con il link della canzone da aggiungere
+		let url = queueInput.value;
+		if (url.trim() && url.startsWith("https://")) {
+			/*
+			const data = {
+				type : "add_song",
+				url : url 
+			}
+			socket.send(JSON.stringify(data));
+			*/
+			queueInput.value = "";
+		}
+	});
+
+	queueInput.addEventListener("input", () => {
+		// Ad ogni carattere inserito nel campo di input ad intervallo di n secondi
+		// Se la query soddisfa certe condizioni invia la query al server
+		clearTimeout(debounceTimeout);
+
+		debounceTimeout = setTimeout(() => {
+			let query = queueInput.value;
+			if (query.trim() && !query.startsWith("https://")) {
+				/*
+				const data = {
+					type : "search_song",
+					query : query
+				};
+				*/
+
+				socket.send(JSON.stringify(data));
+			}
+		}, 500);
+	});
+
 	sendMessageButton.addEventListener("click", () => {
 		// Al click del pulsante 'invio' il messaggio viene inviato al server che lo elabora
 		// e salva nella lista dei messaggi gia' salvati
 
+		if (rateLimited) {
+			alert("Rate limit reached. Please wait a few seconds before sending another message.");
+			return;
+		}
+
 		const text = messageInput.value;
 		if (text.trim()) {
-            data = JSON.stringify({ 
+            const data = JSON.stringify({ 
                 type : "message",
                 text : text
             });
