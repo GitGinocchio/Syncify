@@ -1,0 +1,107 @@
+section {
+  display: grid;
+  place-items: center; /* Centro sia orizzontalmente che verticalmente */
+  flex-grow: 1; /* Permette alla sezione di crescere e occupare lo spazio disponibile */
+  padding: 20px; /* Aggiunge spazio interno */
+}
+
+.container {
+  width: 100%;
+  max-width: 400px; /* Mantieni la larghezza massima del form */
+}
+
+
+form{
+  background-color: #333;
+  padding: 20px;
+  border-radius: 7px; 
+  border: 3px solid #707070;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 400px; /* Larghezza massima del form */
+  margin: 0 auto; /* Centro del form nella pagina */
+}
+
+.queue-settings {
+
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.queue-settings label {
+  margin-left: 10px; /* Aggiungiamo un margine destro per separare il testo dal checkbox */
+}
+.queue-settings input[type="checkbox"] {
+  margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center; /* Allinea il contenuto al centro lungo l'asse principale (orizzontale) */
+}
+
+button[type="submit"] {
+  background-color: #1db954;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 12px; /* Aggiungiamo un margine superiore per separare il bottone dagli altri elementi */
+}
+
+button[type="submit"]:hover {
+  background-color: #169c3e;
+}
+
+body.light-mode {
+  background-color: #f7f7f7; /* colore di sfondo leggero */
+  color: #333; /* colore di testo scuro */
+}
+
+body.light-mode .card {
+  background-color: #ffffff; /* Sfondo chiaro per le card */
+  color: #333; /* Colore del testo delle card */
+  border: 1px solid #ddd; /* Bordo chiaro per le card */
+}
+
+body.light-mode .card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombra chiara al passaggio del mouse */
+}
+
+body.light-mode form {
+  background-color: #ffffff; /* Sfondo chiaro per il modulo */
+  color: #333; /* Colore del testo del modulo */
+  border: 1px solid #ddd; /* Bordo chiaro per il modulo */
+}
+
+body.light-mode input[type="text"],
+body.light-mode input[type="number"],
+body.light-mode select {
+  background-color: #ffffff; /* Sfondo chiaro per gli input */
+  color: #333; /* Colore del testo degli input */
+  border: 1px solid #ccc; /* Bordo chiaro per gli input */
+}
+
+body.light-mode button[type="submit"] {
+  background-color: #1db954; /* Colore di sfondo del bottone */
+  color: #ffffff; /* Colore del testo del bottone */
+  border: 1px solid #1db954; /* Bordo del bottone per la light-mode */
+}
+
+body.light-mode button[type="submit"]:hover {
+  background-color: #169c3e; /* Colore di sfondo del bottone al passaggio del mouse */
+}

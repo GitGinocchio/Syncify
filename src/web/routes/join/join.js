@@ -1,0 +1,1 @@
+function joinroom(roomid) { window.location.pathname = `join/${roomid}`; };

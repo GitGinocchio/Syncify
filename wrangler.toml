@@ -5,9 +5,24 @@ compatibility_flags = ["nodejs_compat_v2"]
 
 observability = { enabled = true}
 placement = { mode = "smart" }
-assets = { directory = "./src", binding = "assets" }
 
-main = "./src/worker.js"
+assets = { directory = "./src/web", binding = "src" }
+
+main = "./src/web/worker.ts"
+
+[durable_objects]
+bindings = [
+    { name = "rooms", class_name = "Room"},
+    { name = "users", class_name = "User"}
+]
 
 [limits]
 cpu_ms = 2000
+
+[[kv_namespaces]]
+binding = "kv"
+id = "9e15917973e94c38970d8836e8e2bfcb"
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Room", "User"]

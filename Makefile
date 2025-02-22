@@ -2,11 +2,11 @@ CUSTOM_APPS_DIR = %appdata%\spicetify\CustomApps
 EXTENSIONS_DIR = %appdata%\spicetify\Extensions
 
 # Syncify Extension
-EXT_DIR = SyncifyExt
+EXT_DIR = src\ext
 EXT_NAME = syncify.js
 
 # Syncify Custom App
-APP_DIR = SyncifyApp
+APP_DIR = src\app
 APP_NAME = syncify
 
 # Apply Changes
@@ -19,6 +19,10 @@ apply:
 install:
 	make install-app
 	make install-ext
+	make install-wrangler
+
+install-wrangler:
+	npm install wrangler --save-dev
 
 install-ext:
 	make clean-ext
@@ -39,7 +43,6 @@ uninstall-app:
 	@spicetify config custom_apps $(APP_NAME)-
 
 # Cleaning
-
 clean-ext:
 	del "$(EXTENSIONS_DIR)\$(EXT_NAME)"
 
@@ -47,5 +50,9 @@ clean-app:
 	rmdir /S /Q "$(CUSTOM_APPS_DIR)\$(APP_NAME)" || (exit /b 0)
 
 clean:
-	make clean-ext
-	make clean-app
+	rmdir /S /Q ".wrangler/state/v3/do"
+	rmdir /S /Q ".wrangler/state/v3/kv"
+	rmdir /S /Q ".wrangler/tmp"
+
+run:
+	wrangler dev
