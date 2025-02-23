@@ -61,8 +61,8 @@ export default {
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
 
-        console.log(user_payload);
-        console.log(room_payload);
+        console.log("user_payload: ", user_payload.id);
+        console.log("room_payload: ", room_payload.id);
 
         if (!user_payload || !room_payload) {
             url.pathname = '/logout';
