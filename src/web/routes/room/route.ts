@@ -54,8 +54,15 @@ export default {
         const user_token = cookies.get('user_access_token');
         const room_token = cookies.get('room_access_token');
 
+        console.log(user_token);
+        console.log(room_token);
+
+
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
+
+        console.log(user_payload);
+        console.log(room_payload);
 
         if (!user_payload || !room_payload) {
             url.pathname = '/logout';

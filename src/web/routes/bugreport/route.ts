@@ -27,9 +27,9 @@ export default {
 
         const html = mustache.render(BugReport, { 
             user : { 
-                name : data?.user.display_name, 
-                image : data?.user.images[0].url, 
-                url: data?.user.external_urls.spotify
+                name : data?.display_name, 
+                image : data?.images[0].url, 
+                url: data?.external_urls.spotify
             }, 
         });
 

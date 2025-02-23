@@ -12,8 +12,6 @@ export default {
         const raw = await request.text();
         const params = Utils.parseParams(raw);
 
-        console.log("params: ", params);
-
         // @ts-ignore
         const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 

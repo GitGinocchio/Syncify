@@ -68,7 +68,6 @@ export default {
         // @ts-ignore
         const room_token = await Auth.generateToken({ id : roomid.toString() }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
-        // Aggiungere l'id dell'owner della stanza
         await room.init(
             room_data.name,
             room_data.userlimit,
