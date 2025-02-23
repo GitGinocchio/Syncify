@@ -36,6 +36,8 @@ export default {
             headers: {
                 'Set-Cookie' : `room_access_token=${room_token}; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
                 'Access-Control-Allow-Origin': '*', // allow requests from any origin
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE', // specify allowed HTTP methods
+                'Access-Control-Allow-Headers': 'Content-Type, Accept', // specify allowed headers
                 Location : '/room'
             },
             status: 302
