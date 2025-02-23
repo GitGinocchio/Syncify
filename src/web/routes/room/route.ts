@@ -94,7 +94,7 @@ export default {
                 url: user_data.external_urls.spotify
             }, 
             room : {
-                id : room_payload.id,
+                id : room_payload.id.toString(),
                 chat : room_data.messages,
                 members : room_data.members.values(),
                 artists : room_data.artists,
