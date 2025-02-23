@@ -2,7 +2,7 @@ import OnBoard from './onboard.html'
 import mustache from 'mustache';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
 
         /*

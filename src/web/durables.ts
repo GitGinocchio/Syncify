@@ -129,7 +129,7 @@ export class Room extends DurableObject {
         if (!this.awakaned) { await this.awake(); }
 
         return {
-            id : this.id, 
+            id : this.id.toString(), 
             name : this.name, 
             max_members : this.max_members,
             editable_queue : this.editable_queue, 
@@ -400,7 +400,7 @@ export class User extends DurableObject {
         if (!this.awakaned) { await this.awake(); }
 
         return {
-            id : this.id,
+            id : this.id.toString(),
             spotifyid : this.spotifyid,
             display_name : this.display_name,
             birthdate : this.birthdate,

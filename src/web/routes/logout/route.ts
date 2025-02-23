@@ -1,10 +1,10 @@
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
 
         return new Response(null, {
             headers: {
-              'Set-Cookie': `user_access_token=; Max-Age=-1; room_access_token=; Max-Age=-1;`,
+              'Set-Cookie': `user_access_token=; Path=/; Max-Age=0; Secure; HttpOnly; room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
               Location: `/`
             },
             status: 302

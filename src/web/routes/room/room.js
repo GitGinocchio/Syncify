@@ -15,7 +15,7 @@ function copyurl(roomid) {
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
-    const socket = new WebSocket(`ws://${window.location.host}/room`);
+    const socket = new WebSocket((window.location.protocol === 'https:' ? 'wss://' : 'ws://') + window.location.host + '/room');
 
 	const messageInput = document.getElementById("message-input");
 	const queueInput = document.getElementById("queue-input");

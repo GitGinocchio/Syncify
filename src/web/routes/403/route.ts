@@ -6,7 +6,7 @@ import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
 export default {
-    async get (request, env, ctx) {
+    async get (request : Request, env, ctx) {
         const url = new URL(request.url);
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         

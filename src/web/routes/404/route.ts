@@ -2,6 +2,7 @@
 import Page404 from './404.html';
 import mustache from 'mustache';
 
+import { User } from '../../durables.js';
 import Auth from '../../auth.js';
 import Utils from '../../utils.js';
 
@@ -13,10 +14,10 @@ export default {
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
 
-        let data = null;
+        let data : any = null;
         if (payload != null){
             const id = env.users.idFromString(payload.id);
-            const user = env.users.get(id);
+            const user : User = env.users.get(id);
             data = await user.getData();
         }
 

@@ -1,7 +1,7 @@
 const reconnectionAttempts = 3;
 const Addresses = [
-    `http://127.0.0.1:8787`,
-    `https://syncify.ginocchio.workers.dev/`
+    `https://syncify.ginocchio.workers.dev`,
+    `http://127.0.0.1:8787`
 ];
 
 let customButton;
@@ -81,7 +81,7 @@ function showDialog(title, message) {
 
 async function attemptConnection(url, user_data) {
     return new Promise((resolve, reject) => {
-        socket = new WebSocket(`${url.replace("https", "ws").replace("http", "ws")}/auth/${user_data.id}`);
+        socket = new WebSocket(`${url.replace("https", "wss").replace("http", "ws")}/auth/${user_data.id}`);
 
         socket.addEventListener("open", (event) => {
             const data = JSON.stringify({
