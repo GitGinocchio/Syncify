@@ -57,6 +57,8 @@ export default {
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
 
+        console.log(user_payload, room_payload);
+
         if (!user_payload || !room_payload) {
             url.pathname = '/logout';
             return Response.redirect(url, 302);
@@ -67,7 +69,6 @@ export default {
         const user_data = await user.getData();
 
         const room_id = env.rooms.idFromString(room_payload.id);
-        console.log("room_id: ", room_id);
         const room : Room = env.rooms.get(room_id);
         const room_data = await room.getData();
 
