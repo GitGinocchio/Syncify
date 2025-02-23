@@ -34,3 +34,5 @@ USER_COOKIE_MAX_AGE = "86400"
 
 ROOM_ACCESS_TOKEN_MAX_AGE = "1d"
 ROOM_COOKIE_MAX_AGE = "86400"
+
+tail_consumers = [{service = "syncify"}]
