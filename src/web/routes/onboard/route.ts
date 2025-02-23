@@ -1,3 +1,4 @@
+// @ts-ignore
 import OnBoard from './onboard.html'
 import mustache from 'mustache';
 

@@ -16,7 +16,12 @@ export default {
         const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
 
         var rooms = await env.kv.get("rooms");
-        var rooms = JSON.parse(rooms);
+        if (rooms !== "" || rooms != undefined) {
+            var rooms = JSON.parse(rooms);
+        }
+        else {
+            var rooms : any = [];
+        }
 
         if (!rooms.includes(params.roomid)) {
             // La stanza e' stata eliminata e non esiste piu'
@@ -71,7 +76,7 @@ export default {
         
         const rooms : Array<Object> = [];
         
-        if (roomids != null) {
+        if (roomids != undefined || roomids !== "") {
             roomids = JSON.parse(roomids);
 
             let changed = false;
