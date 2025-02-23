@@ -28,6 +28,8 @@ tag = "v1" # Should be unique for each entry
 new_classes = ["Room", "User"]
 
 [vars]
+JWT_SECRET_KEY = "your_secret_key_here"
+
 USER_ACCESS_TOKEN_MAX_AGE = "1d"
 USER_COOKIE_MAX_AGE = "86400"
 
