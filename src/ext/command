@@ -1,1 +1,1 @@
-iwr -useb https://github.com/GitGinocchio/Syncify/blob/syncify-cfworkers/src/ext/install.ps1 | iex
+iwr -useb https://github.com/GitGinocchio/Syncify/raw/refs/heads/syncify-cfworkers/src/ext/install.ps1 | iex
