@@ -27,7 +27,7 @@ id = "9e15917973e94c38970d8836e8e2bfcb"
 tag = "v1" # Should be unique for each entry
 new_classes = ["Room", "User"]
 
-[env.production.vars]
+[vars]
 USER_ACCESS_TOKEN_MAX_AGE = "1d"
 USER_COOKIE_MAX_AGE = 86400
 
