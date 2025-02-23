@@ -119,7 +119,7 @@ async function findAvailableConnection() {
         try {
             socket = await attemptConnection(url,user_data);
             //showDialog('Success', "You are now successfully connected to Syncify\nlets listen to some good music together!");
-            Spicetify.PopupModal.hide();
+            showDialog('Success', "You are now successfully connected to Syncify\nlets listen to some good music together!");
             return socket;
         } catch (error) {
             if (error.fatal) { throw new Error(error.message); }

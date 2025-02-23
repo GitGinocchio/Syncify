@@ -12,10 +12,8 @@ export default {
             return Response.redirect(url);
         }
 
-        const raw = await request.text();
-        const params = Utils.parseParams(raw);
-
-        let id = env.users.idFromName(params.spotifyid);
+        // @ts-ignore
+        let id = env.users.idFromName(request.params.spotifyid);
         let user : User = env.users.get(id);
 
         return user.fetch(request);
