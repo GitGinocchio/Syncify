@@ -57,6 +57,8 @@ export default {
             });
         }
 
+        return new Response("Ok", { status: 200 });
+
         if (!room_payload) {
             url.pathname = '/403'
             return Response.redirect(url);
