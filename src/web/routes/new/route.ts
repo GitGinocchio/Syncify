@@ -43,6 +43,8 @@ export default {
 
         const room_data = Utils.parseParams(await request.text());
 
+        console.log(room_data);
+
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         
@@ -79,7 +81,7 @@ export default {
 
         return new Response(null, { 
             headers: {
-                'Set-Cookie' : `room_access_token=${room_token}; Path=/; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly`,
+                'Set-Cookie' : `room_access_token=${room_token}; Path=/; Max-Age=${env.ROOM_COOKIE_MAX_AGE}; Secure; HttpOnly;`,
                 Location : '/room'
             },
             status: 302

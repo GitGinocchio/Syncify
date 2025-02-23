@@ -77,7 +77,7 @@ export default {
         if (url.pathname == '/room/leave') {
             return new Response(null, {
                 headers: {
-                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly`,
+                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
                     Location: '/user'
                 },
                 status: 302
