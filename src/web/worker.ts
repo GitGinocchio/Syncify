@@ -14,7 +14,6 @@ import BugReportRoute from './routes/bugreport/route.js';
 import AllRoute from './routes/all/route.js';
 import Route404 from './routes/404/route.js';
 import Route403 from './routes/403/route.js';
-import Tail from './routes/tail/route.js';
 
 import { User, Room } from './durables.js';
 import Utils from './utils.js';
@@ -55,8 +54,6 @@ router
 
 .all('/404',                (request, env, ctx) => Route404.get(request, env, ctx))
 .all('/403',                (request, env, ctx) => Route403.get(request, env, ctx))
-
-.all('/logs',               (request, env, ctx) => Tail.logs(request, env, ctx))
 
 .all('*',                   (request, env, ctx) => AllRoute.get(request, env, ctx))
 

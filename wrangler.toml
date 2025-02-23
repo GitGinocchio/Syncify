@@ -3,7 +3,7 @@ name = "syncify"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat_v2"]
 
-observability = { enabled = true}
+observability = { enabled = true }
 placement = { mode = "smart" }
 logpush = true
 
@@ -18,7 +18,7 @@ bindings = [
 ]
 
 [limits]
-cpu_ms = 2000
+cpu_ms = 20000
 
 [[kv_namespaces]]
 binding = "kv"
@@ -34,5 +34,3 @@ USER_COOKIE_MAX_AGE = "86400"
 
 ROOM_ACCESS_TOKEN_MAX_AGE = "1d"
 ROOM_COOKIE_MAX_AGE = "86400"
-
-tail_consumers = [{service = "syncify"}]
