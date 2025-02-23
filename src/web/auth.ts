@@ -57,8 +57,6 @@ export default {
             });
         }
 
-        return new Response(room_payload?.id.toString(), { status: 200 });
-
         if (!room_payload) {
             url.pathname = '/403'
             return Response.redirect(url);
@@ -66,7 +64,7 @@ export default {
 
         const roomid = env.rooms.idFromString(room_payload.id);
         
-        const room = env.users.get(roomid);
+        const room = env.rooms.get(roomid);
         const room_data = await room?.getData();
 
         if (!room_data) {
