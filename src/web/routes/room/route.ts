@@ -47,77 +47,66 @@ function renderChat(data : any, user_data : any) {
 
 export default {
     async get(request : Request, env : any, ctx : any) {
-        try {
-            const url = new URL(request.url);
+        const url = new URL(request.url);
 
-            const cookies = Utils.parseCookies(request.headers.get('cookie'));
-            
-            const user_token = cookies.get('user_access_token');
-            const room_token = cookies.get('room_access_token');
-    
-            console.log(user_token);
-            console.log(room_token);
-    
-    
-            const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
-            const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
-    
-            console.log("user_payload: ", user_payload.id);
-            console.log("room_payload: ", room_payload.id);
-    
-            if (!user_payload || !room_payload) {
-                url.pathname = '/logout';
-                return Response.redirect(url, 302);
-            }
-    
-            const user_id = env.users.idFromString(user_payload.id.toString());
-            const user : User = env.users.get(user_id);
-            const user_data = await user.getData();
-    
-            const room_id = env.rooms.idFromString(room_payload.id.toString());
-            const room : Room = env.rooms.get(room_id);
-            const room_data = await room.getData();
-    
-            if (request.headers.get("Upgrade") == "websocket") {
-                return room.fetch(request);
-            }
-    
-            if (url.pathname == '/room/leave') {
-                return new Response(null, {
-                    headers: {
-                        'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
-                        Location: '/user'
-                    },
-                    status: 302
-                });
-            }
-    
-            const html = mustache.render(RoomPage, { 
-                user : {
-                    id : user_data.spotifyid,
-                    name : user_data.display_name, 
-                    // @ts-ignore
-                    image : user_data.images[0].url,
-                    // @ts-ignore
-                    url: user_data.external_urls.spotify
-                }, 
-                room : {
-                    id : room_payload.id.toString(),
-                    chat : room_data.messages,
-                    members : room_data.members.values(),
-                    artists : room_data.artists,
-                    queue : room_data.queue,
-                    status : "playing",
-                    devices : []
+        return new Response("Ok", { status: 200 });
+
+        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        
+        const user_token = cookies.get('user_access_token');
+        const room_token = cookies.get('room_access_token');
+
+        const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
+        const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
+
+        if (!user_payload || !room_payload) {
+            url.pathname = '/logout';
+            return Response.redirect(url, 302);
+        }
+
+        const user_id = env.users.idFromString(user_payload.id);
+        const user : User = env.users.get(user_id);
+        const user_data = await user.getData();
+
+        const room_id = env.rooms.idFromString(room_payload.id);
+        const room : Room = env.rooms.get(room_id);
+        const room_data = await room.getData();
+
+        if (request.headers.get("Upgrade") == "websocket") {
+            return room.fetch(request);
+        }
+
+        if (url.pathname == '/room/leave') {
+            return new Response(null, {
+                headers: {
+                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
+                    Location: '/user'
                 },
-                renderChat : (text : string, render : Function) => renderChat(room_data, user_data)
+                status: 302
             });
-    
-            return new Response(html, { headers: { 'Content-Type': 'text/html' }});
         }
-        catch (e) {
-            console.error(e);
-            return new Response(`Internal Server Error: {e}`, { status: 500 });
-        }
+
+        const html = mustache.render(RoomPage, { 
+            user : {
+                id : user_data.spotifyid,
+                name : user_data.display_name, 
+                // @ts-ignore
+                image : user_data.images[0].url,
+                // @ts-ignore
+                url: user_data.external_urls.spotify
+            }, 
+            room : {
+                id : room_payload.id.toString(),
+                chat : room_data.messages,
+                members : room_data.members.values(),
+                artists : room_data.artists,
+                queue : room_data.queue,
+                status : "playing",
+                devices : []
+            },
+            renderChat : (text : string, render : Function) => renderChat(room_data, user_data)
+        });
+
+        return new Response(html, { headers: { 'Content-Type': 'text/html' }});
     }
 }
