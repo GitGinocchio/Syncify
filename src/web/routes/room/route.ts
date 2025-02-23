@@ -49,8 +49,6 @@ export default {
     async get(request : Request, env : any, ctx : any) {
         const url = new URL(request.url);
 
-        return new Response("Ok", { status: 200 });
-
         const cookies = Utils.parseCookies(request.headers.get('cookie'));
         
         const user_token = cookies.get('user_access_token');
