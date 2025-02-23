@@ -44,6 +44,7 @@ export default {
         const room_data = Utils.parseParams(await request.text());
 
         console.log(room_data);
+        console.log(room_data.name);
 
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
