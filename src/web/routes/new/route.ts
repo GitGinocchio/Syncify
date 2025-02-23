@@ -43,9 +43,6 @@ export default {
 
         const room_data = Utils.parseParams(await request.text());
 
-        console.log(room_data);
-        console.log(room_data.name);
-
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         
@@ -55,7 +52,7 @@ export default {
             return Response.redirect(url, 302);
         }
 
-        const userid = env.users.idFromString(payload.id);
+        const userid = env.users.idFromString(payload.id.toString());
 
         const user : User = env.users.get(userid);
         const user_data = await user.getData();

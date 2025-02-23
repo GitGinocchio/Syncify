@@ -54,9 +54,6 @@ export default {
         const user_token = cookies.get('user_access_token');
         const room_token = cookies.get('room_access_token');
 
-        url.pathname = `/${user_token}/${room_token}`;
-        return Response.redirect(url, 302);
-
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
 
@@ -65,11 +62,11 @@ export default {
             return Response.redirect(url, 302);
         }
 
-        const user_id = env.users.idFromString(user_payload.id);
+        const user_id = env.users.idFromString(user_payload.id.toString());
         const user : User = env.users.get(user_id);
         const user_data = await user.getData();
 
-        const room_id = env.rooms.idFromString(room_payload.id);
+        const room_id = env.rooms.idFromString(room_payload.id.toString());
         const room : Room = env.rooms.get(room_id);
         const room_data = await room.getData();
 
