@@ -67,6 +67,7 @@ export default {
         const user_data = await user.getData();
 
         const room_id = env.rooms.idFromString(room_payload.id);
+        console.log(room_id);
         const room : Room = env.rooms.get(room_id);
         const room_data = await room.getData();
 
