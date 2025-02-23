@@ -55,7 +55,7 @@ router
 .all('/404',                (request, env, ctx) => Route404.get(request, env, ctx))
 .all('/403',                (request, env, ctx) => Route403.get(request, env, ctx))
 
-.all('/logs',               (request, env, ctx) => { console.log(request); return new Response(null, { status: 204 })})
+.all('/logs',               (request, env, ctx) => { return new Response(request.body, { status: 204 }); })
 
 .all('*',                   (request, env, ctx) => AllRoute.get(request, env, ctx))
 
