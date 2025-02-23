@@ -44,6 +44,7 @@ function createButton() {
 
         customButton.addEventListener('click', () => {
             if (customButton.classList.contains('connected')) {
+                showDialog("Disconnected", "Successfully disconnected from Syncify servers!")
                 disconnect();
             } else {
                 connect();
@@ -107,7 +108,6 @@ async function attemptConnection(url, user_data) {
 
         socket.addEventListener("close", (event) => {
             console.log("disconnected");
-            disconnect();
             reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : false});
         });
     });
@@ -118,8 +118,8 @@ async function findAvailableConnection() {
     for (const url of Addresses) {
         try {
             socket = await attemptConnection(url,user_data);
-            console.log(`WebSocket connection established at: ${url}`);
-            setButtonStatus(true);
+            //showDialog('Success', "You are now successfully connected to Syncify\nlets listen to some good music together!");
+            Spicetify.PopupModal.hide();
             return socket;
         } catch (error) {
             if (error.fatal) { throw new Error(error.message); }
@@ -129,12 +129,14 @@ async function findAvailableConnection() {
 };
 
 async function connect() {
+    showDialog("Alomost there!", `Just a moment while we try to connect you with Syncify Server...`);
+    setButtonStatus(true);
     findAvailableConnection()
        .then((socket) => {
+        // We need to implement the logic to handle the connection here
        })
        .catch((error) => {
-            showDialog('Syncify Error:', error);
-            console.log('Syncify Error:', error);
+            showDialog('Syncify Error', error.message);
             disconnect();
        })
 };
