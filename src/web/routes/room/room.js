@@ -5,7 +5,7 @@ function toBottom() {
 
 function copyurl(roomid) {
 	navigator.clipboard
-	.writeText(`${window.location.host}/join/${roomid}`)
+	.writeText(`${window.location.protocol}//${window.location.host}/join/${roomid}`)
 	.then(function () {
 		alert("Link copiato!");
 	})
