@@ -93,7 +93,7 @@ export class Room extends DurableObject {
         // @ts-ignore
         let rooms = await this.env.kv.get("rooms");
 
-        if (rooms != null) {
+        if (rooms != null || rooms != "") {
             rooms = JSON.parse(rooms);
         } else {
             rooms = [];
