@@ -75,8 +75,10 @@ export default {
         let roomids = await env.kv.get("rooms");
         
         const rooms : Array<Object> = [];
+
+        console.log(roomids);
         
-        if (roomids != undefined || roomids !== "") {
+        if (roomids != null) {
             roomids = JSON.parse(roomids);
 
             let changed = false;

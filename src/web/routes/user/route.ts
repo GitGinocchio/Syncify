@@ -18,6 +18,10 @@ export default {
         const user : User = env.users.get(id);
         const data = await user.getData();
 
+        // @ts-ignore
+        let rooms = await env.kv.get("rooms");
+        rooms = JSON.parse(rooms);
+
         const html = mustache.render(UserPage, { 
             user : {
                 name : data.display_name, 
@@ -26,9 +30,8 @@ export default {
                 //@ts-ignore
                 url: data.external_urls.spotify
             },
-            num_rooms : Object.keys(env.rooms).length,
             num_public_rooms : 0,
-            num_total_rooms : 0
+            num_total_rooms : rooms ? rooms.length : 0
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});
