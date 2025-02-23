@@ -34,7 +34,7 @@ router
 .get('/',                   (request, env, ctx) => IndexRoute.get(request, env, ctx))
 .get('/onboard',            (request, env, ctx) => OnBoardRoute.get(request, env, ctx))
 .get('/challenge',          (request, env, ctx) => ChallengeRoute.get(request, env, ctx))
-.get('/auth/:spotifyid',   (request, env, ctx) => AuthRoute.get(request, env, ctx))
+.get('/auth/:spotifyid',    (request, env, ctx) => AuthRoute.get(request, env, ctx))
 .get('/logout',             (request, env, ctx) => LogoutRoute.get(request, env, ctx))
 
 .get('/user',               (request, env, ctx) => UserRoute.get(request, env, ctx))

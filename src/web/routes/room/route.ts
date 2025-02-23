@@ -54,6 +54,9 @@ export default {
         const user_token = cookies.get('user_access_token');
         const room_token = cookies.get('room_access_token');
 
+        url.pathname = `/${user_token}/${room_token}`;
+        return Response.redirect(url, 302);
+
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
 
@@ -61,9 +64,6 @@ export default {
             url.pathname = '/logout';
             return Response.redirect(url, 302);
         }
-
-        url.pathname = `/${user_payload.id}`;
-        return Response.redirect(url, 302);
 
         const user_id = env.users.idFromString(user_payload.id);
         const user : User = env.users.get(user_id);
