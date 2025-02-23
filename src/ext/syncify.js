@@ -107,9 +107,8 @@ async function attemptConnection(url, user_data) {
 
         socket.addEventListener("close", (event) => {
             console.log("disconnected");
-            if (socket) { socket.close(); }
             disconnect();
-            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true});
+            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : false});
         });
     });
 };
@@ -126,7 +125,7 @@ async function findAvailableConnection() {
             if (error.fatal) { throw new Error(error.message); }
         }
     }
-    throw new Error('Failed to connect to any Syncify Server. Try again later...');
+    throw new Error('Failed to connect to any selected Syncify Server. Try again later...');
 };
 
 async function connect() {
