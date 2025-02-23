@@ -57,12 +57,13 @@ export default {
         const user_payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);
         const room_payload = await Auth.verifyToken(room_token, env.JWT_SECRET_KEY);
 
-        console.log(user_payload, room_payload);
-
         if (!user_payload || !room_payload) {
             url.pathname = '/logout';
             return Response.redirect(url, 302);
         }
+
+        url.pathname = `/${user_payload.id}`;
+        return Response.redirect(url, 302);
 
         const user_id = env.users.idFromString(user_payload.id);
         const user : User = env.users.get(user_id);
