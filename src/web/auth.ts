@@ -57,7 +57,7 @@ export default {
             });
         }
 
-        return new Response("Ok", { status: 200 });
+        return new Response(room_payload?.id.toString(), { status: 200 });
 
         if (!room_payload) {
             url.pathname = '/403'
