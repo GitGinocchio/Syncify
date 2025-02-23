@@ -73,6 +73,8 @@ export default {
 
         // Qui dobbiamo ottenere tutte le stanze (durable objects) e filtrare per le stanze pubbliche
         let roomids = await env.kv.get("rooms");
+
+        console.log("rooms: ", roomids);
         
         const rooms : Array<Object> = [];
         
