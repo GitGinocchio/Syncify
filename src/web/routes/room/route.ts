@@ -75,13 +75,8 @@ export default {
         }
 
         if (url.pathname == '/room/leave') {
-            return new Response(null, {
-                headers: {
-                    'Set-Cookie': `room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
-                    Location: '/user'
-                },
-                status: 302
-            });
+            url.pathname = '/user';
+            return Response.redirect(url);
         }
 
         const html = mustache.render(RoomPage, { 
