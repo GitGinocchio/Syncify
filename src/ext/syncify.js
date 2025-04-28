@@ -1,7 +1,7 @@
 const reconnectionAttempts = 3;
 const Addresses = [
     `http://127.0.0.1:8787`,
-    `https://syncify.ginocchio.workers.dev`,
+    `https://syncify.giulioo.workers.dev`,
 ];
 
 let customButton;
