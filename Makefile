@@ -55,4 +55,4 @@ clean:
 	rmdir /S /Q ".wrangler/tmp"
 
 run:
-	wrangler dev
+	npx wrangler dev
