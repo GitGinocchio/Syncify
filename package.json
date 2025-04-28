@@ -17,8 +17,8 @@
     "urlpattern-polyfill": "^10.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250320.0",
-    "wrangler": "^4.3.0",
+    "@cloudflare/workers-types": "^4.20250428.0",
+    "wrangler": "^4.13.2",
     "typescript": "^5.8.2"
   }
 }
