@@ -1,4 +1,4 @@
-const reconnectionAttempts = 3;
+const MAX_CONNECTIONS_ATTEMPTS = 3;
 const Addresses = [
     `http://127.0.0.1:8787`,
     `https://syncify.giulioo.workers.dev`,
@@ -7,6 +7,8 @@ const Addresses = [
 let customButton;
 let syncify_observer;
 let socket;
+let disconnectedByUser = false;
+let attempts = 0;
 
 function createButton() {
     const controlBar = document.querySelector('.main-nowPlayingBar-extraControls');
@@ -45,8 +47,10 @@ function createButton() {
         customButton.addEventListener('click', () => {
             if (customButton.classList.contains('connected')) {
                 showDialog("Disconnected", "Successfully disconnected from Syncify servers!")
+                disconnectedByUser = true;
                 disconnect();
             } else {
+                disconnectedByUser = false;
                 connect();
             }
         });
@@ -93,13 +97,19 @@ async function attemptConnection(url, user_data) {
             });
 
             socket.send(data);
+            console.log("Attempting to connect to Syncify server...")
         });
 
         socket.addEventListener("message", (event) => {
             const data = JSON.parse(event.data);
 
-            if (data.status == 'success') {
+            if (data.status == 'finalize') {
                 window.open(`${url}/challenge?code=${data.id}`, '_blank');
+                console.log("Syncify server connection successful and finalization needed.")
+                resolve(socket);
+            }
+            else if (data.status == 'success') {
+                console.log("Syncify server connection successful and finalization NOT needed.")
                 resolve(socket); 
             }
 
@@ -107,8 +117,17 @@ async function attemptConnection(url, user_data) {
         });
 
         socket.addEventListener("close", (event) => {
-            console.log("disconnected");
-            reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : false});
+            disconnect();
+            if (!disconnectedByUser && attempts < MAX_CONNECTIONS_ATTEMPTS) {
+                showDialog("Connection Closed",`Socket closed: ${event.reason}, trying to establish a new connection...`);
+                attempts += 1;
+                resolve(attemptConnection(url, user_data));
+            }
+            else if (!disconnectedByUser) {
+                showDialog("Connection Closed",`Socket closed: ${event.reason}, no more attempts left.`);
+                reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true});
+            }
+            // reject({'type' : 'connection-error', 'title' : "Syncify Server Connection Error", 'message' : event.reason, 'fatal' : true});
         });
     });
 };
@@ -128,17 +147,47 @@ async function findAvailableConnection() {
     throw new Error('Failed to connect to any selected Syncify Server. Try again later...');
 };
 
+async function searchSong(socket, event, data) {
+    console.log(data);
+    console.log(`https://api.spotify.com/v1/search?q=${data.query}&type=track,album,playlist,show,episode,audiobook&market=${Spicetify.Platform.Session.locale}`);
+    
+    const search_results = await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q=${data.query}&type=track,album,playlist,show,episode,audiobook&limit=10&market=${Spicetify.Platform.Session.locale}`);
+
+    const response = {
+        type : "search-results",
+        results : search_results,
+        roomid : data.roomid,
+        userid : data.userid
+    }
+
+    socket.send(JSON.stringify(response));
+}
+
 async function connect() {
-    showDialog("Alomost there!", `Just a moment while we try to connect you with Syncify Server...`);
+    showDialog("Alomost there!", `Just a moment while we try to connect you with Syncify Servers...`);
     setButtonStatus(true);
     findAvailableConnection()
-       .then((socket) => {
+    .then(
+    (socket) => {
+        socket.addEventListener("message",async (event) => {
+            const data = JSON.parse(event.data);
+            switch (data.type) {
+                case 'search-song':
+                    await searchSong(socket, event, data);
+                    break;
+            }
+        });
+
         // We need to implement the logic to handle the connection here
-       })
-       .catch((error) => {
-            showDialog('Syncify Error', error.message);
-            disconnect();
-       })
+    }, 
+    (reason) => {
+        console.log(reason);
+        if (reason.fatal) showDialog(reason.title, reason.message);
+    })
+    .catch((error) => {
+        showDialog('Syncify Error', error.message);
+        disconnect();
+    })
 };
 
 function disconnect() {

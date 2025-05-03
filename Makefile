@@ -9,6 +9,11 @@ EXT_NAME = syncify.js
 APP_DIR = src\app
 APP_NAME = syncify
 
+# Updating
+
+update-wrangler:
+	npm update wrangler --save-dev
+
 # Apply Changes
 
 apply:

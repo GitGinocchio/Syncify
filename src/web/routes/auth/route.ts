@@ -1,6 +1,5 @@
 
-import { User } from '../../durables.js';
-import Utils from '../../utils.js';
+import { User } from '../../durables/user.js';
 
 export default {
 

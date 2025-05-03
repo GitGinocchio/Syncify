@@ -1,7 +1,7 @@
 // @ts-ignore
 import Challenge from './challenge.html';
 import mustache from 'mustache';
-import { User } from '../../durables.js';
+import { User } from '../../durables/user.js';
 
 import Auth from '../../auth.js'
 

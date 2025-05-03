@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat_v2"]
 observability = { enabled = true }
 placement = { mode = "smart" }
 logpush = true
-tail_consumers = [{service = "syncify-tail"}]
+#tail_consumers = [{service = "syncify-tail"}]
 
 assets = { directory = "./src/web", binding = "src" }
 

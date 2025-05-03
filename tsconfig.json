@@ -4,6 +4,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "WebWorker"],
     "types": ["@cloudflare/workers-types"],
+    "esModuleInterop": true,
     "moduleResolution": "Node",
     "strict": true,
     "skipLibCheck": true,

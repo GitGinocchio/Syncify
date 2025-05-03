@@ -5,9 +5,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Syncify</title>
 	<link rel="stylesheet" href="../../static/css/default.css">
-	<link rel="stylesheet" href="./routes/room/room.css">
+	<link rel="stylesheet" href="./routes/room/static/css/room.css">
 	<link rel='icon' href="../../static/images/icon.png">
 	<script src="../../static/js/default.js"></script>
+	<script type="module" src="./routes/room/static/js/room.js"></script>
 </head>
 <body>
 	<header>
@@ -136,59 +137,70 @@
 			<div class="queue">
 				<div class="header-queue">
 					<h2>Playback Queue</h2>
-						<div class="queue-history-buttons">
-							<button class="button" id="queue-button"><p>Queue</p></button>
-							<button class="button" id="history-button"><p>History</p></button>
-						</div>
+					<div class="queue-history-buttons">
+						<button class="button" id="queue-button"><p>Queue</p></button>
+						<button class="button" id="history-button"><p>History</p></button>
 					</div>
-					<div class="song-elements">
-						<ul id="queue-list">
+				</div>
+				<div class="song-elements">
+					<ul id="queue-list">
+					{{#renderQueue}}
+					{{/renderQueue}}
+					</ul>
+					<ul id="history-list" class="hide">
+					{{#renderHistory}}
+					{{/renderHistory}}
+					</ul>
+					<!--
+					<ul id="queue-list">
 						{{#room.queue}}
+						{{track_number}}
 						<li class="song-info" id="{{id}}">
 							<img class="album-art" src="{{album.images[2].url}}">
 							<div class="details">
 								<span class="song-title">{{name}}</span>
 								<span class="song-artists">
 								{{#artists}}
-									<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+									<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}} , {{/next}}
 								{{/artists}}
 								</span>
 							</div>
 							<span class="addedby-user">
 								Added by:
 								<a href="{{addedby.url}}" target="_blank">
-										<img src="{{addedby.image}}" class="member-icon">
-										{{addedby.name}}
+									<img src="{{addedby.image}}" class="member-icon">
+									{{addedby.name}}
 								</a>
 							</span>
 							<span class="song-duration">{{duration}}</span>
 						</li>
 						{{/room.queue}}
-						</ul>
-						<ul id="history-list" class="hide">
-							{{#room.history}}
-							<li class="song-info" id="{{id}}">
-								<img class="album-art" src="{{album.images[2].url}}">
-								<div class="details">
-									<span class="song-title">{{name}}</span>
-									<span class="song-artists">
-										{{#artists}}
-										<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
-										{{/artists}}
-									</span>
-								</div>
-								<span class="addedby-user">
-									Added by:
-									<a href="{{addedby.url}}" target="_blank">
-										<img src="{{addedby.image}}" class="member-icon">
-										{{addedby.name}}
-									</a>
+					</ul>
+					<ul id="history-list" class="hide">
+						{{#room.history}}
+						<li class="song-info" id="{{id}}">
+							<img class="album-art" src="{{album.images[2].url}}">
+							<div class="details">
+								<span class="song-title">{{name}}</span>
+								<span class="song-artists">
+									{{#artists}}
+									<a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+									{{/artists}}
 								</span>
-								<span class="song-duration">{{duration}}</span>
-							</li>
-							{{/room.history}}
-							</ul>
-					</div>
+							</div>
+							<span class="addedby-user">
+								Added by:
+								<a href="{{addedby.url}}" target="_blank">
+									<img src="{{addedby.image}}" class="member-icon">
+									{{addedby.name}}
+								</a>
+							</span>
+							<span class="song-duration">{{duration}}</span>
+						</li>
+						{{/room.history}}
+					</ul>
+					-->
+				</div>
 				<div class="searching-box">
 					<h2>Searching your song</h2>
 					<div class="result-search-box">
@@ -206,7 +218,7 @@
 				<div class="members-header">
 					<h2>Members</h2>
 					<div class="members-controls">
-						<button class="button" onclick="copyurl('{{room.id}}')"><p>Invite</p></button>
+						<button class="button" id="invite-button" data-roomid="{{room.id}}"><p>Invite</p></button>
 						<a class="button" href="/room/leave">
 							<p>Leave</p>
 						</a>
@@ -226,8 +238,8 @@
 			<div class="chat">
 				<h2>Chat</h2>
 				<div class="chat-messages" id="chat-messages" onload="toBottom()">
-				{{#renderChat}}
-				{{/renderChat}}
+					{{#renderChat}}
+					{{/renderChat}}
 				</div>
 				<div class="chat-controls">
 					<input type="text" id="message-input" placeholder="Type a message...">
@@ -236,6 +248,5 @@
 			</div>
 		</div>
 	</div>
-	<script src="./routes/room/room.js"></script>
 </body>
 </html>

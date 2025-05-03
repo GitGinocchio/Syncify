@@ -115,15 +115,15 @@ document.addEventListener("DOMContentLoaded", (event) => {
 			songElement.classList.add("song-info");
 			songElement.id = song.id;
 			songElement.innerHTML = `
-			<img class="album-art" src="${song.album.images[2].url}">
-			<div class="details">
-			  <span class="song-title">${song.name}</span>
-			  <span class="song-artists">${song.artists
-					.map((artist) => artist.name)
-					.join(", ")}</span>
-			</div>
-			<span class="song-duration">${song.duration}</span>
-	  `;
+				<img class="album-art" src="${song.album.images[2].url}">
+				<div class="details">
+				<span class="song-title">${song.name}</span>
+				<span class="song-artists">${song.artists
+						.map((artist) => artist.name)
+						.join(", ")}</span>
+				</div>
+				<span class="song-duration">${song.duration}</span>
+	  		`;
 			songElement.addEventListener("click", handleSongClick);
 			resultsContainer.appendChild(songElement);
 		});

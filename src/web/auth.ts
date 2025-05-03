@@ -1,7 +1,7 @@
 // @ts-ignore
-const jwt = require('jsonwebtoken');
+import jwt = require('jsonwebtoken');
 
-import Utils from './utils.js';
+import { parseCookies } from './utils.js';
 
 const protectedRoutes = [
     '/user',
@@ -19,7 +19,7 @@ export default {
         const url = new URL(request.url);
         if (!protectedRoutes.includes(url.pathname)) { return; }
 
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
 
         const user_token = cookies.get('user_access_token');
         const room_token = cookies.get('room_access_token');

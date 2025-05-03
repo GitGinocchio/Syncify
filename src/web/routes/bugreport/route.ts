@@ -2,9 +2,9 @@
 import BugReport from './bugreport.html'
 import mustache from 'mustache';
 
-import { User } from '../../durables.js';
+import { User } from '../../durables/user.js';
 import Auth from '../../auth.js'
-import Utils from '../../utils.js';
+import { parseCookies, parseParams } from '../../utils.js';
 
 export default {
     async post (request : Request, env, ctx) {
@@ -12,7 +12,7 @@ export default {
     },
 
     async get (request : Request, env, ctx) {
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
         
         const token = cookies.get('user_access_token');

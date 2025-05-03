@@ -1,6 +1,5 @@
 // @ts-ignore
 import OnBoard from './onboard.html'
-import mustache from 'mustache';
 
 export default {
     async get (request : Request, env, ctx) {

@@ -2,13 +2,14 @@
 import New from './new.html';
 import mustache from 'mustache';
 
-import { User, Room } from '../../durables.js';
+import { User } from '../../durables/user.js';
+import { Room } from '../../durables/room.js';
 import Auth from '../../auth.js';
-import Utils from '../../utils.js';
+import { parseCookies, parseParams } from '../../utils.js';
 
 export default {
     async get (request : Request, env, ctx) {
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
         
         const token = cookies.get('user_access_token');
@@ -39,9 +40,9 @@ export default {
 
     async post(request : Request, env, ctx) {
         const url = new URL(request.url);
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
 
-        const room_data = Utils.parseParams(await request.text());
+        const room_data = parseParams(await request.text());
 
         const user_token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(user_token, env.JWT_SECRET_KEY);

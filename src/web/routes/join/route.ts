@@ -2,15 +2,16 @@
 import Join from './join.html'
 import mustache from 'mustache';
 
-import { User, Room } from '../../durables.js';
+import { User } from '../../durables/user.js';
+import { Room } from '../../durables/room.js';
 import Auth from '../../auth.js'
-import Utils from '../../utils.js';
+import { parseCookies, parseParams } from '../../utils.js';
 
 export default {
     async post (request : Request, env, ctx) {
         const url = new URL(request.url);
         const raw = await request.text();
-        const params = Utils.parseParams(raw);
+        const params = parseParams(raw);
 
         // @ts-ignore
         const room_token = await Auth.generateToken({ id : params.roomid }, env.ROOM_ACCESS_TOKEN_MAX_AGE, env.JWT_SECRET_KEY);
@@ -56,7 +57,7 @@ export default {
             })
         }
 
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);

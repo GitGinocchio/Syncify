@@ -15,12 +15,13 @@ import AllRoute from './routes/all/route.js';
 import Route404 from './routes/404/route.js';
 import Route403 from './routes/403/route.js';
 
-import { User, Room } from './durables.js';
-import Utils from './utils.js';
+import { User } from './durables/user.js';
+import { Room } from './durables/room.js';
+import { redirectToNormPath } from './utils.js';
 import Auth from './auth.js';
 
 const router = Router({
-    before: [Utils.redirectToNormPath],
+    before: [redirectToNormPath],
     catch: error,
     finally: [json]
 });

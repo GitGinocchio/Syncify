@@ -2,18 +2,18 @@
 import UserPage from './user.html';
 import mustache from 'mustache';
 
-import { User } from '../../durables.js';
+import { User } from '../../durables/user.js';
 import Auth from '../../auth.js';
-import Utils from '../../utils.js';
+import { parseCookies } from '../../utils.js';
 
 export default {
     async get (request : Request, env, ctx) {
         const url = new URL(request.url);
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         
         const token = cookies.get('user_access_token');
         const payload = await Auth.verifyToken(token, env.JWT_SECRET_KEY);
-        const id = env.users.idFromString(payload.id);
+        const id = env.users.idFromString(payload?.id);
 
         const user : User = env.users.get(id);
         const data = await user.getData();

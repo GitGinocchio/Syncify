@@ -2,11 +2,11 @@
 import Index from './index.html'
 
 import Auth from '../../auth.js';
-import Utils from '../../utils.js';
+import { parseCookies, parseParams } from '../../utils.js';
 
 export default {
     async get (request : Request, env, ctx) {
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         const url = new URL(request.url);
 
         const token = cookies.get('user_access_token');

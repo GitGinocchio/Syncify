@@ -4,7 +4,10 @@ export default {
 
         return new Response(null, {
             headers: {
-              'Set-Cookie': `user_access_token=; Path=/; Max-Age=0; Secure; HttpOnly; room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;`,
+                'Set-Cookie': [
+                    'user_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;',
+                    'room_access_token=; Path=/; Max-Age=0; Secure; HttpOnly;'
+                ].join(' '),
               Location: `/`
             },
             status: 302

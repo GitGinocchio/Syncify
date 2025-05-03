@@ -849,6 +849,7 @@ p{
 
 .system-message {
     align-self: center;
+    background-color: orange;
 }
 
 #message-input {

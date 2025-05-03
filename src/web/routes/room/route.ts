@@ -1,16 +1,20 @@
 // @ts-ignore
-import RoomPage from './room.html'
+import RoomPage from './templates/room.html';
 import mustache from 'mustache';
 
-import { Room, User } from '../../durables.js'
-import Auth from '../../auth.js'
-import Utils from '../../utils.js';
+import { Room } from '../../durables/room.js';
+import { User } from '../../durables/user.js';
+import { Queue } from '../../models/queue.js';
+import { Track } from '../../models/track.js';
 
-function renderChat(data : any, user_data : any) {
+import Auth from '../../auth.js';
+import { parseCookies } from '../../utils.js';
+
+function renderChat(messages : any, user_data : any) {
     return function(text : string, render : Function) {
         let chat = '';
 
-        data.messages.forEach((message) => {
+        messages.forEach((message) => {
             const message_template = `
             <div class="sender">
                 <img src="${message.sender.image}">
@@ -45,11 +49,91 @@ function renderChat(data : any, user_data : any) {
     }
 }
 
+/*
+<div class="song-elements">
+    <ul id="queue-list">
+        {{#room.queue}}
+        <li class="song-info" id="{{id}}">
+            <img class="album-art" src="{{album.images[2].url}}">
+            <div class="details">
+                <span class="song-title">{{name}}</span>
+                <span class="song-artists">
+                {{#artists}}
+                    <a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+                {{/artists}}
+                </span>
+            </div>
+            <span class="addedby-user">
+                Added by:
+                <a href="{{addedby.url}}" target="_blank">
+                        <img src="{{addedby.image}}" class="member-icon">
+                        {{addedby.name}}
+                </a>
+            </span>
+            <span class="song-duration">{{duration}}</span>
+        </li>
+        {{/room.queue}}
+    </ul>
+    <ul id="history-list" class="hide">
+        {{#room.history}}
+        <li class="song-info" id="{{id}}">
+            <img class="album-art" src="{{album.images[2].url}}">
+            <div class="details">
+                <span class="song-title">{{name}}</span>
+                <span class="song-artists">
+                    {{#artists}}
+                    <a href="{{external_urls.spotify}}" target="_blank">{{name}}</a>{{#next}}, {{/next}}
+                    {{/artists}}
+                </span>
+            </div>
+            <span class="addedby-user">
+                Added by:
+                <a href="{{addedby.url}}" target="_blank">
+                    <img src="{{addedby.image}}" class="member-icon">
+                    {{addedby.name}}
+                </a>
+            </span>
+            <span class="song-duration">{{duration}}</span>
+        </li>
+        {{/room.history}}
+    </ul>
+</div>
+*/
+
+function renderTracks(tracks : Queue) {
+    return function(text : string, render : Function) {
+        let content = "";
+
+        tracks.forEach((track) => {
+            content += `
+            <li class="song-info" id="${track.id}">
+                <img class="album-art" src="${track.album.images[2].url}">
+                <div class="details">
+                    <span class="song-title">${track.name}</span>
+                    <span class="song-artists">
+                    ${track.artists.map((artist) => `<a href="${artist.external_urls.spotify}" target="_blank">${artist.name}</a>`).join(',')}
+                    </span>
+                </div>
+                <span class="addedby-user">
+                    Added by:
+                    <a href="${track.addedby.url}" target="_blank">
+                        <img src="${track.addedby.image}" class="member-icon">
+                        ${track.addedby.name}
+                    </a>
+                </span>
+                <span class="song-duration">${track.duration_string}</span>
+            </li>
+            `
+        });
+        return content;
+    }
+}
+
 export default {
     async get(request : Request, env : any, ctx : any) {
         const url = new URL(request.url);
 
-        const cookies = Utils.parseCookies(request.headers.get('cookie'));
+        const cookies = parseCookies(request.headers.get('cookie'));
         
         const user_token = cookies.get('user_access_token');
         const room_token = cookies.get('room_access_token');
@@ -92,12 +176,12 @@ export default {
                 id : room_payload.id.toString(),
                 chat : room_data.messages,
                 members : room_data.members.values(),
-                artists : room_data.artists,
-                queue : room_data.queue,
                 status : "playing",
                 devices : []
             },
-            renderChat : (text : string, render : Function) => renderChat(room_data, user_data)
+            renderChat : (text : string, render : Function) => renderChat(room_data.messages, user_data),
+            renderQueue : (text : string, render : Function) => renderTracks(Queue.fromObject(room_data.queue as Track[])),
+            renderHistory : (text : string, render : Function) => renderTracks(Queue.fromObject(room_data.history as Track[]))
         });
 
         return new Response(html, { headers: { 'Content-Type': 'text/html' }});
