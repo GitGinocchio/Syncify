@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
 		if (url.trim() && url.startsWith("https://")) {
 			queueInput.value = "";
 			const data = {
-				type : "add-song",
+				type : "add-song-from-url",
 				url : url
 			}
 			socket.send(JSON.stringify(data));

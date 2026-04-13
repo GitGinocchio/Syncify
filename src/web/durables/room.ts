@@ -252,6 +252,10 @@ export class Room extends DurableObject {
         this.broadcast(null, JSON.stringify(message));
     }
 
+    async onAddSongFromUrl(ws : WebSocket, data : Map<string, any>) {
+        console.log(data);
+    }
+
     async showSearchResultsToUser(data : Map<string, any>) {
         // @ts-ignore
         const ws = this.clients.get(data.userid);
@@ -296,6 +300,9 @@ export class Room extends DurableObject {
                 break;
             case 'add-song':
                 await this.onAddSong(ws, data);
+                break;
+            case 'add-song-from-url':
+                await this.onAddSongFromUrl(ws, data);
                 break;
             default:
                 // @ts-ignore
