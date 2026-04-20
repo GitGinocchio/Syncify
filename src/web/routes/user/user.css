@@ -41,6 +41,12 @@
   color: #ccc;
 }
 
+.counter-rooms{
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+}
+
 .room-container {
   margin-right: auto;
   margin-left: auto;
